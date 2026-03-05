@@ -13,7 +13,9 @@ abstract interface class AuthRepository {
   Future<bool> isOnboardingCompleted();
   Future<void> completeOnboarding({required String fullName});
   Future<String?> getMyFullName();
+  Future<String?> getMyAvatarUrl();
   Future<void> updateMyFullName({required String fullName});
+  Future<void> updateMyAvatarUrl({required String avatarUrl});
 }
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -139,6 +141,24 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<String?> getMyAvatarUrl() async {
+    try {
+      return await dataSource.getMyAvatarUrl();
+    } on AuthException catch (error, stackTrace) {
+      debugPrint('[AuthRepository] getMyAvatarUrl auth failure: $error');
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint('[AuthRepository] getMyAvatarUrl unexpected failure: $error');
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to load profile image.',
+        cause: error,
+      );
+    }
+  }
+
+  @override
   Future<void> updateMyFullName({required String fullName}) async {
     try {
       await dataSource.updateMyFullName(fullName: fullName);
@@ -153,6 +173,26 @@ class AuthRepositoryImpl implements AuthRepository {
       debugPrint('[AuthRepository] StackTrace: $stackTrace');
       throw AppException.unknown(
         message: 'Failed to update profile.',
+        cause: error,
+      );
+    }
+  }
+
+  @override
+  Future<void> updateMyAvatarUrl({required String avatarUrl}) async {
+    try {
+      await dataSource.updateMyAvatarUrl(avatarUrl: avatarUrl);
+    } on AuthException catch (error, stackTrace) {
+      debugPrint('[AuthRepository] updateMyAvatarUrl auth failure: $error');
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint(
+        '[AuthRepository] updateMyAvatarUrl unexpected failure: $error',
+      );
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to update profile image.',
         cause: error,
       );
     }

@@ -47,6 +47,10 @@
 	<true/>
 	<key>GIDClientID</key>
 	<string>926691844783-0iiiplj7hlk5jv4jg7a3usi9g9ca6pj9.apps.googleusercontent.com</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>사진을 선택하기 위해 사진 보관함 접근 권한이 필요합니다.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>사진을 촬영하기 위해 카메라 접근 권한이 필요합니다.</string>
 	<!-- Google Sign-in Section -->
 	<key>CFBundleURLTypes</key>
 	<array>

@@ -178,6 +178,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileEditComingSoon => 'Profile edit page skeleton is ready.';
 
   @override
+  String get profileEditChangePhoto => 'Change Photo';
+
+  @override
+  String get profileEditImagePickFailed =>
+      'Failed to select image. Please try again.';
+
+  @override
+  String get profileEditImageUnsupportedType =>
+      'Only JPG, PNG, and WEBP images are allowed.';
+
+  @override
+  String profileEditImageTooLarge(int maxMb) {
+    return 'Image is too large. Please select up to ${maxMb}MB.';
+  }
+
+  @override
   String get profileWorkoutRecordComingSoon =>
       'Workout performance log page skeleton is ready.';
 

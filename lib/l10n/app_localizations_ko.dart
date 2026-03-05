@@ -176,6 +176,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get profileEditComingSoon => '프로필 수정 화면 뼈대가 준비되었습니다.';
 
   @override
+  String get profileEditChangePhoto => '사진 변경';
+
+  @override
+  String get profileEditImagePickFailed => '이미지를 선택하지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get profileEditImageUnsupportedType =>
+      'JPG, PNG, WEBP 형식의 이미지만 업로드할 수 있습니다.';
+
+  @override
+  String profileEditImageTooLarge(int maxMb) {
+    return '이미지 용량이 큽니다. ${maxMb}MB 이하 파일을 선택해 주세요.';
+  }
+
+  @override
   String get profileWorkoutRecordComingSoon => '내 운동 능력 기록 화면 뼈대가 준비되었습니다.';
 
   @override

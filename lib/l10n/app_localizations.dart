@@ -404,6 +404,30 @@ abstract class AppLocalizations {
   /// **'Profile edit page skeleton is ready.'**
   String get profileEditComingSoon;
 
+  /// No description provided for @profileEditChangePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Photo'**
+  String get profileEditChangePhoto;
+
+  /// No description provided for @profileEditImagePickFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to select image. Please try again.'**
+  String get profileEditImagePickFailed;
+
+  /// No description provided for @profileEditImageUnsupportedType.
+  ///
+  /// In en, this message translates to:
+  /// **'Only JPG, PNG, and WEBP images are allowed.'**
+  String get profileEditImageUnsupportedType;
+
+  /// No description provided for @profileEditImageTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Image is too large. Please select up to {maxMb}MB.'**
+  String profileEditImageTooLarge(int maxMb);
+
   /// No description provided for @profileWorkoutRecordComingSoon.
   ///
   /// In en, this message translates to:

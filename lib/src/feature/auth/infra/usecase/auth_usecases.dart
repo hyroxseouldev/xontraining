@@ -53,6 +53,16 @@ class GetMyFullNameUseCase {
   }
 }
 
+class GetMyAvatarUrlUseCase {
+  GetMyAvatarUrlUseCase({required this.repository});
+
+  final AuthRepository repository;
+
+  Future<String?> call() {
+    return repository.getMyAvatarUrl();
+  }
+}
+
 class UpdateMyFullNameUseCase {
   UpdateMyFullNameUseCase({required this.repository});
 
@@ -60,6 +70,16 @@ class UpdateMyFullNameUseCase {
 
   Future<void> call({required String fullName}) {
     return repository.updateMyFullName(fullName: fullName);
+  }
+}
+
+class UpdateMyAvatarUrlUseCase {
+  UpdateMyAvatarUrlUseCase({required this.repository});
+
+  final AuthRepository repository;
+
+  Future<void> call({required String avatarUrl}) {
+    return repository.updateMyAvatarUrl(avatarUrl: avatarUrl);
   }
 }
 
@@ -93,6 +113,16 @@ GetMyFullNameUseCase getMyFullNameUseCase(Ref ref) {
 }
 
 @riverpod
+GetMyAvatarUrlUseCase getMyAvatarUrlUseCase(Ref ref) {
+  return GetMyAvatarUrlUseCase(repository: ref.read(authRepositoryProvider));
+}
+
+@riverpod
 UpdateMyFullNameUseCase updateMyFullNameUseCase(Ref ref) {
   return UpdateMyFullNameUseCase(repository: ref.read(authRepositoryProvider));
+}
+
+@riverpod
+UpdateMyAvatarUrlUseCase updateMyAvatarUrlUseCase(Ref ref) {
+  return UpdateMyAvatarUrlUseCase(repository: ref.read(authRepositoryProvider));
 }

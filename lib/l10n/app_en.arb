@@ -92,6 +92,17 @@
   "profileWorkoutRecord": "My Workout Performance Log",
   "profileEditTitle": "Edit Profile",
   "profileEditComingSoon": "Profile edit page skeleton is ready.",
+  "profileEditChangePhoto": "Change Photo",
+  "profileEditImagePickFailed": "Failed to select image. Please try again.",
+  "profileEditImageUnsupportedType": "Only JPG, PNG, and WEBP images are allowed.",
+  "profileEditImageTooLarge": "Image is too large. Please select up to {maxMb}MB.",
+  "@profileEditImageTooLarge": {
+    "placeholders": {
+      "maxMb": {
+        "type": "int"
+      }
+    }
+  },
   "profileWorkoutRecordComingSoon": "Workout performance log page skeleton is ready.",
   "settingsTitle": "Settings",
   "settingsDescription": "Settings page skeleton is ready.",

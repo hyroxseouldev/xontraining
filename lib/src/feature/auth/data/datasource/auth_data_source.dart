@@ -13,7 +13,9 @@ abstract interface class AuthDataSource {
   Future<bool> isOnboardingCompleted();
   Future<void> completeOnboarding({required String fullName});
   Future<String?> getMyFullName();
+  Future<String?> getMyAvatarUrl();
   Future<void> updateMyFullName({required String fullName});
+  Future<void> updateMyAvatarUrl({required String avatarUrl});
 }
 
 class SupabaseAuthDataSource implements AuthDataSource {
@@ -108,6 +110,27 @@ class SupabaseAuthDataSource implements AuthDataSource {
   }
 
   @override
+  Future<String?> getMyAvatarUrl() async {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) {
+      throw AuthException('No authenticated user found.');
+    }
+
+    final profile = await supabase
+        .from('profiles')
+        .select('avatar_url')
+        .eq('id', userId)
+        .maybeSingle();
+
+    final avatarUrl = profile?['avatar_url'];
+    if (avatarUrl is String && avatarUrl.trim().isNotEmpty) {
+      return avatarUrl;
+    }
+
+    return null;
+  }
+
+  @override
   Future<void> updateMyFullName({required String fullName}) async {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) {
@@ -117,6 +140,19 @@ class SupabaseAuthDataSource implements AuthDataSource {
     await supabase
         .from('profiles')
         .update({'full_name': fullName.trim()})
+        .eq('id', userId);
+  }
+
+  @override
+  Future<void> updateMyAvatarUrl({required String avatarUrl}) async {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) {
+      throw AuthException('No authenticated user found.');
+    }
+
+    await supabase
+        .from('profiles')
+        .update({'avatar_url': avatarUrl.trim()})
         .eq('id', userId);
   }
 }

@@ -42,6 +42,39 @@ final class ProfileFullNameProvider
 
 String _$profileFullNameHash() => r'5f730405f576887e00dfd82e4d06b02027849a8a';
 
+@ProviderFor(profileAvatarUrl)
+final profileAvatarUrlProvider = ProfileAvatarUrlProvider._();
+
+final class ProfileAvatarUrlProvider
+    extends $FunctionalProvider<AsyncValue<String?>, String?, FutureOr<String?>>
+    with $FutureModifier<String?>, $FutureProvider<String?> {
+  ProfileAvatarUrlProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'profileAvatarUrlProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$profileAvatarUrlHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<String?> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<String?> create(Ref ref) {
+    return profileAvatarUrl(ref);
+  }
+}
+
+String _$profileAvatarUrlHash() => r'6b8b65857c56d8ca585c41cb38bdf36c13a4e72e';
+
 @ProviderFor(ProfileController)
 final profileControllerProvider = ProfileControllerProvider._();
 
@@ -74,7 +107,7 @@ final class ProfileControllerProvider
   }
 }
 
-String _$profileControllerHash() => r'fa0fb0c5543ce3120633097f1f39da75564bd37b';
+String _$profileControllerHash() => r'4e7e8a23ad34922e2f595d145625ded7584d5b45';
 
 abstract class _$ProfileController extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();

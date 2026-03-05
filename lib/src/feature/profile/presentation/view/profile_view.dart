@@ -17,10 +17,10 @@ class ProfileView extends ConsumerWidget {
     final userEmail = session.asData?.value?.email ?? '-';
     final user = session.asData?.value;
     final fullName = ref.watch(profileFullNameProvider).asData?.value ?? '';
+    final avatarUrl = ref.watch(profileAvatarUrlProvider).asData?.value ?? '';
     final displayName = fullName.isEmpty
         ? (user?.userMetadata?['full_name'] as String?) ?? '-'
         : fullName;
-    final avatarUrl = (user?.userMetadata?['avatar_url'] as String?) ?? '';
 
     return Scaffold(
       appBar: AppBar(
