@@ -8,7 +8,10 @@ import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
 import 'package:xontraining/src/feature/home/presentation/view/home_view.dart';
 import 'package:xontraining/src/feature/home/presentation/view/program_detail_view.dart';
 import 'package:xontraining/src/feature/onboarding/presentation/view/onboarding_view.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/profile_edit_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/profile_view.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/settings_view.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/workout_record_view.dart';
 
 part 'app_router.g.dart';
 
@@ -88,6 +91,21 @@ GoRouter goRouter(Ref ref) {
         builder: (context, state) => const ProfileView(),
       ),
       GoRoute(
+        path: AppRoutes.profileEdit,
+        name: AppRoutes.profileEditName,
+        builder: (context, state) => const ProfileEditView(),
+      ),
+      GoRoute(
+        path: AppRoutes.workoutRecord,
+        name: AppRoutes.workoutRecordName,
+        builder: (context, state) => const WorkoutRecordView(),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        name: AppRoutes.settingsName,
+        builder: (context, state) => const SettingsView(),
+      ),
+      GoRoute(
         path: AppRoutes.onboarding,
         name: AppRoutes.onboardingName,
         builder: (context, state) => const OnboardingView(),
@@ -100,12 +118,18 @@ abstract final class AppRoutes {
   static const String login = '/login';
   static const String home = '/home';
   static const String profile = '/profile';
+  static const String profileEdit = '/profile/edit';
+  static const String workoutRecord = '/profile/workout-record';
+  static const String settings = '/settings';
   static const String programDetail = '/program/:programId';
   static const String onboarding = '/onboarding';
 
   static const String loginName = 'login';
   static const String homeName = 'home';
   static const String profileName = 'profile';
+  static const String profileEditName = 'profileEdit';
+  static const String workoutRecordName = 'workoutRecord';
+  static const String settingsName = 'settings';
   static const String programDetailName = 'programDetail';
   static const String onboardingName = 'onboarding';
 }

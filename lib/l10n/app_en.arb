@@ -86,6 +86,16 @@
       "email": {}
     }
   },
+  "profileSettings": "Settings",
+  "profileEdit": "Edit Profile",
+  "profileMenuTitle": "Menu",
+  "profileWorkoutRecord": "My Workout Performance Log",
+  "profileEditTitle": "Edit Profile",
+  "profileEditComingSoon": "Profile edit page skeleton is ready.",
+  "profileWorkoutRecordComingSoon": "Workout performance log page skeleton is ready.",
+  "settingsTitle": "Settings",
+  "settingsDescription": "Settings page skeleton is ready.",
+  "settingsSignOut": "Sign out",
   "onboardingTitle": "Welcome",
   "onboardingDescription": "Set up your profile to continue.",
   "onboardingNameLabel": "Name",

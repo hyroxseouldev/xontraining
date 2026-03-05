@@ -368,6 +368,66 @@ abstract class AppLocalizations {
   /// **'Signed in as {email}'**
   String profileSignedInAs(Object email);
 
+  /// No description provided for @profileSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get profileSettings;
+
+  /// No description provided for @profileEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get profileEdit;
+
+  /// No description provided for @profileMenuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get profileMenuTitle;
+
+  /// No description provided for @profileWorkoutRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'My Workout Performance Log'**
+  String get profileWorkoutRecord;
+
+  /// No description provided for @profileEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get profileEditTitle;
+
+  /// No description provided for @profileEditComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile edit page skeleton is ready.'**
+  String get profileEditComingSoon;
+
+  /// No description provided for @profileWorkoutRecordComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout performance log page skeleton is ready.'**
+  String get profileWorkoutRecordComingSoon;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings page skeleton is ready.'**
+  String get settingsDescription;
+
+  /// No description provided for @settingsSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get settingsSignOut;
+
   /// No description provided for @onboardingTitle.
   ///
   /// In en, this message translates to:

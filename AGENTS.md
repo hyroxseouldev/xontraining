@@ -98,6 +98,11 @@ Guidance for coding agents working in this repository.
 - For network images in app UI, use `CachedNetworkImage` instead of `Image.network`.
 - Always provide both `placeholder` and `errorWidget` states.
 
+## AppBar Title Layout Rule
+- For primary feature screens, place section/page titles in `AppBar.bottom` using `PreferredSize` instead of the default `AppBar.title`.
+- Keep the top toolbar focused on navigation/actions (e.g., profile/back/menu) and use the bottom area for the visual headline.
+- Prefer left-aligned headline text with explicit padding to keep spacing consistent across screens.
+
 ## Types and API Design
 - Avoid `dynamic` unless required by external APIs.
 - Prefer explicit return types on public methods/functions.

@@ -158,6 +158,36 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get profileSettings => '설정';
+
+  @override
+  String get profileEdit => '프로필 수정';
+
+  @override
+  String get profileMenuTitle => '메뉴';
+
+  @override
+  String get profileWorkoutRecord => '내 운동 능력 기록';
+
+  @override
+  String get profileEditTitle => '프로필 수정';
+
+  @override
+  String get profileEditComingSoon => '프로필 수정 화면 뼈대가 준비되었습니다.';
+
+  @override
+  String get profileWorkoutRecordComingSoon => '내 운동 능력 기록 화면 뼈대가 준비되었습니다.';
+
+  @override
+  String get settingsTitle => '설정';
+
+  @override
+  String get settingsDescription => '설정 화면 뼈대가 준비되었습니다.';
+
+  @override
+  String get settingsSignOut => '로그아웃';
+
+  @override
   String get onboardingTitle => '환영합니다';
 
   @override

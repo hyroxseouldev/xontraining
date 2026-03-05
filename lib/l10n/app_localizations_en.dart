@@ -160,6 +160,37 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get profileSettings => 'Settings';
+
+  @override
+  String get profileEdit => 'Edit Profile';
+
+  @override
+  String get profileMenuTitle => 'Menu';
+
+  @override
+  String get profileWorkoutRecord => 'My Workout Performance Log';
+
+  @override
+  String get profileEditTitle => 'Edit Profile';
+
+  @override
+  String get profileEditComingSoon => 'Profile edit page skeleton is ready.';
+
+  @override
+  String get profileWorkoutRecordComingSoon =>
+      'Workout performance log page skeleton is ready.';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsDescription => 'Settings page skeleton is ready.';
+
+  @override
+  String get settingsSignOut => 'Sign out';
+
+  @override
   String get onboardingTitle => 'Welcome';
 
   @override
