@@ -49,3 +49,10 @@ app.*.map.json
 
 # Environment
 .env
+
+# Local TestFlight script with hardcoded secrets
+scripts/testflight_upload.local.sh
+
+# App Store Connect API keys
+AuthKey_*.p8
+*.p8

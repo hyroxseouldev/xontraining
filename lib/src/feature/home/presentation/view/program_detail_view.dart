@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/core/router/app_router.dart';
 import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
@@ -225,9 +227,8 @@ class _ProgramSessionContentState extends State<_ProgramSessionContent> {
                         ),
                       ),
                       const SizedBox(height: 14),
-                      Text(
-                        _toPlainText(selectedSession.normalizedContentHtml),
-                        style: Theme.of(context).textTheme.bodyLarge,
+                      _SessionHtmlRenderer(
+                        html: selectedSession.normalizedContentHtml,
                       ),
                     ],
                   ),
@@ -267,27 +268,82 @@ DateTime _dateOnly(DateTime value) {
   return DateTime(value.year, value.month, value.day);
 }
 
-String _toPlainText(String html) {
-  var text = html;
-  text = text.replaceAll(RegExp(r'<\s*br\s*/?>', caseSensitive: false), '\n');
-  text = text.replaceAll(RegExp(r'<\s*li[^>]*>', caseSensitive: false), '• ');
-  text = text.replaceAll(
-    RegExp(
-      r'</\s*(p|div|h1|h2|h3|h4|h5|h6|li|ul|ol)\s*>',
-      caseSensitive: false,
-    ),
-    '\n',
-  );
-  text = text.replaceAll(RegExp(r'<[^>]*>'), '');
-  text = text
-      .replaceAll('&nbsp;', ' ')
-      .replaceAll('&amp;', '&')
-      .replaceAll('&lt;', '<')
-      .replaceAll('&gt;', '>')
-      .replaceAll('&quot;', '"')
-      .replaceAll('&#39;', "'");
-  text = text.replaceAll(RegExp(r'\n{3,}'), '\n\n');
-  return text.trim();
+class _SessionHtmlRenderer extends StatelessWidget {
+  const _SessionHtmlRenderer({required this.html});
+
+  final String html;
+
+  @override
+  Widget build(BuildContext context) {
+    final bodyStyle = Theme.of(context).textTheme.bodyLarge;
+    final titleStyle = Theme.of(context).textTheme.titleMedium;
+
+    return Html(
+      data: html,
+      style: {
+        'body': Style(
+          margin: Margins.zero,
+          padding: HtmlPaddings.zero,
+          lineHeight: const LineHeight(1.5),
+          letterSpacing: 0,
+          fontSize: bodyStyle != null
+              ? FontSize(bodyStyle.fontSize ?? 16)
+              : null,
+          fontWeight: bodyStyle?.fontWeight,
+          color: bodyStyle?.color,
+        ),
+        'p': Style(margin: Margins.only(bottom: 6)),
+        'div': Style(margin: Margins.only(bottom: 6)),
+        'ul': Style(
+          margin: Margins.only(bottom: 4),
+          padding: HtmlPaddings.only(left: 14),
+        ),
+        'ol': Style(
+          margin: Margins.only(bottom: 4),
+          padding: HtmlPaddings.only(left: 14),
+        ),
+        'li': Style(margin: Margins.only(bottom: 2)),
+        'h1': Style(
+          margin: Margins.only(top: 2, bottom: 6),
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0,
+          lineHeight: const LineHeight(1.35),
+          fontSize: titleStyle != null
+              ? FontSize(titleStyle.fontSize ?? 16)
+              : null,
+        ),
+        'h2': Style(
+          margin: Margins.only(top: 2, bottom: 6),
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0,
+          lineHeight: const LineHeight(1.35),
+          fontSize: titleStyle != null
+              ? FontSize(titleStyle.fontSize ?? 16)
+              : null,
+        ),
+        'h3': Style(
+          margin: Margins.only(top: 2, bottom: 6),
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0,
+          lineHeight: const LineHeight(1.35),
+          fontSize: titleStyle != null
+              ? FontSize(titleStyle.fontSize ?? 16)
+              : null,
+        ),
+      },
+      onLinkTap: (url, attributes, element) async {
+        final href = url?.trim();
+        if (href == null || href.isEmpty) {
+          return;
+        }
+        final uri = Uri.tryParse(href);
+        if (uri == null) {
+          return;
+        }
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      },
+    );
+  }
 }
 
 class _ShimmerBox extends StatefulWidget {
