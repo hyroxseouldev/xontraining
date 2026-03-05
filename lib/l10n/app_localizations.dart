@@ -266,11 +266,59 @@ abstract class AppLocalizations {
   /// **'Detailed sections, progress, and actions will be added next.'**
   String get homeProgramDetailComingSoon;
 
+  /// No description provided for @homeProgramDetailPurchaseRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This page is available after purchase and activation.'**
+  String get homeProgramDetailPurchaseRequired;
+
+  /// No description provided for @homeProgramDetailNoSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions are available for this program yet.'**
+  String get homeProgramDetailNoSessions;
+
+  /// No description provided for @homeProgramDetailNoSessionForSelectedDate.
+  ///
+  /// In en, this message translates to:
+  /// **'No session for the selected date.'**
+  String get homeProgramDetailNoSessionForSelectedDate;
+
+  /// No description provided for @homeProgramDetailSelectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select date'**
+  String get homeProgramDetailSelectDate;
+
+  /// No description provided for @homeProgramDetailToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get homeProgramDetailToday;
+
   /// No description provided for @homeProgramDetailIdLabel.
   ///
   /// In en, this message translates to:
   /// **'Program ID: {id}'**
   String homeProgramDetailIdLabel(Object id);
+
+  /// No description provided for @homeProgramDetailSessionMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} · Week {week} · {day}'**
+  String homeProgramDetailSessionMeta(Object date, int week, Object day);
+
+  /// No description provided for @homeProgramDetailSessionMetaNoDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} · Week {week}'**
+  String homeProgramDetailSessionMetaNoDay(Object date, int week);
+
+  /// No description provided for @homeProgramDetailSessionMetaNoWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} · {day}'**
+  String homeProgramDetailSessionMetaNoWeek(Object date, Object day);
 
   /// No description provided for @homeProgramValueNotAvailable.
   ///

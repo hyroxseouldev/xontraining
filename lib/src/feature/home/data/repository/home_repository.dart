@@ -4,11 +4,23 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:xontraining/src/core/exception/app_exception.dart';
 import 'package:xontraining/src/feature/home/data/datasource/home_data_source.dart';
 import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
+import 'package:xontraining/src/feature/home/infra/entity/program_detail_entity.dart';
 
 part 'home_repository.g.dart';
 
 abstract interface class HomeRepository {
   Future<List<ProgramEntity>> getProgramsByTenant({required String tenantId});
+
+  Future<bool> hasProgramAccess({
+    required String tenantId,
+    required String userId,
+    required String programId,
+  });
+
+  Future<List<ProgramSessionEntity>> getSessionsByProgram({
+    required String tenantId,
+    required String programId,
+  });
 }
 
 class HomeRepositoryImpl implements HomeRepository {
@@ -108,6 +120,96 @@ class HomeRepositoryImpl implements HomeRepository {
       return DateTime.tryParse(value);
     }
     return null;
+  }
+
+  DateTime _dateOnly(DateTime value) {
+    return DateTime(value.year, value.month, value.day);
+  }
+
+  @override
+  Future<bool> hasProgramAccess({
+    required String tenantId,
+    required String userId,
+    required String programId,
+  }) async {
+    try {
+      return await dataSource.hasProgramAccess(
+        tenantId: tenantId,
+        userId: userId,
+        programId: programId,
+      );
+    } on AuthException catch (error, stackTrace) {
+      debugPrint('[HomeRepository] hasProgramAccess auth failure: $error');
+      debugPrint('[HomeRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint(
+        '[HomeRepository] hasProgramAccess unexpected failure: $error',
+      );
+      debugPrint('[HomeRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to check program access.',
+        cause: error,
+      );
+    }
+  }
+
+  @override
+  Future<List<ProgramSessionEntity>> getSessionsByProgram({
+    required String tenantId,
+    required String programId,
+  }) async {
+    try {
+      final rawItems = await dataSource.getSessionsByProgram(
+        tenantId: tenantId,
+        programId: programId,
+      );
+      final sessions = <ProgramSessionEntity>[];
+
+      for (final raw in rawItems) {
+        final id = raw['id'];
+        final dateRaw = raw['session_date'];
+        final title = raw['title'];
+        final contentHtml = raw['content_html'];
+        if (id is! String ||
+            title is! String ||
+            contentHtml is! String ||
+            dateRaw is! String) {
+          continue;
+        }
+
+        final parsedDate = DateTime.tryParse(dateRaw);
+        if (parsedDate == null) {
+          continue;
+        }
+
+        sessions.add(
+          ProgramSessionEntity(
+            id: id,
+            sessionDate: _dateOnly(parsedDate),
+            title: title,
+            contentHtml: contentHtml,
+            week: _asInt(raw['week']),
+            dayLabel: raw['day_label'] as String?,
+          ),
+        );
+      }
+
+      return sessions;
+    } on AuthException catch (error, stackTrace) {
+      debugPrint('[HomeRepository] getSessionsByProgram auth failure: $error');
+      debugPrint('[HomeRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint(
+        '[HomeRepository] getSessionsByProgram unexpected failure: $error',
+      );
+      debugPrint('[HomeRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to load sessions.',
+        cause: error,
+      );
+    }
   }
 }
 

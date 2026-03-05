@@ -33,10 +33,41 @@
   "homeProgramDetailTitle": "프로그램 상세",
   "homeProgramDetailDescription": "상세 화면 뼈대가 준비되었습니다.",
   "homeProgramDetailComingSoon": "상세 섹션, 진행도, 액션은 추후 추가될 예정입니다.",
+  "homeProgramDetailPurchaseRequired": "이 페이지는 구매 후 활성화된 사용자만 이용할 수 있습니다.",
+  "homeProgramDetailNoSessions": "아직 이 프로그램에 등록된 세션이 없습니다.",
+  "homeProgramDetailNoSessionForSelectedDate": "선택한 날짜에 세션이 없습니다.",
+  "homeProgramDetailSelectDate": "날짜 선택",
+  "homeProgramDetailToday": "오늘",
   "homeProgramDetailIdLabel": "프로그램 ID: {id}",
   "@homeProgramDetailIdLabel": {
     "placeholders": {
       "id": {}
+    }
+  },
+  "homeProgramDetailSessionMeta": "{date} · {week}주차 · {day}",
+  "@homeProgramDetailSessionMeta": {
+    "placeholders": {
+      "date": {},
+      "week": {
+        "type": "int"
+      },
+      "day": {}
+    }
+  },
+  "homeProgramDetailSessionMetaNoDay": "{date} · {week}주차",
+  "@homeProgramDetailSessionMetaNoDay": {
+    "placeholders": {
+      "date": {},
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "homeProgramDetailSessionMetaNoWeek": "{date} · {day}",
+  "@homeProgramDetailSessionMetaNoWeek": {
+    "placeholders": {
+      "date": {},
+      "day": {}
     }
   },
   "homeProgramValueNotAvailable": "-",

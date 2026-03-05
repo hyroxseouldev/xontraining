@@ -97,8 +97,41 @@ class AppLocalizationsEn extends AppLocalizations {
       'Detailed sections, progress, and actions will be added next.';
 
   @override
+  String get homeProgramDetailPurchaseRequired =>
+      'This page is available after purchase and activation.';
+
+  @override
+  String get homeProgramDetailNoSessions =>
+      'No sessions are available for this program yet.';
+
+  @override
+  String get homeProgramDetailNoSessionForSelectedDate =>
+      'No session for the selected date.';
+
+  @override
+  String get homeProgramDetailSelectDate => 'Select date';
+
+  @override
+  String get homeProgramDetailToday => 'Today';
+
+  @override
   String homeProgramDetailIdLabel(Object id) {
     return 'Program ID: $id';
+  }
+
+  @override
+  String homeProgramDetailSessionMeta(Object date, int week, Object day) {
+    return '$date · Week $week · $day';
+  }
+
+  @override
+  String homeProgramDetailSessionMetaNoDay(Object date, int week) {
+    return '$date · Week $week';
+  }
+
+  @override
+  String homeProgramDetailSessionMetaNoWeek(Object date, Object day) {
+    return '$date · $day';
   }
 
   @override

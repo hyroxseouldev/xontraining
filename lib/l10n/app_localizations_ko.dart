@@ -95,8 +95,39 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeProgramDetailComingSoon => '상세 섹션, 진행도, 액션은 추후 추가될 예정입니다.';
 
   @override
+  String get homeProgramDetailPurchaseRequired =>
+      '이 페이지는 구매 후 활성화된 사용자만 이용할 수 있습니다.';
+
+  @override
+  String get homeProgramDetailNoSessions => '아직 이 프로그램에 등록된 세션이 없습니다.';
+
+  @override
+  String get homeProgramDetailNoSessionForSelectedDate => '선택한 날짜에 세션이 없습니다.';
+
+  @override
+  String get homeProgramDetailSelectDate => '날짜 선택';
+
+  @override
+  String get homeProgramDetailToday => '오늘';
+
+  @override
   String homeProgramDetailIdLabel(Object id) {
     return '프로그램 ID: $id';
+  }
+
+  @override
+  String homeProgramDetailSessionMeta(Object date, int week, Object day) {
+    return '$date · $week주차 · $day';
+  }
+
+  @override
+  String homeProgramDetailSessionMetaNoDay(Object date, int week) {
+    return '$date · $week주차';
+  }
+
+  @override
+  String homeProgramDetailSessionMetaNoWeek(Object date, Object day) {
+    return '$date · $day';
   }
 
   @override
