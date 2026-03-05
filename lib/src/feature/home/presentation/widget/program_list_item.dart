@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
 
@@ -21,9 +22,10 @@ class _ProgramListItemState extends State<ProgramListItem> {
     final l10n = AppLocalizations.of(context)!;
     final program = widget.program;
     final notAvailableText = l10n.homeProgramValueNotAvailable;
-    final durationText = program.durationWeeks == null
-        ? notAvailableText
-        : l10n.homeProgramDurationWeeks(program.durationWeeks!);
+    final durationText = _programDateRangeText(
+      program: program,
+      notAvailableText: notAvailableText,
+    );
     final difficultyText = program.hasDifficulty
         ? _localizedDifficulty(program.normalizedDifficulty, l10n)
         : notAvailableText;
@@ -316,4 +318,18 @@ String _localizedDifficulty(String raw, AppLocalizations l10n) {
     default:
       return raw;
   }
+}
+
+String _programDateRangeText({
+  required ProgramEntity program,
+  required String notAvailableText,
+}) {
+  final startDate = program.startDate;
+  final endDate = program.endDate;
+  if (startDate == null || endDate == null) {
+    return notAvailableText;
+  }
+
+  final formatter = DateFormat('yyyy.MM.dd');
+  return '${formatter.format(startDate)} - ${formatter.format(endDate)}';
 }

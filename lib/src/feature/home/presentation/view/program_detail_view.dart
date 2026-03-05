@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
 import 'package:xontraining/src/feature/home/infra/entity/program_detail_entity.dart';
@@ -172,7 +173,6 @@ class _ProgramSessionContentState extends State<_ProgramSessionContent> {
                         _sessionMetaText(
                           context: context,
                           session: selectedSession,
-                          l10n: l10n,
                         ),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -207,24 +207,14 @@ ProgramSessionEntity? _sessionForSelectedDateOrNull(
 String _sessionMetaText({
   required BuildContext context,
   required ProgramSessionEntity session,
-  required AppLocalizations l10n,
 }) {
-  final dateText = MaterialLocalizations.of(
-    context,
-  ).formatShortDate(session.sessionDate);
-  final weekValue = session.week;
-  final dayLabel = session.dayLabel?.trim();
-
-  if (weekValue != null && dayLabel != null && dayLabel.isNotEmpty) {
-    return l10n.homeProgramDetailSessionMeta(dateText, weekValue, dayLabel);
-  }
-  if (weekValue != null) {
-    return l10n.homeProgramDetailSessionMetaNoDay(dateText, weekValue);
-  }
-  if (dayLabel != null && dayLabel.isNotEmpty) {
-    return l10n.homeProgramDetailSessionMetaNoWeek(dateText, dayLabel);
-  }
-  return dateText;
+  final locale = Localizations.localeOf(context);
+  final dateText = DateFormat('yyyy.MM.dd').format(session.sessionDate);
+  final dayText = DateFormat(
+    'E',
+    locale.languageCode,
+  ).format(session.sessionDate);
+  return '$dateText ($dayText)';
 }
 
 DateTime _dateOnly(DateTime value) {

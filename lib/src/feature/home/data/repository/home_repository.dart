@@ -189,8 +189,6 @@ class HomeRepositoryImpl implements HomeRepository {
             sessionDate: _dateOnly(parsedDate),
             title: title,
             contentHtml: contentHtml,
-            week: _asInt(raw['week']),
-            dayLabel: raw['day_label'] as String?,
           ),
         );
       }
