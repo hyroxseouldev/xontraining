@@ -13,6 +13,9 @@ abstract final class Env {
   @EnviedField(varName: 'GOOGLE_WEB_CLIENT_ID', defaultValue: '')
   static final String googleWebClientId = _Env.googleWebClientId;
 
-  @EnviedField(varName: 'GOOGLE_IOS_CLIENT_ID', defaultValue: '')
+  @EnviedField(varName: 'GOOGLE_IOS_CLIENT_ID')
   static final String googleIosClientId = _Env.googleIosClientId;
+
+  @EnviedField(varName: 'TENANT_ID')
+  static final String tenantId = _Env.tenantId;
 }

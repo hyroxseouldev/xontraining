@@ -152,6 +152,12 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get homeTitle;
 
+  /// No description provided for @homeProgramsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Programs'**
+  String get homeProgramsTitle;
+
   /// No description provided for @homeWelcome.
   ///
   /// In en, this message translates to:
@@ -163,6 +169,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load home data. Please try again.'**
   String get homeLoadFailed;
+
+  /// No description provided for @homeNoPrograms.
+  ///
+  /// In en, this message translates to:
+  /// **'No programs available.'**
+  String get homeNoPrograms;
 
   /// No description provided for @homeNoActiveProgram.
   ///

@@ -4,42 +4,19 @@ import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
 
 part 'home_usecases.g.dart';
 
-class GetCurrentActiveProgramUseCase {
-  GetCurrentActiveProgramUseCase({required this.repository});
+class GetProgramsByTenantUseCase {
+  GetProgramsByTenantUseCase({required this.repository});
 
   final HomeRepository repository;
 
-  Future<ActiveProgramEntity?> call() {
-    return repository.getCurrentActiveProgram();
-  }
-}
-
-class GetBlueprintSectionsUseCase {
-  GetBlueprintSectionsUseCase({required this.repository});
-
-  final HomeRepository repository;
-
-  Future<List<BlueprintSectionEntity>> call({
-    required String programId,
-    required DateTime date,
-  }) {
-    return repository.getBlueprintSectionsByDate(
-      programId: programId,
-      date: date,
-    );
+  Future<List<ProgramEntity>> call({required String tenantId}) {
+    return repository.getProgramsByTenant(tenantId: tenantId);
   }
 }
 
 @riverpod
-GetCurrentActiveProgramUseCase getCurrentActiveProgramUseCase(Ref ref) {
-  return GetCurrentActiveProgramUseCase(
-    repository: ref.read(homeRepositoryProvider),
-  );
-}
-
-@riverpod
-GetBlueprintSectionsUseCase getBlueprintSectionsUseCase(Ref ref) {
-  return GetBlueprintSectionsUseCase(
+GetProgramsByTenantUseCase getProgramsByTenantUseCase(Ref ref) {
+  return GetProgramsByTenantUseCase(
     repository: ref.read(homeRepositoryProvider),
   );
 }

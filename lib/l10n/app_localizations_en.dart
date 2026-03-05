@@ -37,10 +37,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeTitle => 'Home';
 
   @override
+  String get homeProgramsTitle => 'Programs';
+
+  @override
   String get homeWelcome => 'You are logged in.';
 
   @override
   String get homeLoadFailed => 'Failed to load home data. Please try again.';
+
+  @override
+  String get homeNoPrograms => 'No programs available.';
 
   @override
   String get homeNoActiveProgram => 'No active program found.';

@@ -36,10 +36,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeTitle => '홈';
 
   @override
+  String get homeProgramsTitle => '프로그램';
+
+  @override
   String get homeWelcome => '로그인되었습니다.';
 
   @override
   String get homeLoadFailed => '홈 데이터를 불러오지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get homeNoPrograms => '표시할 프로그램이 없습니다.';
 
   @override
   String get homeNoActiveProgram => '활성화된 프로그램이 없습니다.';
