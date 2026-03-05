@@ -11,6 +11,7 @@ class LoginView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final authState = ref.watch(authControllerProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
     ref.listen<AsyncValue<void>>(authControllerProvider, (previous, next) {
       next.whenOrNull(
@@ -41,10 +42,13 @@ class LoginView extends HookConsumerWidget {
                 child: FilledButton.icon(
                   style:
                       FilledButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        disabledBackgroundColor: Colors.black,
-                        disabledForegroundColor: Colors.white,
+                        backgroundColor: colorScheme.primary,
+                        foregroundColor: colorScheme.onPrimary,
+                        disabledBackgroundColor: colorScheme.primary.withValues(
+                          alpha: 0.5,
+                        ),
+                        disabledForegroundColor: colorScheme.onPrimary
+                            .withValues(alpha: 0.7),
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         minimumSize: const Size.fromHeight(56),
                         shape: RoundedRectangleBorder(
@@ -62,7 +66,7 @@ class LoginView extends HookConsumerWidget {
                             .read(authControllerProvider.notifier)
                             .signInWithGoogle(),
                   icon: authState.isLoading
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 36,
                           height: 36,
                           child: Center(
@@ -71,7 +75,7 @@ class LoginView extends HookConsumerWidget {
                               height: 18,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.white,
+                                color: colorScheme.onPrimary,
                               ),
                             ),
                           ),

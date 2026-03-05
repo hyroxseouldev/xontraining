@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
+import 'package:xontraining/src/app/theme/app_theme.dart';
 import 'package:xontraining/src/core/router/app_router.dart';
 
 class XonTrainingApp extends ConsumerWidget {
@@ -20,9 +21,9 @@ class XonTrainingApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-      ),
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.light,
       routerConfig: router,
     );
   }

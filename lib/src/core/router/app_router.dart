@@ -30,7 +30,7 @@ GoRouter goRouter(Ref ref) {
   final onboardingState = ref.watch(onboardingCompletedProvider);
 
   return GoRouter(
-    initialLocation: AppRoutes.login,
+    initialLocation: AppRoutes.home,
     refreshListenable: refreshListenable,
     redirect: (context, state) {
       final isLoggedIn = supabase.auth.currentSession != null;

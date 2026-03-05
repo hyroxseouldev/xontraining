@@ -136,9 +136,9 @@ class _DayCell extends StatelessWidget {
       borderColor = colorScheme.outlineVariant;
       textColor = colorScheme.onSurface.withValues(alpha: 0.4);
     } else if (isToday) {
-      backgroundColor = colorScheme.primaryContainer;
-      borderColor = colorScheme.primaryContainer;
-      textColor = colorScheme.onPrimaryContainer;
+      backgroundColor = colorScheme.surfaceContainerHigh;
+      borderColor = colorScheme.primary.withValues(alpha: 0.32);
+      textColor = colorScheme.primary;
     } else {
       backgroundColor = colorScheme.surfaceContainerHighest;
       borderColor = colorScheme.surfaceContainerHighest;
