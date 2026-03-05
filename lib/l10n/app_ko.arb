@@ -24,6 +24,19 @@
   },
   "homeNoScheduleForDate": "선택한 날짜의 스케줄이 없습니다.",
   "homeProfile": "프로필",
+  "homeNotice": "새소식",
+  "noticeTitle": "새소식",
+  "noticeLoadFailed": "새소식을 불러오지 못했습니다. 다시 시도해 주세요.",
+  "noticeLoadMoreFailed": "추가 새소식을 불러오지 못했습니다.",
+  "noticeRetry": "다시 시도",
+  "noticeEmpty": "등록된 새소식이 없습니다.",
+  "noticeNoContent": "내용이 없습니다.",
+  "noticePublishedAt": "등록일 {date}",
+  "@noticePublishedAt": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "homeProgramInfoDuration": "기간",
   "homeProgramInfoDifficulty": "난이도",
   "homeProgramInfoWorkoutTime": "운동시간",

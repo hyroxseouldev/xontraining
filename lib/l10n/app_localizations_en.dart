@@ -69,6 +69,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeProfile => 'Profile';
 
   @override
+  String get homeNotice => 'News';
+
+  @override
+  String get noticeTitle => 'News';
+
+  @override
+  String get noticeLoadFailed => 'Failed to load news. Please try again.';
+
+  @override
+  String get noticeLoadMoreFailed => 'Failed to load more news.';
+
+  @override
+  String get noticeRetry => 'Retry';
+
+  @override
+  String get noticeEmpty => 'No news yet.';
+
+  @override
+  String get noticeNoContent => 'No content.';
+
+  @override
+  String noticePublishedAt(Object date) {
+    return 'Published $date';
+  }
+
+  @override
   String get homeProgramInfoDuration => 'Duration';
 
   @override

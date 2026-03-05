@@ -68,6 +68,32 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeProfile => '프로필';
 
   @override
+  String get homeNotice => '새소식';
+
+  @override
+  String get noticeTitle => '새소식';
+
+  @override
+  String get noticeLoadFailed => '새소식을 불러오지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get noticeLoadMoreFailed => '추가 새소식을 불러오지 못했습니다.';
+
+  @override
+  String get noticeRetry => '다시 시도';
+
+  @override
+  String get noticeEmpty => '등록된 새소식이 없습니다.';
+
+  @override
+  String get noticeNoContent => '내용이 없습니다.';
+
+  @override
+  String noticePublishedAt(Object date) {
+    return '등록일 $date';
+  }
+
+  @override
   String get homeProgramInfoDuration => '기간';
 
   @override

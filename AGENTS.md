@@ -133,7 +133,8 @@ Guidance for coding agents working in this repository.
 - Keep side effects in services/providers, not deep in widget trees.
 - Keep presentation code focused on rendering and interactions.
 - Router refresh should be driven by auth stream/listenable.
-- In stateful UI scenarios, consider hooks-first (`HookWidget`/`HookConsumerWidget`) before introducing `StatefulWidget`.
+- Default to hooks-based widgets for UI development: use `HookWidget` or `HookConsumerWidget` instead of `StatefulWidget`.
+- Use `StatefulWidget` only when hooks cannot reasonably express the lifecycle/state requirement.
 
 ## Localization Rules (Hard Requirement)
 - Never hard-code user-facing strings in widgets.

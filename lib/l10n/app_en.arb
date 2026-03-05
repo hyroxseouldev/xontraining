@@ -24,6 +24,19 @@
   },
   "homeNoScheduleForDate": "No schedule for this date.",
   "homeProfile": "Profile",
+  "homeNotice": "News",
+  "noticeTitle": "News",
+  "noticeLoadFailed": "Failed to load news. Please try again.",
+  "noticeLoadMoreFailed": "Failed to load more news.",
+  "noticeRetry": "Retry",
+  "noticeEmpty": "No news yet.",
+  "noticeNoContent": "No content.",
+  "noticePublishedAt": "Published {date}",
+  "@noticePublishedAt": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "homeProgramInfoDuration": "Duration",
   "homeProgramInfoDifficulty": "Difficulty",
   "homeProgramInfoWorkoutTime": "Workout Time",

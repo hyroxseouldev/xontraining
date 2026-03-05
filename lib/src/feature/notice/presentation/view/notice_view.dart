@@ -1,22 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/core/router/app_router.dart';
-import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
-import 'package:xontraining/src/feature/home/presentation/provider/home_controller.dart';
-import 'package:xontraining/src/feature/home/presentation/widget/program_list_item.dart';
+import 'package:xontraining/src/feature/notice/presentation/provider/notice_provider.dart';
+import 'package:xontraining/src/feature/notice/presentation/widget/notice_list_item.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
 
-class HomeView extends HookConsumerWidget {
-  const HomeView({super.key});
+class NoticeView extends HookConsumerWidget {
+  const NoticeView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final homeState = ref.watch(homeControllerProvider);
+    final noticesState = ref.watch(noticeFeedControllerProvider);
+    final scrollController = useScrollController();
 
-    ref.listen<AsyncValue<List<ProgramEntity>>>(homeControllerProvider, (
+    useEffect(() {
+      void listener() {
+        if (!scrollController.hasClients) {
+          return;
+        }
+        final maxScroll = scrollController.position.maxScrollExtent;
+        final currentScroll = scrollController.position.pixels;
+        final feedState = ref.read(noticeFeedControllerProvider).asData?.value;
+        final canLoadMore =
+            feedState != null &&
+            feedState.hasMore &&
+            !feedState.isLoadingMore &&
+            !feedState.hasLoadMoreError;
+        if (canLoadMore && currentScroll >= maxScroll - 300) {
+          ref.read(noticeFeedControllerProvider.notifier).loadMore();
+        }
+      }
+
+      scrollController.addListener(listener);
+      return () => scrollController.removeListener(listener);
+    }, [scrollController, ref]);
+
+    ref.listen<AsyncValue<NoticeFeedState>>(noticeFeedControllerProvider, (
       previous,
       next,
     ) {
@@ -24,7 +47,7 @@ class HomeView extends HookConsumerWidget {
         error: (error, stackTrace) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(l10n.homeLoadFailed)));
+          ).showSnackBar(SnackBar(content: Text(l10n.noticeLoadFailed)));
         },
       );
     });
@@ -32,18 +55,6 @@ class HomeView extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 56,
-        leading: IconButton(
-          onPressed: () => context.pushNamed(AppRoutes.profileName),
-          icon: const Icon(Icons.person_outline),
-          tooltip: l10n.homeProfile,
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => context.pushNamed(AppRoutes.noticeName),
-            icon: const Icon(Icons.campaign_outlined),
-            tooltip: l10n.homeNotice,
-          ),
-        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
           child: Align(
@@ -51,7 +62,7 @@ class HomeView extends HookConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
               child: Text(
-                l10n.homeProgramsTitle,
+                l10n.noticeTitle,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.2,
@@ -62,34 +73,75 @@ class HomeView extends HookConsumerWidget {
           ),
         ),
       ),
-      body: homeState.when(
-        loading: () => const _HomeLoadingSkeleton(),
-        error: (error, stackTrace) => EmptyState(message: l10n.homeLoadFailed),
-        data: (programs) {
-          if (programs.isEmpty) {
+      body: noticesState.when(
+        loading: () => const _NoticeLoadingSkeleton(),
+        error: (error, stackTrace) =>
+            EmptyState(message: l10n.noticeLoadFailed),
+        data: (items) {
+          if (items.items.isEmpty) {
             return EmptyState(
-              message: l10n.homeNoPrograms,
-              icon: Icons.event_busy_outlined,
+              message: l10n.noticeEmpty,
+              icon: Icons.notifications_off_outlined,
             );
           }
 
-          return ListView.separated(
-            padding: EdgeInsets.zero,
-            itemCount: programs.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 8),
-            itemBuilder: (context, index) {
-              final program = programs[index];
-              return ProgramListItem(
-                program: program,
-                onTap: () {
-                  context.pushNamed(
-                    AppRoutes.programDetailName,
-                    pathParameters: {'programId': program.id},
-                    extra: program,
-                  );
-                },
-              );
+          return RefreshIndicator(
+            onRefresh: () async {
+              await ref.read(noticeFeedControllerProvider.notifier).refresh();
             },
+            child: ListView.separated(
+              controller: scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemCount:
+                  items.items.length +
+                  ((items.isLoadingMore || items.hasLoadMoreError) ? 1 : 0),
+              separatorBuilder: (context, index) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                if (index >= items.items.length) {
+                  if (items.hasLoadMoreError) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+                      child: Column(
+                        children: [
+                          Text(
+                            l10n.noticeLoadMoreFailed,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          const SizedBox(height: 8),
+                          OutlinedButton.icon(
+                            onPressed: () {
+                              ref
+                                  .read(noticeFeedControllerProvider.notifier)
+                                  .retryLoadMore();
+                            },
+                            icon: const Icon(Icons.refresh),
+                            label: Text(l10n.noticeRetry),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                final notice = items.items[index];
+                return NoticeListItem(
+                  notice: notice,
+                  onTap: () {
+                    context.pushNamed(
+                      AppRoutes.noticeDetailName,
+                      pathParameters: {'noticeId': notice.id},
+                      extra: notice,
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),
@@ -97,22 +149,23 @@ class HomeView extends HookConsumerWidget {
   }
 }
 
-class _HomeLoadingSkeleton extends StatelessWidget {
-  const _HomeLoadingSkeleton();
+class _NoticeLoadingSkeleton extends StatelessWidget {
+  const _NoticeLoadingSkeleton();
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.zero,
       itemCount: 3,
       separatorBuilder: (context, index) => const SizedBox(height: 8),
-      itemBuilder: (context, index) => const _ProgramListItemSkeleton(),
+      itemBuilder: (context, index) => const _NoticeListItemSkeleton(),
     );
   }
 }
 
-class _ProgramListItemSkeleton extends StatelessWidget {
-  const _ProgramListItemSkeleton();
+class _NoticeListItemSkeleton extends StatelessWidget {
+  const _NoticeListItemSkeleton();
 
   @override
   Widget build(BuildContext context) {
@@ -126,14 +179,8 @@ class _ProgramListItemSkeleton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _ShimmerBox(height: 22, width: 180),
-              SizedBox(height: 12),
-              _SkeletonInfoRow(),
-              SizedBox(height: 8),
-              _SkeletonInfoRow(),
-              SizedBox(height: 8),
-              _SkeletonInfoRow(),
-              SizedBox(height: 8),
-              _SkeletonInfoRow(),
+              SizedBox(height: 10),
+              _ShimmerBox(height: 14, width: 160),
               SizedBox(height: 12),
               _ShimmerBox(height: 14),
               SizedBox(height: 8),
@@ -141,21 +188,6 @@ class _ProgramListItemSkeleton extends StatelessWidget {
             ],
           ),
         ),
-      ],
-    );
-  }
-}
-
-class _SkeletonInfoRow extends StatelessWidget {
-  const _SkeletonInfoRow();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        Expanded(child: _ShimmerBox(height: 14)),
-        SizedBox(width: 12),
-        _ShimmerBox(height: 14, width: 88),
       ],
     );
   }

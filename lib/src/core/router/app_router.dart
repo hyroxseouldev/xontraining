@@ -7,6 +7,9 @@ import 'package:xontraining/src/feature/auth/presentation/view/login_view.dart';
 import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
 import 'package:xontraining/src/feature/home/presentation/view/home_view.dart';
 import 'package:xontraining/src/feature/home/presentation/view/program_detail_view.dart';
+import 'package:xontraining/src/feature/notice/infra/entity/notice_entity.dart';
+import 'package:xontraining/src/feature/notice/presentation/view/notice_detail_view.dart';
+import 'package:xontraining/src/feature/notice/presentation/view/notice_view.dart';
 import 'package:xontraining/src/feature/onboarding/presentation/view/onboarding_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/profile_edit_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/profile_view.dart';
@@ -76,6 +79,24 @@ GoRouter goRouter(Ref ref) {
         builder: (context, state) => const HomeView(),
       ),
       GoRoute(
+        path: AppRoutes.notice,
+        name: AppRoutes.noticeName,
+        builder: (context, state) => const NoticeView(),
+      ),
+      GoRoute(
+        path: AppRoutes.noticeDetail,
+        name: AppRoutes.noticeDetailName,
+        builder: (context, state) {
+          final notice = state.extra is NoticeEntity
+              ? state.extra! as NoticeEntity
+              : null;
+          return NoticeDetailView(
+            noticeId: state.pathParameters['noticeId'] ?? '',
+            initialNotice: notice,
+          );
+        },
+      ),
+      GoRoute(
         path: AppRoutes.programDetail,
         name: AppRoutes.programDetailName,
         builder: (context, state) {
@@ -135,6 +156,8 @@ GoRouter goRouter(Ref ref) {
 abstract final class AppRoutes {
   static const String login = '/login';
   static const String home = '/home';
+  static const String notice = '/notices';
+  static const String noticeDetail = '/notices/:noticeId';
   static const String profile = '/profile';
   static const String profileEdit = '/profile/edit';
   static const String workoutRecord = '/profile/workout-record';
@@ -147,6 +170,8 @@ abstract final class AppRoutes {
 
   static const String loginName = 'login';
   static const String homeName = 'home';
+  static const String noticeName = 'notice';
+  static const String noticeDetailName = 'noticeDetail';
   static const String profileName = 'profile';
   static const String profileEditName = 'profileEdit';
   static const String workoutRecordName = 'workoutRecord';

@@ -212,6 +212,54 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get homeProfile;
 
+  /// No description provided for @homeNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'News'**
+  String get homeNotice;
+
+  /// No description provided for @noticeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'News'**
+  String get noticeTitle;
+
+  /// No description provided for @noticeLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load news. Please try again.'**
+  String get noticeLoadFailed;
+
+  /// No description provided for @noticeLoadMoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load more news.'**
+  String get noticeLoadMoreFailed;
+
+  /// No description provided for @noticeRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get noticeRetry;
+
+  /// No description provided for @noticeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No news yet.'**
+  String get noticeEmpty;
+
+  /// No description provided for @noticeNoContent.
+  ///
+  /// In en, this message translates to:
+  /// **'No content.'**
+  String get noticeNoContent;
+
+  /// No description provided for @noticePublishedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Published {date}'**
+  String noticePublishedAt(Object date);
+
   /// No description provided for @homeProgramInfoDuration.
   ///
   /// In en, this message translates to:
