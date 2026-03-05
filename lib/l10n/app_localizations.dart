@@ -116,6 +116,12 @@ abstract class AppLocalizations {
   /// **'Sign in with Google'**
   String get loginGoogleButton;
 
+  /// No description provided for @loginAppleButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Apple'**
+  String get loginAppleButton;
+
   /// No description provided for @loginLoading.
   ///
   /// In en, this message translates to:
@@ -131,7 +137,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginConfigError.
   ///
   /// In en, this message translates to:
-  /// **'Google sign-in is not configured correctly.'**
+  /// **'Sign-in is not configured correctly.'**
   String get loginConfigError;
 
   /// No description provided for @loginNetworkError.
@@ -143,7 +149,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginFailed.
   ///
   /// In en, this message translates to:
-  /// **'Google sign-in failed. Please try again.'**
+  /// **'Sign-in failed. Please try again.'**
   String get loginFailed;
 
   /// No description provided for @homeTitle.

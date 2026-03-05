@@ -11,6 +11,7 @@ import 'package:xontraining/src/feature/onboarding/presentation/view/onboarding_
 import 'package:xontraining/src/feature/profile/presentation/view/profile_edit_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/profile_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/privacy_policy_view.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/app_version_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/settings_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/terms_of_service_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/workout_record_view.dart';
@@ -108,6 +109,11 @@ GoRouter goRouter(Ref ref) {
         builder: (context, state) => const SettingsView(),
       ),
       GoRoute(
+        path: AppRoutes.appVersion,
+        name: AppRoutes.appVersionName,
+        builder: (context, state) => const AppVersionView(),
+      ),
+      GoRoute(
         path: AppRoutes.termsOfService,
         name: AppRoutes.termsOfServiceName,
         builder: (context, state) => const TermsOfServiceView(),
@@ -133,6 +139,7 @@ abstract final class AppRoutes {
   static const String profileEdit = '/profile/edit';
   static const String workoutRecord = '/profile/workout-record';
   static const String settings = '/settings';
+  static const String appVersion = '/settings/app-version';
   static const String termsOfService = '/settings/terms';
   static const String privacyPolicy = '/settings/privacy';
   static const String programDetail = '/program/:programId';
@@ -144,6 +151,7 @@ abstract final class AppRoutes {
   static const String profileEditName = 'profileEdit';
   static const String workoutRecordName = 'workoutRecord';
   static const String settingsName = 'settings';
+  static const String appVersionName = 'appVersion';
   static const String termsOfServiceName = 'termsOfService';
   static const String privacyPolicyName = 'privacyPolicy';
   static const String programDetailName = 'programDetail';

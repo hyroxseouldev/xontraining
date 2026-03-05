@@ -53,6 +53,7 @@ class SettingsView extends ConsumerWidget {
           children: [
             Card(
               child: ListTile(
+                onTap: () => context.pushNamed(AppRoutes.appVersionName),
                 leading: const Icon(Icons.info_outline),
                 title: Text(l10n.settingsAppVersion),
                 subtitle: Text(
@@ -61,6 +62,7 @@ class SettingsView extends ConsumerWidget {
                     orElse: () => l10n.settingsVersionLoading,
                   ),
                 ),
+                trailing: const Icon(Icons.chevron_right),
               ),
             ),
             const SizedBox(height: 12),

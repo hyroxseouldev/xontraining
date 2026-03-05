@@ -1,8 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/core/exception/app_exception.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/auth_controller.dart';
+
+enum _LoginProvider { google, apple }
 
 class LoginView extends HookConsumerWidget {
   const LoginView({super.key});
@@ -11,7 +16,23 @@ class LoginView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final authState = ref.watch(authControllerProvider);
-    final colorScheme = Theme.of(context).colorScheme;
+    const loginButtonHeight = 50.0;
+    final googleFontSize = loginButtonHeight * 0.43;
+    final activeProvider = useState<_LoginProvider?>(null);
+    final isLoading = authState.isLoading;
+    final isGoogleLoading =
+        isLoading && activeProvider.value == _LoginProvider.google;
+    final isAppleLoading =
+        isLoading && activeProvider.value == _LoginProvider.apple;
+    final isAppleSignInAvailable =
+        !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+
+    useEffect(() {
+      if (!isLoading) {
+        activeProvider.value = null;
+      }
+      return null;
+    }, [isLoading]);
 
     ref.listen<AsyncValue<void>>(authControllerProvider, (previous, next) {
       next.whenOrNull(
@@ -37,22 +58,50 @@ class LoginView extends HookConsumerWidget {
                     const SizedBox(height: 240),
               ),
               const Spacer(),
+              if (isAppleSignInAvailable)
+                SizedBox(
+                  width: double.infinity,
+                  height: loginButtonHeight,
+                  child: SignInWithAppleButton(
+                    height: loginButtonHeight,
+                    text: isAppleLoading
+                        ? l10n.loginLoading
+                        : l10n.loginAppleButton,
+                    borderRadius: BorderRadius.circular(8),
+
+                    onPressed: isLoading
+                        ? null
+                        : () {
+                            activeProvider.value = _LoginProvider.apple;
+                            ref
+                                .read(authControllerProvider.notifier)
+                                .signInWithApple();
+                          },
+                    style: SignInWithAppleButtonStyle.black,
+                  ),
+                ),
+              if (isAppleSignInAvailable) const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
                   style:
                       FilledButton.styleFrom(
-                        backgroundColor: colorScheme.primary,
-                        foregroundColor: colorScheme.onPrimary,
-                        disabledBackgroundColor: colorScheme.primary.withValues(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                        disabledBackgroundColor: Colors.black.withValues(
                           alpha: 0.5,
                         ),
-                        disabledForegroundColor: colorScheme.onPrimary
-                            .withValues(alpha: 0.7),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        minimumSize: const Size.fromHeight(56),
+                        disabledForegroundColor: Colors.white.withValues(
+                          alpha: 0.8,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        minimumSize: const Size.fromHeight(loginButtonHeight),
+                        textStyle: TextStyle(
+                          fontSize: googleFontSize,
+                          fontWeight: FontWeight.w400,
+                        ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         splashFactory: NoSplash.splashFactory,
                       ).copyWith(
@@ -60,35 +109,38 @@ class LoginView extends HookConsumerWidget {
                           Colors.transparent,
                         ),
                       ),
-                  onPressed: authState.isLoading
+                  onPressed: isLoading
                       ? null
-                      : () => ref
-                            .read(authControllerProvider.notifier)
-                            .signInWithGoogle(),
-                  icon: authState.isLoading
+                      : () {
+                          activeProvider.value = _LoginProvider.google;
+                          ref
+                              .read(authControllerProvider.notifier)
+                              .signInWithGoogle();
+                        },
+                  icon: isGoogleLoading
                       ? SizedBox(
-                          width: 36,
-                          height: 36,
+                          width: 28,
+                          height: 28,
                           child: Center(
                             child: SizedBox(
-                              width: 18,
-                              height: 18,
+                              width: 16,
+                              height: 16,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: colorScheme.onPrimary,
+                                color: Colors.white,
                               ),
                             ),
                           ),
                         )
                       : Image.asset(
-                          'assets/images/ios_dark_sq_na@3x.png',
+                          'assets/images/google-logo.png',
                           width: 36,
                           height: 36,
                           errorBuilder: (context, error, stackTrace) =>
                               const Icon(Icons.login),
                         ),
                   label: Text(
-                    authState.isLoading
+                    isGoogleLoading
                         ? l10n.loginLoading
                         : l10n.loginGoogleButton,
                   ),

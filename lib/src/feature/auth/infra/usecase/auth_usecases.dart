@@ -13,6 +13,16 @@ class SignInWithGoogleUseCase {
   }
 }
 
+class SignInWithAppleUseCase {
+  SignInWithAppleUseCase({required this.repository});
+
+  final AuthRepository repository;
+
+  Future<void> call() {
+    return repository.signInWithApple();
+  }
+}
+
 class SignOutUseCase {
   SignOutUseCase({required this.repository});
 
@@ -106,6 +116,11 @@ class DeleteMyAccountUseCase {
 @riverpod
 SignInWithGoogleUseCase signInWithGoogleUseCase(Ref ref) {
   return SignInWithGoogleUseCase(repository: ref.read(authRepositoryProvider));
+}
+
+@riverpod
+SignInWithAppleUseCase signInWithAppleUseCase(Ref ref) {
+  return SignInWithAppleUseCase(repository: ref.read(authRepositoryProvider));
 }
 
 @riverpod

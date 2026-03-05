@@ -18,20 +18,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginGoogleButton => 'Sign in with Google';
 
   @override
+  String get loginAppleButton => 'Sign in with Apple';
+
+  @override
   String get loginLoading => 'Signing in...';
 
   @override
   String get loginCanceled => 'Sign-in was canceled.';
 
   @override
-  String get loginConfigError => 'Google sign-in is not configured correctly.';
+  String get loginConfigError => 'Sign-in is not configured correctly.';
 
   @override
   String get loginNetworkError =>
       'Network error occurred. Check your connection and try again.';
 
   @override
-  String get loginFailed => 'Google sign-in failed. Please try again.';
+  String get loginFailed => 'Sign-in failed. Please try again.';
 
   @override
   String get homeTitle => 'Home';

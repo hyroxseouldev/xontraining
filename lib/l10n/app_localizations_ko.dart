@@ -18,19 +18,22 @@ class AppLocalizationsKo extends AppLocalizations {
   String get loginGoogleButton => 'Google로 로그인';
 
   @override
+  String get loginAppleButton => 'Apple로 로그인';
+
+  @override
   String get loginLoading => '로그인 중...';
 
   @override
   String get loginCanceled => '로그인이 취소되었습니다.';
 
   @override
-  String get loginConfigError => 'Google 로그인 설정이 올바르지 않습니다.';
+  String get loginConfigError => '로그인 설정이 올바르지 않습니다.';
 
   @override
   String get loginNetworkError => '네트워크 오류가 발생했습니다. 연결을 확인해 주세요.';
 
   @override
-  String get loginFailed => 'Google 로그인에 실패했습니다. 다시 시도해 주세요.';
+  String get loginFailed => '로그인에 실패했습니다. 다시 시도해 주세요.';
 
   @override
   String get homeTitle => '홈';

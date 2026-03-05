@@ -21,7 +21,7 @@ LegalDocumentEntity buildMockTermsOfService() {
 
   return LegalDocumentEntity(
     type: LegalDocumentType.termsOfService,
-    version: 'v0.1.0-mock',
+    version: 'v0.1.0',
     updatedAt: DateTime(2026, 3, 1),
     rawHtml: html,
     contentJson: _parser.parseToJson(html),
@@ -46,7 +46,7 @@ LegalDocumentEntity buildMockPrivacyPolicy() {
 
   return LegalDocumentEntity(
     type: LegalDocumentType.privacyPolicy,
-    version: 'v0.1.0-mock',
+    version: 'v0.1.0',
     updatedAt: DateTime(2026, 3, 1),
     rawHtml: html,
     contentJson: _parser.parseToJson(html),

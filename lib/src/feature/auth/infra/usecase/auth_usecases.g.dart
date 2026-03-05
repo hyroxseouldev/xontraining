@@ -57,6 +57,54 @@ final class SignInWithGoogleUseCaseProvider
 String _$signInWithGoogleUseCaseHash() =>
     r'3d78429223f98d1a101552e9e143b3a509463247';
 
+@ProviderFor(signInWithAppleUseCase)
+final signInWithAppleUseCaseProvider = SignInWithAppleUseCaseProvider._();
+
+final class SignInWithAppleUseCaseProvider
+    extends
+        $FunctionalProvider<
+          SignInWithAppleUseCase,
+          SignInWithAppleUseCase,
+          SignInWithAppleUseCase
+        >
+    with $Provider<SignInWithAppleUseCase> {
+  SignInWithAppleUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'signInWithAppleUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$signInWithAppleUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<SignInWithAppleUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SignInWithAppleUseCase create(Ref ref) {
+    return signInWithAppleUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SignInWithAppleUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SignInWithAppleUseCase>(value),
+    );
+  }
+}
+
+String _$signInWithAppleUseCaseHash() =>
+    r'3d30683a3a153e1ff5c2ff57a00ef637a0f2620c';
+
 @ProviderFor(signOutUseCase)
 final signOutUseCaseProvider = SignOutUseCaseProvider._();
 

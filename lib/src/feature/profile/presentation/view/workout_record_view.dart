@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
@@ -6,36 +7,24 @@ import 'package:xontraining/src/feature/profile/infra/entity/workout_record_enti
 import 'package:xontraining/src/feature/profile/presentation/provider/workout_record_provider.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
 
-class WorkoutRecordView extends ConsumerStatefulWidget {
+class WorkoutRecordView extends HookConsumerWidget {
   const WorkoutRecordView({super.key});
 
   @override
-  ConsumerState<WorkoutRecordView> createState() => _WorkoutRecordViewState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final queryController = useTextEditingController();
+    final query = useState('');
+    final sort = useState(_WorkoutSort.newest);
 
-class _WorkoutRecordViewState extends ConsumerState<WorkoutRecordView> {
-  final TextEditingController _queryController = TextEditingController();
-  String _query = '';
-  _WorkoutSort _sort = _WorkoutSort.newest;
+    useEffect(() {
+      void listener() {
+        query.value = queryController.text.trim().toLowerCase();
+      }
 
-  @override
-  void initState() {
-    super.initState();
-    _queryController.addListener(() {
-      setState(() {
-        _query = _queryController.text.trim().toLowerCase();
-      });
-    });
-  }
+      queryController.addListener(listener);
+      return () => queryController.removeListener(listener);
+    }, [queryController]);
 
-  @override
-  void dispose() {
-    _queryController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
     final recordsState = ref.watch(workoutRecordsProvider);
@@ -90,7 +79,11 @@ class _WorkoutRecordViewState extends ConsumerState<WorkoutRecordView> {
             );
           }
 
-          final visibleRecords = _applyFilterAndSort(records);
+          final visibleRecords = _applyFilterAndSort(
+            records,
+            query: query.value,
+            sort: sort.value,
+          );
           if (visibleRecords.isEmpty) {
             return EmptyState(
               icon: Icons.search_off,
@@ -114,7 +107,7 @@ class _WorkoutRecordViewState extends ConsumerState<WorkoutRecordView> {
                       children: [
                         Expanded(
                           child: TextField(
-                            controller: _queryController,
+                            controller: queryController,
                             decoration: InputDecoration(
                               prefixIcon: const Icon(Icons.search),
                               hintText: l10n.workoutRecordSearchHint,
@@ -125,14 +118,12 @@ class _WorkoutRecordViewState extends ConsumerState<WorkoutRecordView> {
                         ),
                         const SizedBox(width: 10),
                         DropdownButton<_WorkoutSort>(
-                          value: _sort,
+                          value: sort.value,
                           onChanged: (nextSort) {
                             if (nextSort == null) {
                               return;
                             }
-                            setState(() {
-                              _sort = nextSort;
-                            });
+                            sort.value = nextSort;
                           },
                           items: [
                             DropdownMenuItem<_WorkoutSort>(
@@ -215,18 +206,20 @@ class _WorkoutRecordViewState extends ConsumerState<WorkoutRecordView> {
     );
   }
 
-  List<WorkoutRecordEntity> _applyFilterAndSort(
-    List<WorkoutRecordEntity> records,
-  ) {
+  static List<WorkoutRecordEntity> _applyFilterAndSort(
+    List<WorkoutRecordEntity> records, {
+    required String query,
+    required _WorkoutSort sort,
+  }) {
     final filtered = records
         .where((record) {
-          if (_query.isEmpty) {
+          if (query.isEmpty) {
             return true;
           }
 
           final name = record.exerciseName.toLowerCase();
           final memo = record.memo.toLowerCase();
-          return name.contains(_query) || memo.contains(_query);
+          return name.contains(query) || memo.contains(query);
         })
         .toList(growable: false);
 
@@ -234,10 +227,10 @@ class _WorkoutRecordViewState extends ConsumerState<WorkoutRecordView> {
     sorted.sort((a, b) {
       final compareDate = a.recordedAt.compareTo(b.recordedAt);
       if (compareDate != 0) {
-        return _sort == _WorkoutSort.newest ? -compareDate : compareDate;
+        return sort == _WorkoutSort.newest ? -compareDate : compareDate;
       }
 
-      return _sort == _WorkoutSort.newest
+      return sort == _WorkoutSort.newest
           ? b.exerciseName.compareTo(a.exerciseName)
           : a.exerciseName.compareTo(b.exerciseName);
     });
@@ -283,261 +276,50 @@ class _WorkoutRecordViewState extends ConsumerState<WorkoutRecordView> {
     WorkoutRecordEntity? existing,
   }) async {
     final l10n = AppLocalizations.of(context)!;
-    final formKey = GlobalKey<FormState>();
-    final exerciseController = TextEditingController(
-      text: existing?.exerciseName ?? '',
-    );
-    final memoController = TextEditingController(text: existing?.memo ?? '');
-
-    var metricType = existing?.metricType ?? WorkoutRecordMetricType.weight;
-    var valueController = TextEditingController(
-      text: existing?.usesDuration == true
-          ? (existing?.valueSeconds ?? 0).toString()
-          : (existing?.valueNumeric?.toString() ?? ''),
-    );
-    var unitController = TextEditingController(
-      text: existing?.unit ?? _defaultUnit(metricType),
-    );
-    var selectedDate = existing?.recordedAt ?? DateTime.now();
-    var useDefaultUnit =
-        existing == null ||
-        existing.unit.trim().toLowerCase() ==
-            _defaultUnit(metricType).trim().toLowerCase();
-
-    if (useDefaultUnit) {
-      unitController.text = _defaultUnit(metricType);
-    }
-
-    final saved = await showDialog<bool>(
+    final result = await showDialog<_WorkoutRecordFormResult>(
       context: context,
       builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text(
-                existing == null
-                    ? l10n.workoutRecordAddDialogTitle
-                    : l10n.workoutRecordEditDialogTitle,
-              ),
-              content: SingleChildScrollView(
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        controller: exerciseController,
-                        decoration: InputDecoration(
-                          labelText: l10n.workoutRecordExerciseName,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return l10n.workoutRecordRequired;
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      DropdownButtonFormField<WorkoutRecordMetricType>(
-                        initialValue: metricType,
-                        decoration: InputDecoration(
-                          labelText: l10n.workoutRecordMetricType,
-                        ),
-                        items: WorkoutRecordMetricType.values
-                            .map((type) {
-                              return DropdownMenuItem<WorkoutRecordMetricType>(
-                                value: type,
-                                child: Text(_metricLabel(l10n, type)),
-                              );
-                            })
-                            .toList(growable: false),
-                        onChanged: (nextType) {
-                          if (nextType == null) {
-                            return;
-                          }
-
-                          setState(() {
-                            metricType = nextType;
-                            valueController.dispose();
-                            valueController = TextEditingController();
-                            if (useDefaultUnit) {
-                              unitController.text = _defaultUnit(nextType);
-                            }
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 6),
-                      SwitchListTile.adaptive(
-                        contentPadding: EdgeInsets.zero,
-                        value: useDefaultUnit,
-                        title: Text(l10n.workoutRecordUseDefaultUnit),
-                        subtitle: Text(
-                          l10n.workoutRecordUseDefaultUnitSubtitle,
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            useDefaultUnit = value;
-                            if (useDefaultUnit) {
-                              unitController.text = _defaultUnit(metricType);
-                            }
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: valueController,
-                        keyboardType:
-                            metricType == WorkoutRecordMetricType.duration
-                            ? TextInputType.number
-                            : const TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
-                        decoration: InputDecoration(
-                          labelText:
-                              metricType == WorkoutRecordMetricType.duration
-                              ? l10n.workoutRecordValueSeconds
-                              : l10n.workoutRecordValue,
-                        ),
-                        validator: (value) {
-                          final raw = value?.trim() ?? '';
-                          if (raw.isEmpty) {
-                            return l10n.workoutRecordRequired;
-                          }
-                          if (metricType == WorkoutRecordMetricType.duration) {
-                            final seconds = int.tryParse(raw);
-                            if (seconds == null || seconds <= 0) {
-                              return l10n.workoutRecordInvalidNumber;
-                            }
-                            return null;
-                          }
-                          final numeric = double.tryParse(raw);
-                          if (numeric == null || numeric <= 0) {
-                            return l10n.workoutRecordInvalidNumber;
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: unitController,
-                        enabled: !useDefaultUnit,
-                        decoration: InputDecoration(
-                          labelText: l10n.workoutRecordUnit,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return l10n.workoutRecordRequired;
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(l10n.workoutRecordDate),
-                        subtitle: Text(
-                          DateFormat.yMMMd(
-                            Localizations.localeOf(context).languageCode,
-                          ).format(selectedDate),
-                        ),
-                        trailing: const Icon(Icons.calendar_today_outlined),
-                        onTap: () async {
-                          final picked = await showDatePicker(
-                            context: context,
-                            initialDate: selectedDate,
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime.now().add(
-                              const Duration(days: 365),
-                            ),
-                          );
-
-                          if (picked == null) {
-                            return;
-                          }
-
-                          setState(() {
-                            selectedDate = picked;
-                          });
-                        },
-                      ),
-                      TextFormField(
-                        controller: memoController,
-                        decoration: InputDecoration(
-                          labelText: l10n.workoutRecordMemo,
-                        ),
-                        minLines: 2,
-                        maxLines: 4,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(false),
-                  child: Text(l10n.workoutRecordCancel),
-                ),
-                FilledButton(
-                  onPressed: () {
-                    if (formKey.currentState?.validate() != true) {
-                      return;
-                    }
-                    Navigator.of(dialogContext).pop(true);
-                  },
-                  child: Text(l10n.workoutRecordSave),
-                ),
-              ],
-            );
-          },
-        );
+        return _WorkoutRecordDialog(existing: existing);
       },
     );
 
-    if (saved != true || !context.mounted) {
-      exerciseController.dispose();
-      valueController.dispose();
-      unitController.dispose();
-      memoController.dispose();
+    if (result == null || !context.mounted) {
       return;
     }
 
-    final rawValue = valueController.text.trim();
-    final valueSeconds = metricType == WorkoutRecordMetricType.duration
+    final rawValue = result.rawValue;
+    final valueSeconds = result.metricType == WorkoutRecordMetricType.duration
         ? int.tryParse(rawValue)
         : null;
-    final valueNumeric = metricType == WorkoutRecordMetricType.duration
+    final valueNumeric = result.metricType == WorkoutRecordMetricType.duration
         ? null
         : double.tryParse(rawValue);
 
     final controller = ref.read(workoutRecordControllerProvider.notifier);
     if (existing == null) {
       await controller.createRecord(
-        exerciseName: exerciseController.text.trim(),
-        metricType: metricType,
+        exerciseName: result.exerciseName,
+        metricType: result.metricType,
         valueNumeric: valueNumeric,
         valueSeconds: valueSeconds,
-        unit: unitController.text.trim(),
-        recordedAt: selectedDate,
-        memo: memoController.text.trim(),
+        unit: result.unit,
+        recordedAt: result.recordedAt,
+        memo: result.memo,
       );
     } else {
       await controller.updateRecord(
         id: existing.id,
-        exerciseName: exerciseController.text.trim(),
-        metricType: metricType,
+        exerciseName: result.exerciseName,
+        metricType: result.metricType,
         valueNumeric: valueNumeric,
         valueSeconds: valueSeconds,
-        unit: unitController.text.trim(),
-        recordedAt: selectedDate,
-        memo: memoController.text.trim(),
+        unit: result.unit,
+        recordedAt: result.recordedAt,
+        memo: result.memo,
       );
     }
 
     if (!context.mounted) {
-      exerciseController.dispose();
-      valueController.dispose();
-      unitController.dispose();
-      memoController.dispose();
       return;
     }
 
@@ -547,11 +329,6 @@ class _WorkoutRecordViewState extends ConsumerState<WorkoutRecordView> {
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.workoutRecordSaved)));
     }
-
-    exerciseController.dispose();
-    valueController.dispose();
-    unitController.dispose();
-    memoController.dispose();
   }
 
   static Future<void> _deleteRecord({
@@ -634,6 +411,229 @@ class _WorkoutRecordViewState extends ConsumerState<WorkoutRecordView> {
         return _MetricVisual(Icons.timer_outlined, colorScheme.error);
     }
   }
+}
+
+class _WorkoutRecordDialog extends HookWidget {
+  const _WorkoutRecordDialog({this.existing});
+
+  final WorkoutRecordEntity? existing;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final formKey = useMemoized(GlobalKey<FormState>.new);
+    final initialMetricType =
+        existing?.metricType ?? WorkoutRecordMetricType.weight;
+    final initialUseDefaultUnit =
+        existing == null ||
+        existing!.unit.trim().toLowerCase() ==
+            WorkoutRecordView._defaultUnit(
+              initialMetricType,
+            ).trim().toLowerCase();
+
+    final exerciseController = useTextEditingController(
+      text: existing?.exerciseName ?? '',
+    );
+    final memoController = useTextEditingController(text: existing?.memo ?? '');
+    final valueController = useTextEditingController(
+      text: existing?.usesDuration == true
+          ? (existing?.valueSeconds ?? 0).toString()
+          : (existing?.valueNumeric?.toString() ?? ''),
+    );
+    final unitController = useTextEditingController(
+      text: existing?.unit ?? WorkoutRecordView._defaultUnit(initialMetricType),
+    );
+    final metricType = useState(initialMetricType);
+    final selectedDate = useState(existing?.recordedAt ?? DateTime.now());
+    final useDefaultUnit = useState(initialUseDefaultUnit);
+
+    useEffect(() {
+      if (useDefaultUnit.value) {
+        unitController.text = WorkoutRecordView._defaultUnit(metricType.value);
+      }
+      return null;
+    }, [useDefaultUnit.value, metricType.value, unitController]);
+
+    return AlertDialog(
+      title: Text(
+        existing == null
+            ? l10n.workoutRecordAddDialogTitle
+            : l10n.workoutRecordEditDialogTitle,
+      ),
+      content: SingleChildScrollView(
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: exerciseController,
+                decoration: InputDecoration(
+                  labelText: l10n.workoutRecordExerciseName,
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return l10n.workoutRecordRequired;
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<WorkoutRecordMetricType>(
+                initialValue: metricType.value,
+                decoration: InputDecoration(
+                  labelText: l10n.workoutRecordMetricType,
+                ),
+                items: WorkoutRecordMetricType.values
+                    .map((type) {
+                      return DropdownMenuItem<WorkoutRecordMetricType>(
+                        value: type,
+                        child: Text(WorkoutRecordView._metricLabel(l10n, type)),
+                      );
+                    })
+                    .toList(growable: false),
+                onChanged: (nextType) {
+                  if (nextType == null) {
+                    return;
+                  }
+
+                  metricType.value = nextType;
+                  valueController.clear();
+                },
+              ),
+              const SizedBox(height: 6),
+              SwitchListTile.adaptive(
+                contentPadding: EdgeInsets.zero,
+                value: useDefaultUnit.value,
+                title: Text(l10n.workoutRecordUseDefaultUnit),
+                subtitle: Text(l10n.workoutRecordUseDefaultUnitSubtitle),
+                onChanged: (value) {
+                  useDefaultUnit.value = value;
+                },
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: valueController,
+                keyboardType:
+                    metricType.value == WorkoutRecordMetricType.duration
+                    ? TextInputType.number
+                    : const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText:
+                      metricType.value == WorkoutRecordMetricType.duration
+                      ? l10n.workoutRecordValueSeconds
+                      : l10n.workoutRecordValue,
+                ),
+                validator: (value) {
+                  final raw = value?.trim() ?? '';
+                  if (raw.isEmpty) {
+                    return l10n.workoutRecordRequired;
+                  }
+                  if (metricType.value == WorkoutRecordMetricType.duration) {
+                    final seconds = int.tryParse(raw);
+                    if (seconds == null || seconds <= 0) {
+                      return l10n.workoutRecordInvalidNumber;
+                    }
+                    return null;
+                  }
+                  final numeric = double.tryParse(raw);
+                  if (numeric == null || numeric <= 0) {
+                    return l10n.workoutRecordInvalidNumber;
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: unitController,
+                enabled: !useDefaultUnit.value,
+                decoration: InputDecoration(labelText: l10n.workoutRecordUnit),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return l10n.workoutRecordRequired;
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.workoutRecordDate),
+                subtitle: Text(
+                  DateFormat.yMMMd(
+                    Localizations.localeOf(context).languageCode,
+                  ).format(selectedDate.value),
+                ),
+                trailing: const Icon(Icons.calendar_today_outlined),
+                onTap: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: selectedDate.value,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                  );
+
+                  if (picked == null || !context.mounted) {
+                    return;
+                  }
+
+                  selectedDate.value = picked;
+                },
+              ),
+              TextFormField(
+                controller: memoController,
+                decoration: InputDecoration(labelText: l10n.workoutRecordMemo),
+                minLines: 2,
+                maxLines: 4,
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.workoutRecordCancel),
+        ),
+        FilledButton(
+          onPressed: () {
+            if (formKey.currentState?.validate() != true) {
+              return;
+            }
+            Navigator.of(context).pop(
+              _WorkoutRecordFormResult(
+                exerciseName: exerciseController.text.trim(),
+                metricType: metricType.value,
+                rawValue: valueController.text.trim(),
+                unit: unitController.text.trim(),
+                recordedAt: selectedDate.value,
+                memo: memoController.text.trim(),
+              ),
+            );
+          },
+          child: Text(l10n.workoutRecordSave),
+        ),
+      ],
+    );
+  }
+}
+
+class _WorkoutRecordFormResult {
+  const _WorkoutRecordFormResult({
+    required this.exerciseName,
+    required this.metricType,
+    required this.rawValue,
+    required this.unit,
+    required this.recordedAt,
+    required this.memo,
+  });
+
+  final String exerciseName;
+  final WorkoutRecordMetricType metricType;
+  final String rawValue;
+  final String unit;
+  final DateTime recordedAt;
+  final String memo;
 }
 
 enum _WorkoutMenuAction { edit, delete }

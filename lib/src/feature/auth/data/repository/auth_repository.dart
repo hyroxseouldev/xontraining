@@ -1,14 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:xontraining/src/core/exception/app_exception.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:xontraining/src/core/exception/app_exception.dart';
 import 'package:xontraining/src/feature/auth/data/datasource/auth_data_source.dart';
 
 part 'auth_repository.g.dart';
 
 abstract interface class AuthRepository {
   Future<void> signInWithGoogle();
+  Future<void> signInWithApple();
   Future<void> signOut();
   Future<bool> isOnboardingCompleted();
   Future<void> completeOnboarding({required String fullName});
@@ -66,6 +68,35 @@ class AuthRepositoryImpl implements AuthRepository {
       debugPrint('[AuthRepository] StackTrace: $stackTrace');
       throw AppException.unknown(
         message: 'Google sign-in failed.',
+        cause: error,
+      );
+    }
+  }
+
+  @override
+  Future<void> signInWithApple() async {
+    try {
+      debugPrint('[AuthRepository] signInWithApple started');
+      await dataSource.signInWithApple();
+      debugPrint('[AuthRepository] signInWithApple success');
+    } on SignInWithAppleAuthorizationException catch (error, stackTrace) {
+      debugPrint('[AuthRepository] signInWithApple apple failure: $error');
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+
+      if (error.code == AuthorizationErrorCode.canceled) {
+        throw AppException.authCanceled(cause: error);
+      }
+
+      throw AppException.auth(message: error.message, cause: error);
+    } on AuthException catch (error, stackTrace) {
+      debugPrint('[AuthRepository] signInWithApple auth failure: $error');
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint('[AuthRepository] signInWithApple unexpected failure: $error');
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Apple sign-in failed.',
         cause: error,
       );
     }
