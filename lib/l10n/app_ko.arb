@@ -1,0 +1,54 @@
+{
+  "@@locale": "ko",
+  "appTitle": "XON 트레이닝",
+  "loginHeadline": "XON 트레이닝에 오신 것을 환영합니다",
+  "loginGoogleButton": "Google로 로그인",
+  "loginLoading": "로그인 중...",
+  "loginCanceled": "로그인이 취소되었습니다.",
+  "loginConfigError": "Google 로그인 설정이 올바르지 않습니다.",
+  "loginNetworkError": "네트워크 오류가 발생했습니다. 연결을 확인해 주세요.",
+  "loginFailed": "Google 로그인에 실패했습니다. 다시 시도해 주세요.",
+  "homeTitle": "홈",
+  "homeWelcome": "로그인되었습니다.",
+  "homeLoadFailed": "홈 데이터를 불러오지 못했습니다. 다시 시도해 주세요.",
+  "homeNoActiveProgram": "활성화된 프로그램이 없습니다.",
+  "homeCurrentProgram": "현재 프로그램",
+  "homeScheduleForDate": "{date} 스케줄",
+  "@homeScheduleForDate": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "homeNoScheduleForDate": "선택한 날짜의 스케줄이 없습니다.",
+  "homeProfile": "프로필",
+  "homeSignOut": "로그아웃",
+  "homeSignedInAs": "로그인 계정: {email}",
+  "@homeSignedInAs": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "profileTitle": "프로필",
+  "profileSignOut": "로그아웃",
+  "profileSave": "저장",
+  "profileSaving": "저장 중...",
+  "profileSaveSuccess": "프로필이 업데이트되었습니다.",
+  "profileSaveFailed": "프로필 업데이트에 실패했습니다. 다시 시도해 주세요.",
+  "profileNameLabel": "이름",
+  "profileNameHint": "이름을 입력해 주세요",
+  "profileNameRequired": "이름을 입력해 주세요.",
+  "profileSignedInAs": "로그인 계정: {email}",
+  "@profileSignedInAs": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "onboardingTitle": "환영합니다",
+  "onboardingDescription": "서비스 이용을 위해 프로필을 설정해 주세요.",
+  "onboardingNameLabel": "이름",
+  "onboardingNameHint": "이름을 입력해 주세요",
+  "onboardingNameRequired": "이름을 입력해 주세요.",
+  "onboardingContinue": "계속",
+  "onboardingSaving": "저장 중...",
+  "onboardingSaveFailed": "프로필 저장에 실패했습니다. 다시 시도해 주세요."
+}

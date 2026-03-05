@@ -1,0 +1,54 @@
+{
+  "@@locale": "en",
+  "appTitle": "XON Training",
+  "loginHeadline": "Welcome to XON Training",
+  "loginGoogleButton": "Sign in with Google",
+  "loginLoading": "Signing in...",
+  "loginCanceled": "Sign-in was canceled.",
+  "loginConfigError": "Google sign-in is not configured correctly.",
+  "loginNetworkError": "Network error occurred. Check your connection and try again.",
+  "loginFailed": "Google sign-in failed. Please try again.",
+  "homeTitle": "Home",
+  "homeWelcome": "You are logged in.",
+  "homeLoadFailed": "Failed to load home data. Please try again.",
+  "homeNoActiveProgram": "No active program found.",
+  "homeCurrentProgram": "Current Program",
+  "homeScheduleForDate": "Schedule for {date}",
+  "@homeScheduleForDate": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "homeNoScheduleForDate": "No schedule for this date.",
+  "homeProfile": "Profile",
+  "homeSignOut": "Sign out",
+  "homeSignedInAs": "Signed in as {email}",
+  "@homeSignedInAs": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "profileTitle": "Profile",
+  "profileSignOut": "Sign out",
+  "profileSave": "Save",
+  "profileSaving": "Saving...",
+  "profileSaveSuccess": "Profile updated.",
+  "profileSaveFailed": "Failed to update profile. Please try again.",
+  "profileNameLabel": "Name",
+  "profileNameHint": "Enter your name",
+  "profileNameRequired": "Please enter your name.",
+  "profileSignedInAs": "Signed in as {email}",
+  "@profileSignedInAs": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "onboardingTitle": "Welcome",
+  "onboardingDescription": "Set up your profile to continue.",
+  "onboardingNameLabel": "Name",
+  "onboardingNameHint": "Enter your name",
+  "onboardingNameRequired": "Please enter your name.",
+  "onboardingContinue": "Continue",
+  "onboardingSaving": "Saving...",
+  "onboardingSaveFailed": "Failed to save profile. Please try again."
+}
