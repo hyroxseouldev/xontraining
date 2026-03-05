@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/feature/notice/infra/entity/notice_entity.dart';
 import 'package:xontraining/src/feature/notice/presentation/provider/notice_provider.dart';
+import 'package:xontraining/src/feature/notice/presentation/widget/notice_html_renderer.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
 
 class NoticeDetailView extends HookConsumerWidget {
@@ -80,14 +81,15 @@ class _NoticeDetailContent extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Text(
-                notice.contentPreview.isEmpty
-                    ? l10n.noticeNoContent
-                    : notice.contentPreview,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(height: 1.7),
-              ),
+              if (notice.contentHtml.trim().isEmpty)
+                Text(
+                  l10n.noticeNoContent,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(height: 1.7),
+                )
+              else
+                NoticeHtmlRenderer(html: notice.contentHtml),
             ],
           ),
         ),
