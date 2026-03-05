@@ -240,6 +240,177 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSignOut => 'Sign out';
 
   @override
+  String get settingsActionFailed => 'Action failed. Please try again.';
+
+  @override
+  String get settingsAppVersion => 'App version';
+
+  @override
+  String get settingsVersionLoading => 'Loading...';
+
+  @override
+  String get settingsTermsOfService => 'Terms of Service';
+
+  @override
+  String get settingsTermsOfServiceBody =>
+      'Terms of service content will be provided and updated by your organization.';
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get settingsPrivacyPolicyBody =>
+      'Privacy policy content will be provided and updated by your organization.';
+
+  @override
+  String get settingsDeleteAccount => 'Delete account';
+
+  @override
+  String get settingsDeleteAccountSubtitle =>
+      'Permanently delete your account and all related data.';
+
+  @override
+  String get settingsDeleteAccountMemberOnly =>
+      'Only member accounts can be deleted.';
+
+  @override
+  String get settingsDeleteAccountDialogTitle => 'Delete account permanently?';
+
+  @override
+  String get settingsDeleteAccountDialogBody =>
+      'Deleting your account is immediate and cannot be undone. Purchase history, workout records, profile information, offline classes you created, and class registrations will all be deleted. Your previous data cannot be restored even if you sign in again.';
+
+  @override
+  String get settingsDeleteAccountCancel => 'Cancel';
+
+  @override
+  String get settingsDeleteAccountConfirm => 'Delete permanently';
+
+  @override
+  String get settingsDeleteAccountFailed =>
+      'Failed to delete account. Please try again.';
+
+  @override
+  String get settingsDeleteAccountSuccess => 'Your account has been deleted.';
+
+  @override
+  String get legalDocumentLoading => 'Loading document...';
+
+  @override
+  String get legalDocumentLoadFailed => 'Failed to load document.';
+
+  @override
+  String get legalDocumentVersionLabel => 'Version:';
+
+  @override
+  String get legalDocumentUpdatedAtLabel => 'Updated:';
+
+  @override
+  String get workoutRecordAdd => 'Add record';
+
+  @override
+  String get workoutRecordEdit => 'Edit';
+
+  @override
+  String get workoutRecordDelete => 'Delete';
+
+  @override
+  String get workoutRecordEmpty => 'No workout records yet.';
+
+  @override
+  String get workoutRecordLoadFailed => 'Failed to load workout records.';
+
+  @override
+  String get workoutRecordSaveFailed => 'Failed to save workout record.';
+
+  @override
+  String get workoutRecordSaved => 'Workout record saved.';
+
+  @override
+  String get workoutRecordDeleted => 'Workout record deleted.';
+
+  @override
+  String get workoutRecordDeleteFailed => 'Failed to delete workout record.';
+
+  @override
+  String get workoutRecordMetricWeight => 'Weight';
+
+  @override
+  String get workoutRecordMetricReps => 'Repetitions';
+
+  @override
+  String get workoutRecordMetricDistance => 'Distance';
+
+  @override
+  String get workoutRecordMetricDuration => 'Duration';
+
+  @override
+  String get workoutRecordAddDialogTitle => 'Add workout record';
+
+  @override
+  String get workoutRecordEditDialogTitle => 'Edit workout record';
+
+  @override
+  String get workoutRecordExerciseName => 'Exercise name';
+
+  @override
+  String get workoutRecordMetricType => 'Metric type';
+
+  @override
+  String get workoutRecordValue => 'Value';
+
+  @override
+  String get workoutRecordValueSeconds => 'Seconds';
+
+  @override
+  String get workoutRecordUnit => 'Unit';
+
+  @override
+  String get workoutRecordDate => 'Date';
+
+  @override
+  String get workoutRecordMemo => 'Memo';
+
+  @override
+  String get workoutRecordRequired => 'This field is required.';
+
+  @override
+  String get workoutRecordInvalidNumber =>
+      'Enter a valid number greater than 0.';
+
+  @override
+  String get workoutRecordCancel => 'Cancel';
+
+  @override
+  String get workoutRecordSave => 'Save';
+
+  @override
+  String get workoutRecordDeleteDialogTitle => 'Delete this record?';
+
+  @override
+  String get workoutRecordDeleteDialogBody =>
+      'This record will be deleted permanently.';
+
+  @override
+  String get workoutRecordSearchHint => 'Search by exercise or memo';
+
+  @override
+  String get workoutRecordSortNewest => 'Newest';
+
+  @override
+  String get workoutRecordSortOldest => 'Oldest';
+
+  @override
+  String get workoutRecordNoSearchResult => 'No records match your search.';
+
+  @override
+  String get workoutRecordUseDefaultUnit => 'Use default unit';
+
+  @override
+  String get workoutRecordUseDefaultUnitSubtitle =>
+      'Automatically lock unit for each metric type';
+
+  @override
   String get onboardingTitle => 'Welcome';
 
   @override

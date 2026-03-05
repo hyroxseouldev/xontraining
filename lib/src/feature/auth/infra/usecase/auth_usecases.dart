@@ -83,6 +83,26 @@ class UpdateMyAvatarUrlUseCase {
   }
 }
 
+class GetMyTenantRoleUseCase {
+  GetMyTenantRoleUseCase({required this.repository});
+
+  final AuthRepository repository;
+
+  Future<String?> call({required String tenantId}) {
+    return repository.getMyTenantRole(tenantId: tenantId);
+  }
+}
+
+class DeleteMyAccountUseCase {
+  DeleteMyAccountUseCase({required this.repository});
+
+  final AuthRepository repository;
+
+  Future<void> call({required String tenantId}) {
+    return repository.deleteMyAccount(tenantId: tenantId);
+  }
+}
+
 @riverpod
 SignInWithGoogleUseCase signInWithGoogleUseCase(Ref ref) {
   return SignInWithGoogleUseCase(repository: ref.read(authRepositoryProvider));
@@ -125,4 +145,14 @@ UpdateMyFullNameUseCase updateMyFullNameUseCase(Ref ref) {
 @riverpod
 UpdateMyAvatarUrlUseCase updateMyAvatarUrlUseCase(Ref ref) {
   return UpdateMyAvatarUrlUseCase(repository: ref.read(authRepositoryProvider));
+}
+
+@riverpod
+GetMyTenantRoleUseCase getMyTenantRoleUseCase(Ref ref) {
+  return GetMyTenantRoleUseCase(repository: ref.read(authRepositoryProvider));
+}
+
+@riverpod
+DeleteMyAccountUseCase deleteMyAccountUseCase(Ref ref) {
+  return DeleteMyAccountUseCase(repository: ref.read(authRepositoryProvider));
 }

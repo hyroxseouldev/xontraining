@@ -386,3 +386,99 @@ final class UpdateMyAvatarUrlUseCaseProvider
 
 String _$updateMyAvatarUrlUseCaseHash() =>
     r'c330abe8941b4d7828885493c82719b44dca38ff';
+
+@ProviderFor(getMyTenantRoleUseCase)
+final getMyTenantRoleUseCaseProvider = GetMyTenantRoleUseCaseProvider._();
+
+final class GetMyTenantRoleUseCaseProvider
+    extends
+        $FunctionalProvider<
+          GetMyTenantRoleUseCase,
+          GetMyTenantRoleUseCase,
+          GetMyTenantRoleUseCase
+        >
+    with $Provider<GetMyTenantRoleUseCase> {
+  GetMyTenantRoleUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getMyTenantRoleUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getMyTenantRoleUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<GetMyTenantRoleUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  GetMyTenantRoleUseCase create(Ref ref) {
+    return getMyTenantRoleUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GetMyTenantRoleUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GetMyTenantRoleUseCase>(value),
+    );
+  }
+}
+
+String _$getMyTenantRoleUseCaseHash() =>
+    r'e98dc2b00da7f9ef4facad8fb42ced1a514f32d3';
+
+@ProviderFor(deleteMyAccountUseCase)
+final deleteMyAccountUseCaseProvider = DeleteMyAccountUseCaseProvider._();
+
+final class DeleteMyAccountUseCaseProvider
+    extends
+        $FunctionalProvider<
+          DeleteMyAccountUseCase,
+          DeleteMyAccountUseCase,
+          DeleteMyAccountUseCase
+        >
+    with $Provider<DeleteMyAccountUseCase> {
+  DeleteMyAccountUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'deleteMyAccountUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$deleteMyAccountUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<DeleteMyAccountUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  DeleteMyAccountUseCase create(Ref ref) {
+    return deleteMyAccountUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DeleteMyAccountUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DeleteMyAccountUseCase>(value),
+    );
+  }
+}
+
+String _$deleteMyAccountUseCaseHash() =>
+    r'00e83d03458942e73d87df09517443a8722664a7';

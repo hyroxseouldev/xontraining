@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:xontraining/src/core/tenant/tenant_provider.dart';
 import 'package:xontraining/src/core/storage/storage_service.dart';
 import 'package:xontraining/src/feature/auth/infra/usecase/auth_usecases.dart';
 
@@ -14,6 +16,18 @@ Future<String> profileFullName(Ref ref) async {
 @riverpod
 Future<String?> profileAvatarUrl(Ref ref) async {
   return ref.read(getMyAvatarUrlUseCaseProvider).call();
+}
+
+@riverpod
+Future<String?> profileTenantRole(Ref ref) async {
+  final tenantId = ref.read(tenantIdProvider);
+  return ref.read(getMyTenantRoleUseCaseProvider).call(tenantId: tenantId);
+}
+
+@riverpod
+Future<String> appVersionLabel(Ref ref) async {
+  final packageInfo = await PackageInfo.fromPlatform();
+  return '${packageInfo.version}+${packageInfo.buildNumber}';
 }
 
 @riverpod

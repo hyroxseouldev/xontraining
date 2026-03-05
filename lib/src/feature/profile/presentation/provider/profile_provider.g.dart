@@ -75,6 +75,72 @@ final class ProfileAvatarUrlProvider
 
 String _$profileAvatarUrlHash() => r'6b8b65857c56d8ca585c41cb38bdf36c13a4e72e';
 
+@ProviderFor(profileTenantRole)
+final profileTenantRoleProvider = ProfileTenantRoleProvider._();
+
+final class ProfileTenantRoleProvider
+    extends $FunctionalProvider<AsyncValue<String?>, String?, FutureOr<String?>>
+    with $FutureModifier<String?>, $FutureProvider<String?> {
+  ProfileTenantRoleProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'profileTenantRoleProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$profileTenantRoleHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<String?> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<String?> create(Ref ref) {
+    return profileTenantRole(ref);
+  }
+}
+
+String _$profileTenantRoleHash() => r'9f06d60891c2ff9ba238546bf972691d83b0e505';
+
+@ProviderFor(appVersionLabel)
+final appVersionLabelProvider = AppVersionLabelProvider._();
+
+final class AppVersionLabelProvider
+    extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
+    with $FutureModifier<String>, $FutureProvider<String> {
+  AppVersionLabelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appVersionLabelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$appVersionLabelHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<String> create(Ref ref) {
+    return appVersionLabel(ref);
+  }
+}
+
+String _$appVersionLabelHash() => r'3e1e52218b3f25378d7422abdb851460ff1d17eb';
+
 @ProviderFor(ProfileController)
 final profileControllerProvider = ProfileControllerProvider._();
 

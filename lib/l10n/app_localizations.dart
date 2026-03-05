@@ -500,6 +500,330 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get settingsSignOut;
 
+  /// No description provided for @settingsActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Action failed. Please try again.'**
+  String get settingsActionFailed;
+
+  /// No description provided for @settingsAppVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'App version'**
+  String get settingsAppVersion;
+
+  /// No description provided for @settingsVersionLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get settingsVersionLoading;
+
+  /// No description provided for @settingsTermsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get settingsTermsOfService;
+
+  /// No description provided for @settingsTermsOfServiceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of service content will be provided and updated by your organization.'**
+  String get settingsTermsOfServiceBody;
+
+  /// No description provided for @settingsPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get settingsPrivacyPolicy;
+
+  /// No description provided for @settingsPrivacyPolicyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy content will be provided and updated by your organization.'**
+  String get settingsPrivacyPolicyBody;
+
+  /// No description provided for @settingsDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get settingsDeleteAccount;
+
+  /// No description provided for @settingsDeleteAccountSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently delete your account and all related data.'**
+  String get settingsDeleteAccountSubtitle;
+
+  /// No description provided for @settingsDeleteAccountMemberOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only member accounts can be deleted.'**
+  String get settingsDeleteAccountMemberOnly;
+
+  /// No description provided for @settingsDeleteAccountDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account permanently?'**
+  String get settingsDeleteAccountDialogTitle;
+
+  /// No description provided for @settingsDeleteAccountDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting your account is immediate and cannot be undone. Purchase history, workout records, profile information, offline classes you created, and class registrations will all be deleted. Your previous data cannot be restored even if you sign in again.'**
+  String get settingsDeleteAccountDialogBody;
+
+  /// No description provided for @settingsDeleteAccountCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get settingsDeleteAccountCancel;
+
+  /// No description provided for @settingsDeleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently'**
+  String get settingsDeleteAccountConfirm;
+
+  /// No description provided for @settingsDeleteAccountFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete account. Please try again.'**
+  String get settingsDeleteAccountFailed;
+
+  /// No description provided for @settingsDeleteAccountSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been deleted.'**
+  String get settingsDeleteAccountSuccess;
+
+  /// No description provided for @legalDocumentLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading document...'**
+  String get legalDocumentLoading;
+
+  /// No description provided for @legalDocumentLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load document.'**
+  String get legalDocumentLoadFailed;
+
+  /// No description provided for @legalDocumentVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version:'**
+  String get legalDocumentVersionLabel;
+
+  /// No description provided for @legalDocumentUpdatedAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated:'**
+  String get legalDocumentUpdatedAtLabel;
+
+  /// No description provided for @workoutRecordAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add record'**
+  String get workoutRecordAdd;
+
+  /// No description provided for @workoutRecordEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get workoutRecordEdit;
+
+  /// No description provided for @workoutRecordDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get workoutRecordDelete;
+
+  /// No description provided for @workoutRecordEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No workout records yet.'**
+  String get workoutRecordEmpty;
+
+  /// No description provided for @workoutRecordLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load workout records.'**
+  String get workoutRecordLoadFailed;
+
+  /// No description provided for @workoutRecordSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save workout record.'**
+  String get workoutRecordSaveFailed;
+
+  /// No description provided for @workoutRecordSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout record saved.'**
+  String get workoutRecordSaved;
+
+  /// No description provided for @workoutRecordDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout record deleted.'**
+  String get workoutRecordDeleted;
+
+  /// No description provided for @workoutRecordDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete workout record.'**
+  String get workoutRecordDeleteFailed;
+
+  /// No description provided for @workoutRecordMetricWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get workoutRecordMetricWeight;
+
+  /// No description provided for @workoutRecordMetricReps.
+  ///
+  /// In en, this message translates to:
+  /// **'Repetitions'**
+  String get workoutRecordMetricReps;
+
+  /// No description provided for @workoutRecordMetricDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get workoutRecordMetricDistance;
+
+  /// No description provided for @workoutRecordMetricDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get workoutRecordMetricDuration;
+
+  /// No description provided for @workoutRecordAddDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add workout record'**
+  String get workoutRecordAddDialogTitle;
+
+  /// No description provided for @workoutRecordEditDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit workout record'**
+  String get workoutRecordEditDialogTitle;
+
+  /// No description provided for @workoutRecordExerciseName.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise name'**
+  String get workoutRecordExerciseName;
+
+  /// No description provided for @workoutRecordMetricType.
+  ///
+  /// In en, this message translates to:
+  /// **'Metric type'**
+  String get workoutRecordMetricType;
+
+  /// No description provided for @workoutRecordValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get workoutRecordValue;
+
+  /// No description provided for @workoutRecordValueSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'Seconds'**
+  String get workoutRecordValueSeconds;
+
+  /// No description provided for @workoutRecordUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get workoutRecordUnit;
+
+  /// No description provided for @workoutRecordDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get workoutRecordDate;
+
+  /// No description provided for @workoutRecordMemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Memo'**
+  String get workoutRecordMemo;
+
+  /// No description provided for @workoutRecordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get workoutRecordRequired;
+
+  /// No description provided for @workoutRecordInvalidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid number greater than 0.'**
+  String get workoutRecordInvalidNumber;
+
+  /// No description provided for @workoutRecordCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get workoutRecordCancel;
+
+  /// No description provided for @workoutRecordSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get workoutRecordSave;
+
+  /// No description provided for @workoutRecordDeleteDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this record?'**
+  String get workoutRecordDeleteDialogTitle;
+
+  /// No description provided for @workoutRecordDeleteDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This record will be deleted permanently.'**
+  String get workoutRecordDeleteDialogBody;
+
+  /// No description provided for @workoutRecordSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by exercise or memo'**
+  String get workoutRecordSearchHint;
+
+  /// No description provided for @workoutRecordSortNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get workoutRecordSortNewest;
+
+  /// No description provided for @workoutRecordSortOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest'**
+  String get workoutRecordSortOldest;
+
+  /// No description provided for @workoutRecordNoSearchResult.
+  ///
+  /// In en, this message translates to:
+  /// **'No records match your search.'**
+  String get workoutRecordNoSearchResult;
+
+  /// No description provided for @workoutRecordUseDefaultUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Use default unit'**
+  String get workoutRecordUseDefaultUnit;
+
+  /// No description provided for @workoutRecordUseDefaultUnitSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically lock unit for each metric type'**
+  String get workoutRecordUseDefaultUnitSubtitle;
+
   /// No description provided for @onboardingTitle.
   ///
   /// In en, this message translates to:

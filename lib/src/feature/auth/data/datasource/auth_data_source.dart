@@ -16,6 +16,8 @@ abstract interface class AuthDataSource {
   Future<String?> getMyAvatarUrl();
   Future<void> updateMyFullName({required String fullName});
   Future<void> updateMyAvatarUrl({required String avatarUrl});
+  Future<String?> getMyTenantRole({required String tenantId});
+  Future<void> deleteMyAccount({required String tenantId});
 }
 
 class SupabaseAuthDataSource implements AuthDataSource {
@@ -154,6 +156,44 @@ class SupabaseAuthDataSource implements AuthDataSource {
         .from('profiles')
         .update({'avatar_url': avatarUrl.trim()})
         .eq('id', userId);
+  }
+
+  @override
+  Future<String?> getMyTenantRole({required String tenantId}) async {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) {
+      throw AuthException('No authenticated user found.');
+    }
+
+    final membership = await supabase
+        .from('tenant_memberships')
+        .select('role')
+        .eq('tenant_id', tenantId)
+        .eq('user_id', userId)
+        .maybeSingle();
+
+    final role = membership?['role'];
+    if (role is String && role.trim().isNotEmpty) {
+      return role.trim();
+    }
+
+    return null;
+  }
+
+  @override
+  Future<void> deleteMyAccount({required String tenantId}) async {
+    final response = await supabase.functions.invoke(
+      'delete-account',
+      body: {'tenantId': tenantId},
+    );
+
+    final data = response.data;
+    if (response.status != 200) {
+      final errorMessage = data is Map<String, dynamic>
+          ? data['message'] as String?
+          : null;
+      throw AuthException(errorMessage ?? 'Failed to delete account.');
+    }
   }
 }
 

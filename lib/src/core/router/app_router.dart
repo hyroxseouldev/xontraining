@@ -10,7 +10,9 @@ import 'package:xontraining/src/feature/home/presentation/view/program_detail_vi
 import 'package:xontraining/src/feature/onboarding/presentation/view/onboarding_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/profile_edit_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/profile_view.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/privacy_policy_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/settings_view.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/terms_of_service_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/workout_record_view.dart';
 
 part 'app_router.g.dart';
@@ -106,6 +108,16 @@ GoRouter goRouter(Ref ref) {
         builder: (context, state) => const SettingsView(),
       ),
       GoRoute(
+        path: AppRoutes.termsOfService,
+        name: AppRoutes.termsOfServiceName,
+        builder: (context, state) => const TermsOfServiceView(),
+      ),
+      GoRoute(
+        path: AppRoutes.privacyPolicy,
+        name: AppRoutes.privacyPolicyName,
+        builder: (context, state) => const PrivacyPolicyView(),
+      ),
+      GoRoute(
         path: AppRoutes.onboarding,
         name: AppRoutes.onboardingName,
         builder: (context, state) => const OnboardingView(),
@@ -121,6 +133,8 @@ abstract final class AppRoutes {
   static const String profileEdit = '/profile/edit';
   static const String workoutRecord = '/profile/workout-record';
   static const String settings = '/settings';
+  static const String termsOfService = '/settings/terms';
+  static const String privacyPolicy = '/settings/privacy';
   static const String programDetail = '/program/:programId';
   static const String onboarding = '/onboarding';
 
@@ -130,6 +144,8 @@ abstract final class AppRoutes {
   static const String profileEditName = 'profileEdit';
   static const String workoutRecordName = 'workoutRecord';
   static const String settingsName = 'settings';
+  static const String termsOfServiceName = 'termsOfService';
+  static const String privacyPolicyName = 'privacyPolicy';
   static const String programDetailName = 'programDetail';
   static const String onboardingName = 'onboarding';
 }

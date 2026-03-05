@@ -234,6 +234,170 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsSignOut => '로그아웃';
 
   @override
+  String get settingsActionFailed => '처리에 실패했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get settingsAppVersion => '앱 버전';
+
+  @override
+  String get settingsVersionLoading => '불러오는 중...';
+
+  @override
+  String get settingsTermsOfService => '이용약관';
+
+  @override
+  String get settingsTermsOfServiceBody => '이용약관 내용은 운영 정책에 따라 제공 및 업데이트됩니다.';
+
+  @override
+  String get settingsPrivacyPolicy => '개인정보처리방침';
+
+  @override
+  String get settingsPrivacyPolicyBody =>
+      '개인정보처리방침 내용은 운영 정책에 따라 제공 및 업데이트됩니다.';
+
+  @override
+  String get settingsDeleteAccount => '계정삭제';
+
+  @override
+  String get settingsDeleteAccountSubtitle => '계정과 관련 데이터가 영구 삭제됩니다.';
+
+  @override
+  String get settingsDeleteAccountMemberOnly => 'member 권한 계정만 삭제할 수 있습니다.';
+
+  @override
+  String get settingsDeleteAccountDialogTitle => '계정을 영구 삭제할까요?';
+
+  @override
+  String get settingsDeleteAccountDialogBody =>
+      '탈퇴 시 계정이 즉시 삭제되며 복구할 수 없습니다. 구매 내역, 운동 기록, 프로필 정보, 작성한 오프라인 클래스 및 신청 정보가 모두 삭제됩니다. 삭제 후에는 동일 계정으로도 이전 데이터를 복원할 수 없습니다.';
+
+  @override
+  String get settingsDeleteAccountCancel => '취소';
+
+  @override
+  String get settingsDeleteAccountConfirm => '영구 삭제';
+
+  @override
+  String get settingsDeleteAccountFailed => '계정삭제에 실패했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get settingsDeleteAccountSuccess => '계정이 삭제되었습니다.';
+
+  @override
+  String get legalDocumentLoading => '문서를 불러오는 중입니다...';
+
+  @override
+  String get legalDocumentLoadFailed => '문서를 불러오지 못했습니다.';
+
+  @override
+  String get legalDocumentVersionLabel => '버전:';
+
+  @override
+  String get legalDocumentUpdatedAtLabel => '개정일:';
+
+  @override
+  String get workoutRecordAdd => '기록 추가';
+
+  @override
+  String get workoutRecordEdit => '수정';
+
+  @override
+  String get workoutRecordDelete => '삭제';
+
+  @override
+  String get workoutRecordEmpty => '아직 등록된 운동 기록이 없습니다.';
+
+  @override
+  String get workoutRecordLoadFailed => '운동 기록을 불러오지 못했습니다.';
+
+  @override
+  String get workoutRecordSaveFailed => '운동 기록 저장에 실패했습니다.';
+
+  @override
+  String get workoutRecordSaved => '운동 기록이 저장되었습니다.';
+
+  @override
+  String get workoutRecordDeleted => '운동 기록이 삭제되었습니다.';
+
+  @override
+  String get workoutRecordDeleteFailed => '운동 기록 삭제에 실패했습니다.';
+
+  @override
+  String get workoutRecordMetricWeight => '중량';
+
+  @override
+  String get workoutRecordMetricReps => '횟수';
+
+  @override
+  String get workoutRecordMetricDistance => '거리';
+
+  @override
+  String get workoutRecordMetricDuration => '시간';
+
+  @override
+  String get workoutRecordAddDialogTitle => '운동 기록 추가';
+
+  @override
+  String get workoutRecordEditDialogTitle => '운동 기록 수정';
+
+  @override
+  String get workoutRecordExerciseName => '운동명';
+
+  @override
+  String get workoutRecordMetricType => '측정 항목';
+
+  @override
+  String get workoutRecordValue => '값';
+
+  @override
+  String get workoutRecordValueSeconds => '초(Seconds)';
+
+  @override
+  String get workoutRecordUnit => '단위';
+
+  @override
+  String get workoutRecordDate => '기록 날짜';
+
+  @override
+  String get workoutRecordMemo => '메모';
+
+  @override
+  String get workoutRecordRequired => '필수 입력 항목입니다.';
+
+  @override
+  String get workoutRecordInvalidNumber => '0보다 큰 숫자를 입력해 주세요.';
+
+  @override
+  String get workoutRecordCancel => '취소';
+
+  @override
+  String get workoutRecordSave => '저장';
+
+  @override
+  String get workoutRecordDeleteDialogTitle => '이 기록을 삭제할까요?';
+
+  @override
+  String get workoutRecordDeleteDialogBody => '이 기록은 영구적으로 삭제됩니다.';
+
+  @override
+  String get workoutRecordSearchHint => '운동명 또는 메모 검색';
+
+  @override
+  String get workoutRecordSortNewest => '최신순';
+
+  @override
+  String get workoutRecordSortOldest => '오래된순';
+
+  @override
+  String get workoutRecordNoSearchResult => '검색 결과가 없습니다.';
+
+  @override
+  String get workoutRecordUseDefaultUnit => '기본 단위 사용';
+
+  @override
+  String get workoutRecordUseDefaultUnitSubtitle => '측정 항목별 기본 단위를 자동 고정합니다.';
+
+  @override
   String get onboardingTitle => '환영합니다';
 
   @override

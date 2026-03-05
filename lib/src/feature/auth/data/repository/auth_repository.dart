@@ -16,6 +16,8 @@ abstract interface class AuthRepository {
   Future<String?> getMyAvatarUrl();
   Future<void> updateMyFullName({required String fullName});
   Future<void> updateMyAvatarUrl({required String avatarUrl});
+  Future<String?> getMyTenantRole({required String tenantId});
+  Future<void> deleteMyAccount({required String tenantId});
 }
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -193,6 +195,42 @@ class AuthRepositoryImpl implements AuthRepository {
       debugPrint('[AuthRepository] StackTrace: $stackTrace');
       throw AppException.unknown(
         message: 'Failed to update profile image.',
+        cause: error,
+      );
+    }
+  }
+
+  @override
+  Future<String?> getMyTenantRole({required String tenantId}) async {
+    try {
+      return await dataSource.getMyTenantRole(tenantId: tenantId);
+    } on AuthException catch (error, stackTrace) {
+      debugPrint('[AuthRepository] getMyTenantRole auth failure: $error');
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint('[AuthRepository] getMyTenantRole unexpected failure: $error');
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to load membership role.',
+        cause: error,
+      );
+    }
+  }
+
+  @override
+  Future<void> deleteMyAccount({required String tenantId}) async {
+    try {
+      await dataSource.deleteMyAccount(tenantId: tenantId);
+    } on AuthException catch (error, stackTrace) {
+      debugPrint('[AuthRepository] deleteMyAccount auth failure: $error');
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint('[AuthRepository] deleteMyAccount unexpected failure: $error');
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to delete account.',
         cause: error,
       );
     }
