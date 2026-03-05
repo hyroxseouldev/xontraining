@@ -230,6 +230,48 @@ abstract class AppLocalizations {
   /// **'Weekly Sessions'**
   String get homeProgramInfoWeeklySessions;
 
+  /// No description provided for @homeProgramDifficultyBeginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get homeProgramDifficultyBeginner;
+
+  /// No description provided for @homeProgramDifficultyIntermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get homeProgramDifficultyIntermediate;
+
+  /// No description provided for @homeProgramDifficultyAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get homeProgramDifficultyAdvanced;
+
+  /// No description provided for @homeProgramDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Program Detail'**
+  String get homeProgramDetailTitle;
+
+  /// No description provided for @homeProgramDetailDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Detail view skeleton is ready.'**
+  String get homeProgramDetailDescription;
+
+  /// No description provided for @homeProgramDetailComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed sections, progress, and actions will be added next.'**
+  String get homeProgramDetailComingSoon;
+
+  /// No description provided for @homeProgramDetailIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Program ID: {id}'**
+  String homeProgramDetailIdLabel(Object id);
+
   /// No description provided for @homeProgramValueNotAvailable.
   ///
   /// In en, this message translates to:

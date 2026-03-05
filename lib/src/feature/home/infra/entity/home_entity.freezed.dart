@@ -213,8 +213,8 @@ return $default(_that.id,_that.title,_that.description,_that.thumbnailUrl,_that.
 /// @nodoc
 
 
-class _ProgramEntity implements ProgramEntity {
-  const _ProgramEntity({required this.id, required this.title, this.description, this.thumbnailUrl, this.difficulty, this.dailyWorkoutMinutes, this.daysPerWeek, this.startDate, this.endDate});
+class _ProgramEntity extends ProgramEntity {
+  const _ProgramEntity({required this.id, required this.title, this.description, this.thumbnailUrl, this.difficulty, this.dailyWorkoutMinutes, this.daysPerWeek, this.startDate, this.endDate}): super._();
   
 
 @override final  String id;

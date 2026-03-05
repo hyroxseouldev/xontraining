@@ -77,6 +77,29 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeProgramInfoWeeklySessions => '주당횟수';
 
   @override
+  String get homeProgramDifficultyBeginner => '초급';
+
+  @override
+  String get homeProgramDifficultyIntermediate => '중급';
+
+  @override
+  String get homeProgramDifficultyAdvanced => '고급';
+
+  @override
+  String get homeProgramDetailTitle => '프로그램 상세';
+
+  @override
+  String get homeProgramDetailDescription => '상세 화면 뼈대가 준비되었습니다.';
+
+  @override
+  String get homeProgramDetailComingSoon => '상세 섹션, 진행도, 액션은 추후 추가될 예정입니다.';
+
+  @override
+  String homeProgramDetailIdLabel(Object id) {
+    return '프로그램 ID: $id';
+  }
+
+  @override
   String get homeProgramValueNotAvailable => '-';
 
   @override

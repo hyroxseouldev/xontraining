@@ -27,6 +27,18 @@
   "homeProgramInfoDifficulty": "Difficulty",
   "homeProgramInfoWorkoutTime": "Workout Time",
   "homeProgramInfoWeeklySessions": "Weekly Sessions",
+  "homeProgramDifficultyBeginner": "Beginner",
+  "homeProgramDifficultyIntermediate": "Intermediate",
+  "homeProgramDifficultyAdvanced": "Advanced",
+  "homeProgramDetailTitle": "Program Detail",
+  "homeProgramDetailDescription": "Detail view skeleton is ready.",
+  "homeProgramDetailComingSoon": "Detailed sections, progress, and actions will be added next.",
+  "homeProgramDetailIdLabel": "Program ID: {id}",
+  "@homeProgramDetailIdLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
   "homeProgramValueNotAvailable": "-",
   "homeProgramDurationWeeks": "{weeks} weeks",
   "@homeProgramDurationWeeks": {

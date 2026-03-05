@@ -27,6 +27,18 @@
   "homeProgramInfoDifficulty": "난이도",
   "homeProgramInfoWorkoutTime": "운동시간",
   "homeProgramInfoWeeklySessions": "주당횟수",
+  "homeProgramDifficultyBeginner": "초급",
+  "homeProgramDifficultyIntermediate": "중급",
+  "homeProgramDifficultyAdvanced": "고급",
+  "homeProgramDetailTitle": "프로그램 상세",
+  "homeProgramDetailDescription": "상세 화면 뼈대가 준비되었습니다.",
+  "homeProgramDetailComingSoon": "상세 섹션, 진행도, 액션은 추후 추가될 예정입니다.",
+  "homeProgramDetailIdLabel": "프로그램 ID: {id}",
+  "@homeProgramDetailIdLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
   "homeProgramValueNotAvailable": "-",
   "homeProgramDurationWeeks": "{weeks}주",
   "@homeProgramDurationWeeks": {

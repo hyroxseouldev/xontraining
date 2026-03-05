@@ -89,6 +89,15 @@ Guidance for coding agents working in this repository.
 - Use `const` constructors/widgets whenever possible.
 - Extract helper methods/widgets when build methods become deeply nested.
 
+## Widget Computation Rules
+- Keep widgets presentation-focused; do not place business/derived calculations in widget files.
+- Move derived domain values (normalization, duration calculations, etc.) to Entity getters or UseCase logic.
+- Widgets should only format localized strings and render values that are already prepared by upper layers.
+
+## Network Image Rule
+- For network images in app UI, use `CachedNetworkImage` instead of `Image.network`.
+- Always provide both `placeholder` and `errorWidget` states.
+
 ## Types and API Design
 - Avoid `dynamic` unless required by external APIs.
 - Prefer explicit return types on public methods/functions.

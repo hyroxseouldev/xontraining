@@ -78,6 +78,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeProgramInfoWeeklySessions => 'Weekly Sessions';
 
   @override
+  String get homeProgramDifficultyBeginner => 'Beginner';
+
+  @override
+  String get homeProgramDifficultyIntermediate => 'Intermediate';
+
+  @override
+  String get homeProgramDifficultyAdvanced => 'Advanced';
+
+  @override
+  String get homeProgramDetailTitle => 'Program Detail';
+
+  @override
+  String get homeProgramDetailDescription => 'Detail view skeleton is ready.';
+
+  @override
+  String get homeProgramDetailComingSoon =>
+      'Detailed sections, progress, and actions will be added next.';
+
+  @override
+  String homeProgramDetailIdLabel(Object id) {
+    return 'Program ID: $id';
+  }
+
+  @override
   String get homeProgramValueNotAvailable => '-';
 
   @override
