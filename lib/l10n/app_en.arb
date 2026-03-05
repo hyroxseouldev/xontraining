@@ -23,6 +23,35 @@
   },
   "homeNoScheduleForDate": "No schedule for this date.",
   "homeProfile": "Profile",
+  "homeProgramInfoDuration": "Duration",
+  "homeProgramInfoDifficulty": "Difficulty",
+  "homeProgramInfoWorkoutTime": "Workout Time",
+  "homeProgramInfoWeeklySessions": "Weekly Sessions",
+  "homeProgramValueNotAvailable": "-",
+  "homeProgramDurationWeeks": "{weeks} weeks",
+  "@homeProgramDurationWeeks": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "homeProgramWorkoutMinutes": "{minutes} min",
+  "@homeProgramWorkoutMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "homeProgramWeeklySessions": "{days}x / week",
+  "@homeProgramWeeklySessions": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "homeSignOut": "Sign out",
   "homeSignedInAs": "Signed in as {email}",
   "@homeSignedInAs": {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
 
 class ProgramListItem extends StatelessWidget {
@@ -8,50 +9,132 @@ class ProgramListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _Thumbnail(url: program.thumbnailUrl),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    program.title,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  if ((program.description ?? '').isNotEmpty) ...[
-                    const SizedBox(height: 6),
-                    Text(
-                      program.description!,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+    final l10n = AppLocalizations.of(context)!;
+    final durationText = _durationText(
+      program.startDate,
+      program.endDate,
+      l10n,
+    );
+    final difficultyText = _valueOrFallback(program.difficulty, l10n);
+    final workoutTimeText = program.dailyWorkoutMinutes == null
+        ? l10n.homeProgramValueNotAvailable
+        : l10n.homeProgramWorkoutMinutes(program.dailyWorkoutMinutes!);
+    final weeklySessionsText = program.daysPerWeek == null
+        ? l10n.homeProgramValueNotAvailable
+        : l10n.homeProgramWeeklySessions(program.daysPerWeek!);
+
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _Thumbnail(url: program.thumbnailUrl),
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  program.title,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 10),
+                _InfoList(
+                  items: [
+                    _InfoItem(
+                      label: l10n.homeProgramInfoDuration,
+                      value: durationText,
+                    ),
+                    _InfoItem(
+                      label: l10n.homeProgramInfoDifficulty,
+                      value: difficultyText,
+                    ),
+                    _InfoItem(
+                      label: l10n.homeProgramInfoWorkoutTime,
+                      value: workoutTimeText,
+                    ),
+                    _InfoItem(
+                      label: l10n.homeProgramInfoWeeklySessions,
+                      value: weeklySessionsText,
                     ),
                   ],
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: [
-                      if ((program.difficulty ?? '').isNotEmpty)
-                        Chip(label: Text(program.difficulty!)),
-                      if (program.daysPerWeek != null)
-                        Chip(label: Text('${program.daysPerWeek}d/week')),
-                      if (program.dailyWorkoutMinutes != null)
-                        Chip(label: Text('${program.dailyWorkoutMinutes}min')),
-                    ],
+                ),
+                if ((program.description ?? '').trim().isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    program.description!.trim(),
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _durationText(
+  DateTime? startDate,
+  DateTime? endDate,
+  AppLocalizations l10n,
+) {
+  if (startDate == null || endDate == null) {
+    return l10n.homeProgramValueNotAvailable;
+  }
+
+  final days = endDate.difference(startDate).inDays.abs() + 1;
+  final weeks = (days / 7).ceil().clamp(1, 999);
+  return l10n.homeProgramDurationWeeks(weeks);
+}
+
+String _valueOrFallback(String? value, AppLocalizations l10n) {
+  final trimmed = value?.trim() ?? '';
+  if (trimmed.isEmpty) {
+    return l10n.homeProgramValueNotAvailable;
+  }
+  return trimmed;
+}
+
+class _InfoItem {
+  const _InfoItem({required this.label, required this.value});
+
+  final String label;
+  final String value;
+}
+
+class _InfoList extends StatelessWidget {
+  const _InfoList({required this.items});
+
+  final List<_InfoItem> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = Theme.of(context).textTheme.bodyMedium;
+    final valueStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600);
+
+    return Column(
+      children: items
+          .map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Row(
+                children: [
+                  Expanded(child: Text(item.label, style: labelStyle)),
+                  const SizedBox(width: 12),
+                  Text(item.value, style: valueStyle),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
+          )
+          .toList(growable: false),
     );
   }
 }
@@ -65,28 +148,23 @@ class _Thumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     final value = url?.trim() ?? '';
     if (value.isEmpty) {
-      return Container(
-        width: 64,
-        height: 64,
-        decoration: BoxDecoration(
+      return AspectRatio(
+        aspectRatio: 1,
+        child: Container(
           color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(10),
+          child: const Icon(Icons.image_not_supported_outlined),
         ),
-        child: const Icon(Icons.image_not_supported_outlined),
       );
     }
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
+    return AspectRatio(
+      aspectRatio: 1,
       child: Image.network(
         value,
-        width: 64,
-        height: 64,
+        width: double.infinity,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
           return Container(
-            width: 64,
-            height: 64,
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: const Icon(Icons.broken_image_outlined),
           );

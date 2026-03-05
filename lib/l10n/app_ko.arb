@@ -23,6 +23,35 @@
   },
   "homeNoScheduleForDate": "선택한 날짜의 스케줄이 없습니다.",
   "homeProfile": "프로필",
+  "homeProgramInfoDuration": "기간",
+  "homeProgramInfoDifficulty": "난이도",
+  "homeProgramInfoWorkoutTime": "운동시간",
+  "homeProgramInfoWeeklySessions": "주당횟수",
+  "homeProgramValueNotAvailable": "-",
+  "homeProgramDurationWeeks": "{weeks}주",
+  "@homeProgramDurationWeeks": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "homeProgramWorkoutMinutes": "{minutes}분",
+  "@homeProgramWorkoutMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "homeProgramWeeklySessions": "주 {days}회",
+  "@homeProgramWeeklySessions": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "homeSignOut": "로그아웃",
   "homeSignedInAs": "로그인 계정: {email}",
   "@homeSignedInAs": {

@@ -66,6 +66,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeProfile => 'Profile';
 
   @override
+  String get homeProgramInfoDuration => 'Duration';
+
+  @override
+  String get homeProgramInfoDifficulty => 'Difficulty';
+
+  @override
+  String get homeProgramInfoWorkoutTime => 'Workout Time';
+
+  @override
+  String get homeProgramInfoWeeklySessions => 'Weekly Sessions';
+
+  @override
+  String get homeProgramValueNotAvailable => '-';
+
+  @override
+  String homeProgramDurationWeeks(int weeks) {
+    return '$weeks weeks';
+  }
+
+  @override
+  String homeProgramWorkoutMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String homeProgramWeeklySessions(int days) {
+    return '${days}x / week';
+  }
+
+  @override
   String get homeSignOut => 'Sign out';
 
   @override

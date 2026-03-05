@@ -32,13 +32,12 @@ class HomeView extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.homeProgramsTitle),
-        actions: [
-          IconButton(
-            onPressed: () => context.pushNamed(AppRoutes.profileName),
-            icon: const Icon(Icons.person_outline),
-            tooltip: l10n.homeProfile,
-          ),
-        ],
+        // 아이콘 버튼은 leading 에 배치해주세요
+        leading: IconButton(
+          onPressed: () => context.pushNamed(AppRoutes.profileName),
+          icon: const Icon(Icons.person_outline),
+          tooltip: l10n.homeProfile,
+        ),
       ),
       body: homeState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -52,7 +51,7 @@ class HomeView extends HookConsumerWidget {
           }
 
           return ListView.separated(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.zero,
             itemCount: programs.length,
             separatorBuilder: (context, index) => const SizedBox(height: 8),
             itemBuilder: (context, index) {

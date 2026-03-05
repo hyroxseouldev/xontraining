@@ -206,6 +206,54 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get homeProfile;
 
+  /// No description provided for @homeProgramInfoDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get homeProgramInfoDuration;
+
+  /// No description provided for @homeProgramInfoDifficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Difficulty'**
+  String get homeProgramInfoDifficulty;
+
+  /// No description provided for @homeProgramInfoWorkoutTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout Time'**
+  String get homeProgramInfoWorkoutTime;
+
+  /// No description provided for @homeProgramInfoWeeklySessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Sessions'**
+  String get homeProgramInfoWeeklySessions;
+
+  /// No description provided for @homeProgramValueNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'-'**
+  String get homeProgramValueNotAvailable;
+
+  /// No description provided for @homeProgramDurationWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'{weeks} weeks'**
+  String homeProgramDurationWeeks(int weeks);
+
+  /// No description provided for @homeProgramWorkoutMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String homeProgramWorkoutMinutes(int minutes);
+
+  /// No description provided for @homeProgramWeeklySessions.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}x / week'**
+  String homeProgramWeeklySessions(int days);
+
   /// No description provided for @homeSignOut.
   ///
   /// In en, this message translates to:

@@ -65,6 +65,36 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeProfile => '프로필';
 
   @override
+  String get homeProgramInfoDuration => '기간';
+
+  @override
+  String get homeProgramInfoDifficulty => '난이도';
+
+  @override
+  String get homeProgramInfoWorkoutTime => '운동시간';
+
+  @override
+  String get homeProgramInfoWeeklySessions => '주당횟수';
+
+  @override
+  String get homeProgramValueNotAvailable => '-';
+
+  @override
+  String homeProgramDurationWeeks(int weeks) {
+    return '$weeks주';
+  }
+
+  @override
+  String homeProgramWorkoutMinutes(int minutes) {
+    return '$minutes분';
+  }
+
+  @override
+  String homeProgramWeeklySessions(int days) {
+    return '주 $days회';
+  }
+
+  @override
   String get homeSignOut => '로그아웃';
 
   @override
