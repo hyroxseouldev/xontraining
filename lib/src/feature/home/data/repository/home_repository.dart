@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:xontraining/src/core/exception/app_exception.dart';
 import 'package:xontraining/src/feature/home/data/datasource/home_data_source.dart';
+import 'package:xontraining/src/feature/home/infra/entity/coach_info_entity.dart';
 import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
 import 'package:xontraining/src/feature/home/infra/entity/program_detail_entity.dart';
 
@@ -21,6 +22,8 @@ abstract interface class HomeRepository {
     required String tenantId,
     required String programId,
   });
+
+  Future<CoachInfoEntity?> getCoachInfoByTenant({required String tenantId});
 }
 
 class HomeRepositoryImpl implements HomeRepository {
@@ -208,6 +211,62 @@ class HomeRepositoryImpl implements HomeRepository {
         cause: error,
       );
     }
+  }
+
+  @override
+  Future<CoachInfoEntity?> getCoachInfoByTenant({
+    required String tenantId,
+  }) async {
+    try {
+      final raw = await dataSource.getCoachInfoByTenant(tenantId: tenantId);
+      if (raw == null) {
+        return null;
+      }
+
+      final name = (raw['coach_name'] as String?)?.trim() ?? '';
+      final instagram = (raw['coach_instagram'] as String?)?.trim() ?? '';
+      final imageUrl = (raw['coach_image_url'] as String?)?.trim() ?? '';
+      final career = _toStringList(raw['coach_career']);
+
+      if (name.isEmpty &&
+          instagram.isEmpty &&
+          imageUrl.isEmpty &&
+          career.isEmpty) {
+        return null;
+      }
+
+      return CoachInfoEntity(
+        imageUrl: imageUrl,
+        name: name,
+        career: career,
+        instagram: instagram,
+      );
+    } on AuthException catch (error, stackTrace) {
+      debugPrint('[HomeRepository] getCoachInfoByTenant auth failure: $error');
+      debugPrint('[HomeRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint(
+        '[HomeRepository] getCoachInfoByTenant unexpected failure: $error',
+      );
+      debugPrint('[HomeRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to load coach info.',
+        cause: error,
+      );
+    }
+  }
+
+  List<String> _toStringList(Object? value) {
+    if (value is! List) {
+      return const [];
+    }
+
+    return value
+        .whereType<String>()
+        .map((item) => item.trim())
+        .where((item) => item.isNotEmpty)
+        .toList(growable: false);
   }
 }
 

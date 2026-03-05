@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/src/feature/home/data/repository/home_repository.dart';
+import 'package:xontraining/src/feature/home/infra/entity/coach_info_entity.dart';
 import 'package:xontraining/src/feature/home/infra/entity/program_detail_entity.dart';
 
 class CheckProgramAccessUseCase {
@@ -36,6 +37,16 @@ class GetProgramSessionsUseCase {
   }
 }
 
+class GetCoachInfoUseCase {
+  GetCoachInfoUseCase({required this.repository});
+
+  final HomeRepository repository;
+
+  Future<CoachInfoEntity?> call({required String tenantId}) {
+    return repository.getCoachInfoByTenant(tenantId: tenantId);
+  }
+}
+
 final checkProgramAccessUseCaseProvider = Provider<CheckProgramAccessUseCase>((
   ref,
 ) {
@@ -50,4 +61,8 @@ final getProgramSessionsUseCaseProvider = Provider<GetProgramSessionsUseCase>((
   return GetProgramSessionsUseCase(
     repository: ref.read(homeRepositoryProvider),
   );
+});
+
+final getCoachInfoUseCaseProvider = Provider<GetCoachInfoUseCase>((ref) {
+  return GetCoachInfoUseCase(repository: ref.read(homeRepositoryProvider));
 });

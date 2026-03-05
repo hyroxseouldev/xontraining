@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
+import 'package:xontraining/src/core/router/app_router.dart';
 import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
 import 'package:xontraining/src/feature/home/infra/entity/program_detail_entity.dart';
 import 'package:xontraining/src/feature/home/presentation/provider/program_detail_provider.dart';
@@ -29,6 +31,19 @@ class ProgramDetailView extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 56,
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              context.pushNamed(
+                AppRoutes.programCoachName,
+                pathParameters: {'programId': programId},
+              );
+            },
+            icon: const Icon(Icons.person_outline, size: 18),
+            label: Text(l10n.homeCoachInfoAction),
+          ),
+          const SizedBox(width: 4),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
           child: Align(
@@ -48,7 +63,7 @@ class ProgramDetailView extends HookConsumerWidget {
         ),
       ),
       body: detailState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const _ProgramDetailLoadingSkeleton(),
         error: (error, stackTrace) => EmptyState(message: l10n.homeLoadFailed),
         data: (payload) {
           if (!payload.canAccess) {
@@ -69,6 +84,37 @@ class ProgramDetailView extends HookConsumerWidget {
             firstDayOfWeek: firstDayOfWeek,
           );
         },
+      ),
+    );
+  }
+}
+
+class _ProgramDetailLoadingSkeleton extends StatelessWidget {
+  const _ProgramDetailLoadingSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          _ShimmerBox(height: 88),
+          SizedBox(height: 14),
+          _ShimmerBox(height: 24, width: 210),
+          SizedBox(height: 10),
+          _ShimmerBox(height: 16, width: 150),
+          SizedBox(height: 18),
+          _ShimmerBox(height: 18),
+          SizedBox(height: 8),
+          _ShimmerBox(height: 18),
+          SizedBox(height: 8),
+          _ShimmerBox(height: 18, width: 260),
+          SizedBox(height: 18),
+          _ShimmerBox(height: 18),
+          SizedBox(height: 8),
+          _ShimmerBox(height: 18, width: 230),
+        ],
       ),
     );
   }
@@ -242,4 +288,84 @@ String _toPlainText(String html) {
       .replaceAll('&#39;', "'");
   text = text.replaceAll(RegExp(r'\n{3,}'), '\n\n');
   return text.trim();
+}
+
+class _ShimmerBox extends StatefulWidget {
+  const _ShimmerBox({this.height, this.width});
+
+  final double? height;
+  final double? width;
+
+  @override
+  State<_ShimmerBox> createState() => _ShimmerBoxState();
+}
+
+class _ShimmerBoxState extends State<_ShimmerBox>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final baseColor = Theme.of(context).colorScheme.surfaceContainerHighest;
+    final highlightColor = Theme.of(context).colorScheme.surfaceContainer;
+
+    return SizedBox(
+      height: widget.height,
+      width: widget.width,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
+
+          return AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              final shimmerX = (width * 2 * _controller.value) - width;
+
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    ColoredBox(color: baseColor),
+                    Transform.translate(
+                      offset: Offset(shimmerX, 0),
+                      child: Container(
+                        width: width,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              baseColor.withValues(alpha: 0),
+                              highlightColor.withValues(alpha: 0.9),
+                              baseColor.withValues(alpha: 0),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 }

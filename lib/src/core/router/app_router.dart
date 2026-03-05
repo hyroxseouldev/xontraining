@@ -5,6 +5,7 @@ import 'package:xontraining/src/core/supabase/supabase_provider.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/onboarding_provider.dart';
 import 'package:xontraining/src/feature/auth/presentation/view/login_view.dart';
 import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
+import 'package:xontraining/src/feature/home/presentation/view/program_coach_view.dart';
 import 'package:xontraining/src/feature/home/presentation/view/home_view.dart';
 import 'package:xontraining/src/feature/home/presentation/view/program_detail_view.dart';
 import 'package:xontraining/src/feature/notice/infra/entity/notice_entity.dart';
@@ -110,6 +111,11 @@ GoRouter goRouter(Ref ref) {
         },
       ),
       GoRoute(
+        path: AppRoutes.programCoach,
+        name: AppRoutes.programCoachName,
+        builder: (context, state) => const ProgramCoachView(),
+      ),
+      GoRoute(
         path: AppRoutes.profile,
         name: AppRoutes.profileName,
         builder: (context, state) => const ProfileView(),
@@ -166,6 +172,7 @@ abstract final class AppRoutes {
   static const String termsOfService = '/settings/terms';
   static const String privacyPolicy = '/settings/privacy';
   static const String programDetail = '/program/:programId';
+  static const String programCoach = '/program/:programId/coach';
   static const String onboarding = '/onboarding';
 
   static const String loginName = 'login';
@@ -180,5 +187,6 @@ abstract final class AppRoutes {
   static const String termsOfServiceName = 'termsOfService';
   static const String privacyPolicyName = 'privacyPolicy';
   static const String programDetailName = 'programDetail';
+  static const String programCoachName = 'programCoach';
   static const String onboardingName = 'onboarding';
 }

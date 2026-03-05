@@ -134,6 +134,27 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeProgramDetailNoSessionForSelectedDate => '선택한 날짜에 세션이 없습니다.';
 
   @override
+  String get homeCoachInfoAction => '코치';
+
+  @override
+  String get homeCoachInfoTitle => '코치 정보';
+
+  @override
+  String get homeCoachInfoEmpty => '등록된 코치 정보가 없습니다.';
+
+  @override
+  String get homeCoachInfoName => '이름';
+
+  @override
+  String get homeCoachInfoCareer => '경력';
+
+  @override
+  String get homeCoachInfoInstagram => '인스타그램';
+
+  @override
+  String get homeCoachInfoInstagramOpenFailed => '인스타그램을 열 수 없습니다.';
+
+  @override
   String get homeProgramDetailSelectDate => '날짜 선택';
 
   @override
@@ -379,7 +400,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workoutRecordValue => '값';
 
   @override
-  String get workoutRecordValueSeconds => '초(Seconds)';
+  String get workoutRecordValueSeconds => '시간 (mm:ss)';
 
   @override
   String get workoutRecordUnit => '단위';
@@ -395,6 +416,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get workoutRecordInvalidNumber => '0보다 큰 숫자를 입력해 주세요.';
+
+  @override
+  String get workoutRecordInvalidDurationFormat =>
+      'mm:ss 형식으로 입력해 주세요. 예: 18:55';
 
   @override
   String get workoutRecordCancel => '취소';

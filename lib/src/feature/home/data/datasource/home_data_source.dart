@@ -19,6 +19,10 @@ abstract interface class HomeDataSource {
     required String tenantId,
     required String programId,
   });
+
+  Future<Map<String, dynamic>?> getCoachInfoByTenant({
+    required String tenantId,
+  });
 }
 
 class SupabaseHomeDataSource implements HomeDataSource {
@@ -89,6 +93,17 @@ class SupabaseHomeDataSource implements HomeDataSource {
         .order('session_date', ascending: true);
 
     return rows;
+  }
+
+  @override
+  Future<Map<String, dynamic>?> getCoachInfoByTenant({
+    required String tenantId,
+  }) {
+    return supabase
+        .from('tenant_branding')
+        .select('coach_image_url,coach_name,coach_career,coach_instagram')
+        .eq('tenant_id', tenantId)
+        .maybeSingle();
   }
 }
 

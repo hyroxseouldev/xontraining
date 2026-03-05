@@ -257,10 +257,11 @@ class WorkoutRecordView extends HookConsumerWidget {
   static String _valueLabel(WorkoutRecordEntity record) {
     if (record.usesDuration) {
       final seconds = record.valueSeconds ?? 0;
-      final minutes = seconds ~/ 60;
-      final remain = seconds % 60;
-      final padded = remain.toString().padLeft(2, '0');
-      return '$minutes:$padded ${record.unit}';
+      final formatted = _formatDurationMmSs(seconds);
+      if (record.unit.trim().toLowerCase() == 'sec') {
+        return formatted;
+      }
+      return '$formatted ${record.unit}';
     }
 
     final numeric = record.valueNumeric ?? 0;
@@ -289,7 +290,7 @@ class WorkoutRecordView extends HookConsumerWidget {
 
     final rawValue = result.rawValue;
     final valueSeconds = result.metricType == WorkoutRecordMetricType.duration
-        ? int.tryParse(rawValue)
+        ? _tryParseDurationMmSs(rawValue)
         : null;
     final valueNumeric = result.metricType == WorkoutRecordMetricType.duration
         ? null
@@ -395,6 +396,33 @@ class WorkoutRecordView extends HookConsumerWidget {
     }
   }
 
+  static int? _tryParseDurationMmSs(String? input) {
+    final raw = input?.trim() ?? '';
+    if (raw.isEmpty) {
+      return null;
+    }
+
+    final match = RegExp(r'^(\d+):([0-5]\d)$').firstMatch(raw);
+    if (match == null) {
+      return null;
+    }
+
+    final minutes = int.parse(match.group(1)!);
+    final seconds = int.parse(match.group(2)!);
+    final totalSeconds = (minutes * 60) + seconds;
+    if (totalSeconds <= 0) {
+      return null;
+    }
+
+    return totalSeconds;
+  }
+
+  static String _formatDurationMmSs(int totalSeconds) {
+    final minutes = totalSeconds ~/ 60;
+    final remainSeconds = totalSeconds % 60;
+    return '$minutes:${remainSeconds.toString().padLeft(2, '0')}';
+  }
+
   static _MetricVisual _metricVisual(
     BuildContext context,
     WorkoutRecordMetricType metricType,
@@ -437,7 +465,9 @@ class _WorkoutRecordDialog extends HookWidget {
     final memoController = useTextEditingController(text: existing?.memo ?? '');
     final valueController = useTextEditingController(
       text: existing?.usesDuration == true
-          ? (existing?.valueSeconds ?? 0).toString()
+          ? ((existing?.valueSeconds ?? 0) > 0
+                ? WorkoutRecordView._formatDurationMmSs(existing!.valueSeconds!)
+                : '')
           : (existing?.valueNumeric?.toString() ?? ''),
     );
     final unitController = useTextEditingController(
@@ -516,7 +546,7 @@ class _WorkoutRecordDialog extends HookWidget {
                 controller: valueController,
                 keyboardType:
                     metricType.value == WorkoutRecordMetricType.duration
-                    ? TextInputType.number
+                    ? TextInputType.datetime
                     : const TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
                   labelText:
@@ -530,9 +560,11 @@ class _WorkoutRecordDialog extends HookWidget {
                     return l10n.workoutRecordRequired;
                   }
                   if (metricType.value == WorkoutRecordMetricType.duration) {
-                    final seconds = int.tryParse(raw);
-                    if (seconds == null || seconds <= 0) {
-                      return l10n.workoutRecordInvalidNumber;
+                    final seconds = WorkoutRecordView._tryParseDurationMmSs(
+                      raw,
+                    );
+                    if (seconds == null) {
+                      return l10n.workoutRecordInvalidDurationFormat;
                     }
                     return null;
                   }

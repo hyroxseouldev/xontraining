@@ -138,6 +138,27 @@ class AppLocalizationsEn extends AppLocalizations {
       'No session for the selected date.';
 
   @override
+  String get homeCoachInfoAction => 'Coach';
+
+  @override
+  String get homeCoachInfoTitle => 'Coach Info';
+
+  @override
+  String get homeCoachInfoEmpty => 'Coach information is not available yet.';
+
+  @override
+  String get homeCoachInfoName => 'Name';
+
+  @override
+  String get homeCoachInfoCareer => 'Career';
+
+  @override
+  String get homeCoachInfoInstagram => 'Instagram';
+
+  @override
+  String get homeCoachInfoInstagramOpenFailed => 'Could not open Instagram.';
+
+  @override
   String get homeProgramDetailSelectDate => 'Select date';
 
   @override
@@ -389,7 +410,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutRecordValue => 'Value';
 
   @override
-  String get workoutRecordValueSeconds => 'Seconds';
+  String get workoutRecordValueSeconds => 'Time (mm:ss)';
 
   @override
   String get workoutRecordUnit => 'Unit';
@@ -406,6 +427,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get workoutRecordInvalidNumber =>
       'Enter a valid number greater than 0.';
+
+  @override
+  String get workoutRecordInvalidDurationFormat =>
+      'Enter time in mm:ss format, e.g. 18:55.';
 
   @override
   String get workoutRecordCancel => 'Cancel';

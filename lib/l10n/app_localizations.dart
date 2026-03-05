@@ -338,6 +338,48 @@ abstract class AppLocalizations {
   /// **'No session for the selected date.'**
   String get homeProgramDetailNoSessionForSelectedDate;
 
+  /// No description provided for @homeCoachInfoAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach'**
+  String get homeCoachInfoAction;
+
+  /// No description provided for @homeCoachInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach Info'**
+  String get homeCoachInfoTitle;
+
+  /// No description provided for @homeCoachInfoEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach information is not available yet.'**
+  String get homeCoachInfoEmpty;
+
+  /// No description provided for @homeCoachInfoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get homeCoachInfoName;
+
+  /// No description provided for @homeCoachInfoCareer.
+  ///
+  /// In en, this message translates to:
+  /// **'Career'**
+  String get homeCoachInfoCareer;
+
+  /// No description provided for @homeCoachInfoInstagram.
+  ///
+  /// In en, this message translates to:
+  /// **'Instagram'**
+  String get homeCoachInfoInstagram;
+
+  /// No description provided for @homeCoachInfoInstagramOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open Instagram.'**
+  String get homeCoachInfoInstagramOpenFailed;
+
   /// No description provided for @homeProgramDetailSelectDate.
   ///
   /// In en, this message translates to:
@@ -785,7 +827,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutRecordValueSeconds.
   ///
   /// In en, this message translates to:
-  /// **'Seconds'**
+  /// **'Time (mm:ss)'**
   String get workoutRecordValueSeconds;
 
   /// No description provided for @workoutRecordUnit.
@@ -817,6 +859,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter a valid number greater than 0.'**
   String get workoutRecordInvalidNumber;
+
+  /// No description provided for @workoutRecordInvalidDurationFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter time in mm:ss format, e.g. 18:55.'**
+  String get workoutRecordInvalidDurationFormat;
 
   /// No description provided for @workoutRecordCancel.
   ///

@@ -1,6 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/src/core/tenant/tenant_provider.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/auth_session_provider.dart';
+import 'package:xontraining/src/feature/home/infra/entity/coach_info_entity.dart';
 import 'package:xontraining/src/feature/home/infra/entity/program_detail_entity.dart';
 import 'package:xontraining/src/feature/home/infra/usecase/program_detail_usecases.dart';
 
@@ -31,3 +32,8 @@ final programDetailPayloadProvider =
           .call(tenantId: tenantId, programId: programId);
       return ProgramDetailPayload(canAccess: true, sessions: sessions);
     });
+
+final coachInfoProvider = FutureProvider<CoachInfoEntity?>((ref) async {
+  final tenantId = ref.read(tenantIdProvider);
+  return ref.read(getCoachInfoUseCaseProvider).call(tenantId: tenantId);
+});
