@@ -208,29 +208,41 @@ class _ProgramSessionContentState extends State<_ProgramSessionContent> {
                 )
               : SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        selectedSession.normalizedTitle,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w700),
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.outlineVariant,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        _sessionMetaText(
-                          context: context,
-                          session: selectedSession,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          selectedSession.normalizedTitle,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w700),
                         ),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        const SizedBox(height: 8),
+                        Text(
+                          _sessionMetaText(
+                            context: context,
+                            session: selectedSession,
+                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
                         ),
-                      ),
-                      const SizedBox(height: 14),
-                      _SessionHtmlRenderer(
-                        html: selectedSession.normalizedContentHtml,
-                      ),
-                    ],
+                        const SizedBox(height: 14),
+                        _SessionHtmlRenderer(
+                          html: selectedSession.normalizedContentHtml,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
         ),
