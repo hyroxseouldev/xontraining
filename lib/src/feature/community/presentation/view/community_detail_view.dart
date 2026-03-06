@@ -1,0 +1,607 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:xontraining/l10n/app_localizations.dart';
+import 'package:xontraining/src/core/router/app_router.dart';
+import 'package:xontraining/src/feature/auth/presentation/provider/auth_session_provider.dart';
+import 'package:xontraining/src/feature/community/infra/entity/community_entity.dart';
+import 'package:xontraining/src/feature/community/presentation/provider/community_provider.dart';
+import 'package:xontraining/src/feature/community/presentation/view/community_view_helper.dart';
+import 'package:xontraining/src/feature/community/presentation/widget/community_image_viewer.dart';
+import 'package:xontraining/src/feature/community/presentation/widget/community_skeleton.dart';
+import 'package:xontraining/src/shared/empty_state.dart';
+
+class CommunityDetailView extends ConsumerStatefulWidget {
+  const CommunityDetailView({required this.postId, super.key});
+
+  final String postId;
+
+  @override
+  ConsumerState<CommunityDetailView> createState() =>
+      _CommunityDetailViewState();
+}
+
+class _CommunityDetailViewState extends ConsumerState<CommunityDetailView> {
+  late final TextEditingController _commentController;
+
+  @override
+  void initState() {
+    super.initState();
+    _commentController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final detailState = ref.watch(communityPostDetailProvider(widget.postId));
+    final commentsState = ref.watch(communityCommentsProvider(widget.postId));
+    final actionState = ref.watch(communityActionControllerProvider);
+    final currentUserId = ref.watch(authSessionProvider).asData?.value?.id;
+
+    ref.listen<AsyncValue<void>>(communityActionControllerProvider, (
+      previous,
+      next,
+    ) {
+      next.whenOrNull(
+        error: (error, stackTrace) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(l10n.communityActionFailed)));
+        },
+      );
+    });
+
+    return Scaffold(
+      appBar: AppBar(toolbarHeight: 56),
+      body: detailState.when(
+        loading: () => const CommunityDetailLoadingSkeleton(),
+        error: (error, stackTrace) =>
+            EmptyState(message: l10n.communityLoadFailed),
+        data: (post) {
+          final isMyPost =
+              currentUserId != null && currentUserId == post.authorId;
+
+          return Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  children: [
+                    _PostHeader(
+                      post: post,
+                      isMyPost: isMyPost,
+                      onLikePressed: () {
+                        ref
+                            .read(communityActionControllerProvider.notifier)
+                            .toggleLike(
+                              postId: post.id,
+                              currentLike: post.isLikedByMe,
+                            );
+                      },
+                      onEditPressed: () {
+                        context.pushNamed(
+                          AppRoutes.communityEditName,
+                          pathParameters: {'postId': post.id},
+                          extra: {
+                            'content': post.normalizedContent,
+                            'images': post.normalizedImageUrls,
+                          },
+                        );
+                      },
+                      onDeletePressed: () => _onDeletePostPressed(
+                        context,
+                        post.id,
+                        post.normalizedImageUrls,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.communityComments,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    commentsState.when(
+                      loading: () => const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: CommunityCommentLoadingSkeleton(),
+                      ),
+                      error: (error, stackTrace) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Text(
+                          l10n.communityCommentLoadFailed,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                      data: (comments) {
+                        if (comments.isEmpty) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              l10n.communityCommentEmpty,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          );
+                        }
+                        return Column(
+                          children: comments
+                              .map(
+                                (comment) => _CommentItem(
+                                  comment: comment,
+                                  isMine: currentUserId == comment.authorId,
+                                  onDeletePressed: () =>
+                                      _onDeleteCommentPressed(
+                                        context,
+                                        commentId: comment.id,
+                                      ),
+                                ),
+                              )
+                              .toList(growable: false),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _commentController,
+                          enabled: !actionState.isLoading,
+                          maxLines: 3,
+                          minLines: 1,
+                          decoration: InputDecoration(
+                            hintText: l10n.communityCommentHint,
+                            border: const OutlineInputBorder(),
+                            isDense: true,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton(
+                        onPressed: actionState.isLoading
+                            ? null
+                            : () => _onCommentSubmitPressed(context),
+                        child: Text(l10n.communityCommentSend),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _onDeletePostPressed(
+    BuildContext context,
+    String postId,
+    List<String> imageUrls,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(l10n.communityDeletePostTitle),
+          content: Text(l10n.communityDeletePostBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(l10n.communityCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(l10n.communityDelete),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true) {
+      return;
+    }
+
+    await ref
+        .read(communityActionControllerProvider.notifier)
+        .deletePost(postId: postId, imageUrls: imageUrls);
+    if (!context.mounted) {
+      return;
+    }
+    if (!ref.read(communityActionControllerProvider).hasError) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _onDeleteCommentPressed(
+    BuildContext context, {
+    required String commentId,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    await ref
+        .read(communityActionControllerProvider.notifier)
+        .deleteComment(postId: widget.postId, commentId: commentId);
+    if (!context.mounted) {
+      return;
+    }
+    if (!ref.read(communityActionControllerProvider).hasError) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.communityCommentDeleted)));
+    }
+  }
+
+  Future<void> _onCommentSubmitPressed(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final content = _commentController.text.trim();
+    if (content.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.communityCommentRequired)));
+      return;
+    }
+
+    await ref
+        .read(communityActionControllerProvider.notifier)
+        .createComment(postId: widget.postId, content: content);
+    if (!mounted) {
+      return;
+    }
+    if (!ref.read(communityActionControllerProvider).hasError) {
+      _commentController.clear();
+    }
+  }
+}
+
+class _PostHeader extends StatelessWidget {
+  const _PostHeader({
+    required this.post,
+    required this.isMyPost,
+    required this.onLikePressed,
+    required this.onEditPressed,
+    required this.onDeletePressed,
+  });
+
+  final CommunityPostEntity post;
+  final bool isMyPost;
+  final VoidCallback onLikePressed;
+  final VoidCallback onEditPressed;
+  final VoidCallback onDeletePressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context);
+    final l10n = AppLocalizations.of(context)!;
+    final dateText = DateFormat(
+      'MMMM dd, yyyy, HH:mm',
+      locale.languageCode,
+    ).format(post.createdAt.toLocal());
+    final timeAgo = buildCommunityTimeAgo(
+      createdAt: post.createdAt,
+      now: DateTime.now(),
+      l10n: l10n,
+    );
+
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  _CommunityAvatar(
+                    imageUrl: post.normalizedAuthorAvatarUrl,
+                    radius: 17,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          post.normalizedAuthorName,
+                          style: Theme.of(context).textTheme.labelLarge
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '$dateText · $timeAgo',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (isMyPost)
+                    PopupMenuButton<String>(
+                      onSelected: (value) {
+                        if (value == 'edit') {
+                          onEditPressed();
+                          return;
+                        }
+                        onDeletePressed();
+                      },
+                      itemBuilder: (context) {
+                        final l10n = AppLocalizations.of(context)!;
+                        return [
+                          PopupMenuItem<String>(
+                            value: 'edit',
+                            child: Text(l10n.communityEdit),
+                          ),
+                          PopupMenuItem<String>(
+                            value: 'delete',
+                            child: Text(l10n.communityDelete),
+                          ),
+                        ];
+                      },
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Html(
+                data: post.normalizedContent,
+                style: {
+                  'body': Style(
+                    margin: Margins.zero,
+                    padding: HtmlPaddings.zero,
+                  ),
+                  'p': Style(margin: Margins.only(bottom: 8)),
+                },
+              ),
+              if (post.normalizedImageUrls.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                _DetailImageGallery(imageUrls: post.normalizedImageUrls),
+              ],
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: onLikePressed,
+                    icon: Icon(
+                      post.isLikedByMe
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                      size: 20,
+                    ),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  Text('${post.likeCount}'),
+                  const SizedBox(width: 12),
+                  const Icon(Icons.chat_bubble_outline, size: 18),
+                  const SizedBox(width: 6),
+                  Text('${post.commentCount}'),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DetailImageGallery extends StatelessWidget {
+  const _DetailImageGallery({required this.imageUrls});
+
+  final List<String> imageUrls;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 220,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: imageUrls.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final imageUrl = imageUrls[index];
+          return InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: () => showCommunityImageViewer(
+              context,
+              imageUrls: imageUrls,
+              initialIndex: index,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: AspectRatio(
+                aspectRatio: 4 / 3,
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, imageUrl) => const ColoredBox(
+                    color: Colors.black12,
+                    child: Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                  errorWidget: (context, imageUrl, error) => const ColoredBox(
+                    color: Colors.black12,
+                    child: Center(child: Icon(Icons.broken_image_outlined)),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _CommunityAvatar extends StatelessWidget {
+  const _CommunityAvatar({required this.imageUrl, required this.radius});
+
+  final String imageUrl;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
+    final isValidUrl =
+        imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
+    if (!isValidUrl) {
+      return CircleAvatar(
+        radius: radius,
+        backgroundColor: Colors.transparent,
+        child: Icon(Icons.person_outline, size: radius),
+      );
+    }
+
+    return ClipOval(
+      child: SizedBox(
+        width: radius * 2,
+        height: radius * 2,
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.cover,
+          placeholder: (context, imageUrl) => CircleAvatar(
+            radius: radius,
+            backgroundColor: Colors.transparent,
+            child: Icon(Icons.person_outline, size: radius),
+          ),
+          errorWidget: (context, imageUrl, error) => CircleAvatar(
+            radius: radius,
+            backgroundColor: Colors.transparent,
+            child: Icon(Icons.person_outline, size: radius),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CommentAvatar extends StatelessWidget {
+  const _CommentAvatar({required this.imageUrl});
+
+  final String imageUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    final isValidUrl =
+        imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
+    if (!isValidUrl) {
+      return const CircleAvatar(
+        radius: 14,
+        backgroundColor: Colors.transparent,
+        child: Icon(Icons.person_outline, size: 14),
+      );
+    }
+
+    return ClipOval(
+      child: SizedBox(
+        width: 28,
+        height: 28,
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.cover,
+          placeholder: (context, imageUrl) => const CircleAvatar(
+            radius: 14,
+            backgroundColor: Colors.transparent,
+            child: Icon(Icons.person_outline, size: 14),
+          ),
+          errorWidget: (context, imageUrl, error) => const CircleAvatar(
+            radius: 14,
+            backgroundColor: Colors.transparent,
+            child: Icon(Icons.person_outline, size: 14),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CommentItem extends StatelessWidget {
+  const _CommentItem({
+    required this.comment,
+    required this.isMine,
+    required this.onDeletePressed,
+  });
+
+  final CommunityCommentEntity comment;
+  final bool isMine;
+  final VoidCallback onDeletePressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context);
+    final dateText = DateFormat(
+      'MMMM dd, yyyy, HH:mm',
+      locale.languageCode,
+    ).format(comment.createdAt.toLocal());
+    final l10n = AppLocalizations.of(context)!;
+    final timeAgo = buildCommunityTimeAgo(
+      createdAt: comment.createdAt,
+      now: DateTime.now(),
+      l10n: l10n,
+    );
+
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  _CommentAvatar(imageUrl: comment.normalizedAuthorAvatarUrl),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      comment.normalizedAuthorName,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '$dateText · $timeAgo',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  if (isMine)
+                    IconButton(
+                      onPressed: onDeletePressed,
+                      icon: const Icon(Icons.delete_outline, size: 18),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(comment.normalizedContent),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -89,6 +89,130 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noticeNoContent => '내용이 없습니다.';
 
   @override
+  String get communityTitle => '커뮤니티';
+
+  @override
+  String get communityWrite => '작성';
+
+  @override
+  String get communityWritePost => '게시글 작성';
+
+  @override
+  String get communityEditPost => '게시글 수정';
+
+  @override
+  String get communitySave => '저장';
+
+  @override
+  String get communitySaving => '저장 중...';
+
+  @override
+  String get communityRetry => '다시 시도';
+
+  @override
+  String get communityLoadFailed => '커뮤니티 글을 불러오지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get communityEmpty => '아직 게시글이 없습니다.';
+
+  @override
+  String get communityActionFailed => '처리에 실패했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get communityContentHint => '내용을 입력해 주세요.';
+
+  @override
+  String get communityContentRequired => '게시글 내용을 입력해 주세요.';
+
+  @override
+  String get communityEdit => '수정';
+
+  @override
+  String get communityDelete => '삭제';
+
+  @override
+  String get communityCancel => '취소';
+
+  @override
+  String get communityDeletePostTitle => '이 게시글을 삭제할까요?';
+
+  @override
+  String get communityDeletePostBody => '이 게시글은 영구적으로 삭제됩니다.';
+
+  @override
+  String get communityComments => '댓글';
+
+  @override
+  String get communityCommentHint => '댓글을 입력해 주세요';
+
+  @override
+  String get communityCommentSend => '등록';
+
+  @override
+  String get communityCommentRequired => '댓글 내용을 입력해 주세요.';
+
+  @override
+  String get communityCommentLoadFailed => '댓글을 불러오지 못했습니다.';
+
+  @override
+  String get communityCommentEmpty => '아직 댓글이 없습니다.';
+
+  @override
+  String get communityCommentDeleted => '댓글이 삭제되었습니다.';
+
+  @override
+  String get communityAddImages => '이미지 추가';
+
+  @override
+  String get communityImageUnsupportedType => 'JPG, PNG, WEBP 형식만 지원합니다.';
+
+  @override
+  String get communityImagePickFailed => '이미지를 선택하지 못했습니다.';
+
+  @override
+  String get communityImageUploadFailed => '이미지 업로드에 실패했습니다.';
+
+  @override
+  String communityImageCount(int current, int max) {
+    return '$current/$max';
+  }
+
+  @override
+  String communityImageLimitReached(int max) {
+    return '이미지는 최대 $max장까지 업로드할 수 있습니다.';
+  }
+
+  @override
+  String communityImageTooLarge(int maxMb) {
+    return '이미지 1장은 ${maxMb}MB 이하여야 합니다.';
+  }
+
+  @override
+  String communityTimeAgoSeconds(int seconds) {
+    return '$seconds초 전';
+  }
+
+  @override
+  String communityTimeAgoMinutes(int minutes) {
+    return '$minutes분 전';
+  }
+
+  @override
+  String communityTimeAgoHours(int hours) {
+    return '$hours시간 전';
+  }
+
+  @override
+  String communityTimeAgoDays(int days) {
+    return '$days일 전';
+  }
+
+  @override
+  String communityTimeAgoWeeks(int weeks) {
+    return '$weeks주 전';
+  }
+
+  @override
   String noticePublishedAt(Object date) {
     return '등록일 $date';
   }
@@ -312,7 +436,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsDeleteAccountSubtitle => '계정과 관련 데이터가 영구 삭제됩니다.';
 
   @override
-  String get settingsDeleteAccountMemberOnly => 'member 권한 계정만 삭제할 수 있습니다.';
+  String get settingsDeleteAccountMemberOnly => '코치/오너 권한 계정은 삭제할 수 없습니다.';
 
   @override
   String get settingsDeleteAccountDialogTitle => '계정을 영구 삭제할까요?';

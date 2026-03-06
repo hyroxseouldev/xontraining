@@ -4,6 +4,9 @@ import 'package:xontraining/src/core/router/go_router_refresh_stream.dart';
 import 'package:xontraining/src/core/supabase/supabase_provider.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/onboarding_provider.dart';
 import 'package:xontraining/src/feature/auth/presentation/view/login_view.dart';
+import 'package:xontraining/src/feature/community/presentation/view/community_detail_view.dart';
+import 'package:xontraining/src/feature/community/presentation/view/community_view.dart';
+import 'package:xontraining/src/feature/community/presentation/view/community_write_view.dart';
 import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
 import 'package:xontraining/src/feature/home/presentation/view/program_coach_view.dart';
 import 'package:xontraining/src/feature/home/presentation/view/home_view.dart';
@@ -85,6 +88,64 @@ GoRouter goRouter(Ref ref) {
         builder: (context, state) => const NoticeView(),
       ),
       GoRoute(
+        path: AppRoutes.community,
+        name: AppRoutes.communityName,
+        builder: (context, state) => const CommunityView(),
+      ),
+      GoRoute(
+        path: AppRoutes.communityWrite,
+        name: AppRoutes.communityWriteName,
+        builder: (context, state) => const CommunityWriteView(),
+      ),
+      GoRoute(
+        path: AppRoutes.communityDetail,
+        name: AppRoutes.communityDetailName,
+        redirect: (context, state) {
+          final postId = state.pathParameters['postId'] ?? '';
+          if (!AppRoutes.isValidUuid(postId)) {
+            return AppRoutes.community;
+          }
+          return null;
+        },
+        builder: (context, state) =>
+            CommunityDetailView(postId: state.pathParameters['postId'] ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.communityEdit,
+        name: AppRoutes.communityEditName,
+        redirect: (context, state) {
+          final postId = state.pathParameters['postId'] ?? '';
+          if (!AppRoutes.isValidUuid(postId)) {
+            return AppRoutes.community;
+          }
+          return null;
+        },
+        builder: (context, state) {
+          String? initialContent;
+          List<String> initialImageUrls = const [];
+          if (state.extra is Map<String, dynamic>) {
+            final extra = state.extra! as Map<String, dynamic>;
+            final content = extra['content'];
+            final images = extra['images'];
+            if (content is String) {
+              initialContent = content;
+            }
+            if (images is List) {
+              initialImageUrls = images
+                  .whereType<String>()
+                  .map((url) => url.trim())
+                  .where((url) => url.isNotEmpty)
+                  .toList(growable: false);
+            }
+          }
+          return CommunityWriteView(
+            postId: state.pathParameters['postId'] ?? '',
+            initialContent: initialContent,
+            initialImageUrls: initialImageUrls,
+          );
+        },
+      ),
+      GoRoute(
         path: AppRoutes.noticeDetail,
         name: AppRoutes.noticeDetailName,
         builder: (context, state) {
@@ -163,6 +224,10 @@ abstract final class AppRoutes {
   static const String login = '/login';
   static const String home = '/home';
   static const String notice = '/notices';
+  static const String community = '/community';
+  static const String communityWrite = '/community/write';
+  static const String communityDetail = '/community/post/:postId';
+  static const String communityEdit = '/community/post/:postId/edit';
   static const String noticeDetail = '/notices/:noticeId';
   static const String profile = '/profile';
   static const String profileEdit = '/profile/edit';
@@ -178,6 +243,10 @@ abstract final class AppRoutes {
   static const String loginName = 'login';
   static const String homeName = 'home';
   static const String noticeName = 'notice';
+  static const String communityName = 'community';
+  static const String communityDetailName = 'communityDetail';
+  static const String communityWriteName = 'communityWrite';
+  static const String communityEditName = 'communityEdit';
   static const String noticeDetailName = 'noticeDetail';
   static const String profileName = 'profile';
   static const String profileEditName = 'profileEdit';
@@ -189,4 +258,14 @@ abstract final class AppRoutes {
   static const String programDetailName = 'programDetail';
   static const String programCoachName = 'programCoach';
   static const String onboardingName = 'onboarding';
+
+  static final RegExp _uuidRegex = RegExp(
+    r'^[0-9a-fA-F]{8}-'
+    r'[0-9a-fA-F]{4}-'
+    r'[0-9a-fA-F]{4}-'
+    r'[0-9a-fA-F]{4}-'
+    r'[0-9a-fA-F]{12}$',
+  );
+
+  static bool isValidUuid(String value) => _uuidRegex.hasMatch(value);
 }

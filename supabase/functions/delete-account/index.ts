@@ -99,10 +99,12 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    if (membership == null || membership.role !== "member") {
+    const role = membership?.role;
+    const canDelete = membership == null || role === "member";
+    if (!canDelete) {
       return jsonResponse(403, {
         code: "FORBIDDEN_ROLE",
-        message: "Only members can delete their account.",
+        message: "Only member or unregistered users can delete their account.",
       });
     }
 

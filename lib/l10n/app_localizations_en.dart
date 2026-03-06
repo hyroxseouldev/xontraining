@@ -90,6 +90,133 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noticeNoContent => 'No content.';
 
   @override
+  String get communityTitle => 'Community';
+
+  @override
+  String get communityWrite => 'Write';
+
+  @override
+  String get communityWritePost => 'Write Post';
+
+  @override
+  String get communityEditPost => 'Edit Post';
+
+  @override
+  String get communitySave => 'Save';
+
+  @override
+  String get communitySaving => 'Saving...';
+
+  @override
+  String get communityRetry => 'Retry';
+
+  @override
+  String get communityLoadFailed =>
+      'Failed to load community posts. Please try again.';
+
+  @override
+  String get communityEmpty => 'No posts yet.';
+
+  @override
+  String get communityActionFailed => 'Action failed. Please try again.';
+
+  @override
+  String get communityContentHint => 'Share your thoughts.';
+
+  @override
+  String get communityContentRequired => 'Please enter post content.';
+
+  @override
+  String get communityEdit => 'Edit';
+
+  @override
+  String get communityDelete => 'Delete';
+
+  @override
+  String get communityCancel => 'Cancel';
+
+  @override
+  String get communityDeletePostTitle => 'Delete this post?';
+
+  @override
+  String get communityDeletePostBody =>
+      'This post will be deleted permanently.';
+
+  @override
+  String get communityComments => 'Comments';
+
+  @override
+  String get communityCommentHint => 'Write a comment';
+
+  @override
+  String get communityCommentSend => 'Send';
+
+  @override
+  String get communityCommentRequired => 'Please enter a comment.';
+
+  @override
+  String get communityCommentLoadFailed => 'Failed to load comments.';
+
+  @override
+  String get communityCommentEmpty => 'No comments yet.';
+
+  @override
+  String get communityCommentDeleted => 'Comment deleted.';
+
+  @override
+  String get communityAddImages => 'Add Images';
+
+  @override
+  String get communityImageUnsupportedType =>
+      'Only JPG, PNG, and WEBP are supported.';
+
+  @override
+  String get communityImagePickFailed => 'Failed to select images.';
+
+  @override
+  String get communityImageUploadFailed => 'Failed to upload images.';
+
+  @override
+  String communityImageCount(int current, int max) {
+    return '$current/$max';
+  }
+
+  @override
+  String communityImageLimitReached(int max) {
+    return 'You can upload up to $max images.';
+  }
+
+  @override
+  String communityImageTooLarge(int maxMb) {
+    return 'Each image must be ${maxMb}MB or less.';
+  }
+
+  @override
+  String communityTimeAgoSeconds(int seconds) {
+    return '${seconds}s ago';
+  }
+
+  @override
+  String communityTimeAgoMinutes(int minutes) {
+    return '${minutes}m ago';
+  }
+
+  @override
+  String communityTimeAgoHours(int hours) {
+    return '${hours}h ago';
+  }
+
+  @override
+  String communityTimeAgoDays(int days) {
+    return '${days}d ago';
+  }
+
+  @override
+  String communityTimeAgoWeeks(int weeks) {
+    return '${weeks}w ago';
+  }
+
+  @override
   String noticePublishedAt(Object date) {
     return 'Published $date';
   }
@@ -321,7 +448,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountMemberOnly =>
-      'Only member accounts can be deleted.';
+      'Coach and owner accounts cannot be deleted.';
 
   @override
   String get settingsDeleteAccountDialogTitle => 'Delete account permanently?';

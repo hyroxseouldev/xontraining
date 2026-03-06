@@ -254,6 +254,222 @@ abstract class AppLocalizations {
   /// **'No content.'**
   String get noticeNoContent;
 
+  /// No description provided for @communityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Community'**
+  String get communityTitle;
+
+  /// No description provided for @communityWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Write'**
+  String get communityWrite;
+
+  /// No description provided for @communityWritePost.
+  ///
+  /// In en, this message translates to:
+  /// **'Write Post'**
+  String get communityWritePost;
+
+  /// No description provided for @communityEditPost.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Post'**
+  String get communityEditPost;
+
+  /// No description provided for @communitySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get communitySave;
+
+  /// No description provided for @communitySaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get communitySaving;
+
+  /// No description provided for @communityRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get communityRetry;
+
+  /// No description provided for @communityLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load community posts. Please try again.'**
+  String get communityLoadFailed;
+
+  /// No description provided for @communityEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No posts yet.'**
+  String get communityEmpty;
+
+  /// No description provided for @communityActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Action failed. Please try again.'**
+  String get communityActionFailed;
+
+  /// No description provided for @communityContentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your thoughts.'**
+  String get communityContentHint;
+
+  /// No description provided for @communityContentRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter post content.'**
+  String get communityContentRequired;
+
+  /// No description provided for @communityEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get communityEdit;
+
+  /// No description provided for @communityDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get communityDelete;
+
+  /// No description provided for @communityCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get communityCancel;
+
+  /// No description provided for @communityDeletePostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this post?'**
+  String get communityDeletePostTitle;
+
+  /// No description provided for @communityDeletePostBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This post will be deleted permanently.'**
+  String get communityDeletePostBody;
+
+  /// No description provided for @communityComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get communityComments;
+
+  /// No description provided for @communityCommentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a comment'**
+  String get communityCommentHint;
+
+  /// No description provided for @communityCommentSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get communityCommentSend;
+
+  /// No description provided for @communityCommentRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a comment.'**
+  String get communityCommentRequired;
+
+  /// No description provided for @communityCommentLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load comments.'**
+  String get communityCommentLoadFailed;
+
+  /// No description provided for @communityCommentEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet.'**
+  String get communityCommentEmpty;
+
+  /// No description provided for @communityCommentDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment deleted.'**
+  String get communityCommentDeleted;
+
+  /// No description provided for @communityAddImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Images'**
+  String get communityAddImages;
+
+  /// No description provided for @communityImageUnsupportedType.
+  ///
+  /// In en, this message translates to:
+  /// **'Only JPG, PNG, and WEBP are supported.'**
+  String get communityImageUnsupportedType;
+
+  /// No description provided for @communityImagePickFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to select images.'**
+  String get communityImagePickFailed;
+
+  /// No description provided for @communityImageUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload images.'**
+  String get communityImageUploadFailed;
+
+  /// No description provided for @communityImageCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{current}/{max}'**
+  String communityImageCount(int current, int max);
+
+  /// No description provided for @communityImageLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You can upload up to {max} images.'**
+  String communityImageLimitReached(int max);
+
+  /// No description provided for @communityImageTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Each image must be {maxMb}MB or less.'**
+  String communityImageTooLarge(int maxMb);
+
+  /// No description provided for @communityTimeAgoSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds}s ago'**
+  String communityTimeAgoSeconds(int seconds);
+
+  /// No description provided for @communityTimeAgoMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes}m ago'**
+  String communityTimeAgoMinutes(int minutes);
+
+  /// No description provided for @communityTimeAgoHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h ago'**
+  String communityTimeAgoHours(int hours);
+
+  /// No description provided for @communityTimeAgoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d ago'**
+  String communityTimeAgoDays(int days);
+
+  /// No description provided for @communityTimeAgoWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'{weeks}w ago'**
+  String communityTimeAgoWeeks(int weeks);
+
   /// No description provided for @noticePublishedAt.
   ///
   /// In en, this message translates to:
@@ -653,7 +869,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDeleteAccountMemberOnly.
   ///
   /// In en, this message translates to:
-  /// **'Only member accounts can be deleted.'**
+  /// **'Coach and owner accounts cannot be deleted.'**
   String get settingsDeleteAccountMemberOnly;
 
   /// No description provided for @settingsDeleteAccountDialogTitle.

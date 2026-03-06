@@ -31,6 +31,101 @@
   "noticeRetry": "Retry",
   "noticeEmpty": "No news yet.",
   "noticeNoContent": "No content.",
+  "communityTitle": "Community",
+  "communityWrite": "Write",
+  "communityWritePost": "Write Post",
+  "communityEditPost": "Edit Post",
+  "communitySave": "Save",
+  "communitySaving": "Saving...",
+  "communityRetry": "Retry",
+  "communityLoadFailed": "Failed to load community posts. Please try again.",
+  "communityEmpty": "No posts yet.",
+  "communityActionFailed": "Action failed. Please try again.",
+  "communityContentHint": "Share your thoughts.",
+  "communityContentRequired": "Please enter post content.",
+  "communityEdit": "Edit",
+  "communityDelete": "Delete",
+  "communityCancel": "Cancel",
+  "communityDeletePostTitle": "Delete this post?",
+  "communityDeletePostBody": "This post will be deleted permanently.",
+  "communityComments": "Comments",
+  "communityCommentHint": "Write a comment",
+  "communityCommentSend": "Send",
+  "communityCommentRequired": "Please enter a comment.",
+  "communityCommentLoadFailed": "Failed to load comments.",
+  "communityCommentEmpty": "No comments yet.",
+  "communityCommentDeleted": "Comment deleted.",
+  "communityAddImages": "Add Images",
+  "communityImageUnsupportedType": "Only JPG, PNG, and WEBP are supported.",
+  "communityImagePickFailed": "Failed to select images.",
+  "communityImageUploadFailed": "Failed to upload images.",
+  "communityImageCount": "{current}/{max}",
+  "@communityImageCount": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "communityImageLimitReached": "You can upload up to {max} images.",
+  "@communityImageLimitReached": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "communityImageTooLarge": "Each image must be {maxMb}MB or less.",
+  "@communityImageTooLarge": {
+    "placeholders": {
+      "maxMb": {
+        "type": "int"
+      }
+    }
+  },
+  "communityTimeAgoSeconds": "{seconds}s ago",
+  "@communityTimeAgoSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "communityTimeAgoMinutes": "{minutes}m ago",
+  "@communityTimeAgoMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "communityTimeAgoHours": "{hours}h ago",
+  "@communityTimeAgoHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "communityTimeAgoDays": "{days}d ago",
+  "@communityTimeAgoDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "communityTimeAgoWeeks": "{weeks}w ago",
+  "@communityTimeAgoWeeks": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
   "noticePublishedAt": "Published {date}",
   "@noticePublishedAt": {
     "placeholders": {
@@ -168,7 +263,7 @@
   "settingsPrivacyPolicyBody": "Privacy policy content will be provided and updated by your organization.",
   "settingsDeleteAccount": "Delete account",
   "settingsDeleteAccountSubtitle": "Permanently delete your account and all related data.",
-  "settingsDeleteAccountMemberOnly": "Only member accounts can be deleted.",
+  "settingsDeleteAccountMemberOnly": "Coach and owner accounts cannot be deleted.",
   "settingsDeleteAccountDialogTitle": "Delete account permanently?",
   "settingsDeleteAccountDialogBody": "Deleting your account is immediate and cannot be undone. Purchase history, workout records, profile information, offline classes you created, and class registrations will all be deleted. Your previous data cannot be restored even if you sign in again.",
   "settingsDeleteAccountCancel": "Cancel",

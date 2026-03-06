@@ -39,6 +39,11 @@ class HomeView extends HookConsumerWidget {
         ),
         actions: [
           IconButton(
+            onPressed: () => context.pushNamed(AppRoutes.communityName),
+            icon: const Icon(Icons.forum_outlined),
+            tooltip: l10n.communityTitle,
+          ),
+          IconButton(
             onPressed: () => context.pushNamed(AppRoutes.noticeName),
             icon: const Icon(Icons.campaign_outlined),
             tooltip: l10n.homeNotice,

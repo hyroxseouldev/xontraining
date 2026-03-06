@@ -15,7 +15,16 @@ class SettingsView extends ConsumerWidget {
     final authState = ref.watch(authControllerProvider);
     final versionLabel = ref.watch(appVersionLabelProvider);
     final tenantRole = ref.watch(profileTenantRoleProvider);
-    final canDeleteAccount = tenantRole.asData?.value == 'member';
+    final canDeleteAccount = tenantRole.maybeWhen(
+      data: (role) => role == null || role == 'member',
+      orElse: () => false,
+    );
+    final deleteAccountSubtitle = tenantRole.maybeWhen(
+      data: (role) => role == null || role == 'member'
+          ? l10n.settingsDeleteAccountSubtitle
+          : l10n.settingsDeleteAccountMemberOnly,
+      orElse: () => l10n.settingsDeleteAccountSubtitle,
+    );
     final isBusy = authState.isLoading;
 
     ref.listen<AsyncValue<void>>(authControllerProvider, (previous, next) {
@@ -92,11 +101,7 @@ class SettingsView extends ConsumerWidget {
                     : () => _onDeleteAccountPressed(context, ref, l10n),
                 leading: const Icon(Icons.delete_forever_outlined),
                 title: Text(l10n.settingsDeleteAccount),
-                subtitle: Text(
-                  canDeleteAccount
-                      ? l10n.settingsDeleteAccountSubtitle
-                      : l10n.settingsDeleteAccountMemberOnly,
-                ),
+                subtitle: Text(deleteAccountSubtitle),
               ),
             ),
             const SizedBox(height: 12),

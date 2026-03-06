@@ -31,6 +31,101 @@
   "noticeRetry": "다시 시도",
   "noticeEmpty": "등록된 새소식이 없습니다.",
   "noticeNoContent": "내용이 없습니다.",
+  "communityTitle": "커뮤니티",
+  "communityWrite": "작성",
+  "communityWritePost": "게시글 작성",
+  "communityEditPost": "게시글 수정",
+  "communitySave": "저장",
+  "communitySaving": "저장 중...",
+  "communityRetry": "다시 시도",
+  "communityLoadFailed": "커뮤니티 글을 불러오지 못했습니다. 다시 시도해 주세요.",
+  "communityEmpty": "아직 게시글이 없습니다.",
+  "communityActionFailed": "처리에 실패했습니다. 다시 시도해 주세요.",
+  "communityContentHint": "내용을 입력해 주세요.",
+  "communityContentRequired": "게시글 내용을 입력해 주세요.",
+  "communityEdit": "수정",
+  "communityDelete": "삭제",
+  "communityCancel": "취소",
+  "communityDeletePostTitle": "이 게시글을 삭제할까요?",
+  "communityDeletePostBody": "이 게시글은 영구적으로 삭제됩니다.",
+  "communityComments": "댓글",
+  "communityCommentHint": "댓글을 입력해 주세요",
+  "communityCommentSend": "등록",
+  "communityCommentRequired": "댓글 내용을 입력해 주세요.",
+  "communityCommentLoadFailed": "댓글을 불러오지 못했습니다.",
+  "communityCommentEmpty": "아직 댓글이 없습니다.",
+  "communityCommentDeleted": "댓글이 삭제되었습니다.",
+  "communityAddImages": "이미지 추가",
+  "communityImageUnsupportedType": "JPG, PNG, WEBP 형식만 지원합니다.",
+  "communityImagePickFailed": "이미지를 선택하지 못했습니다.",
+  "communityImageUploadFailed": "이미지 업로드에 실패했습니다.",
+  "communityImageCount": "{current}/{max}",
+  "@communityImageCount": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "communityImageLimitReached": "이미지는 최대 {max}장까지 업로드할 수 있습니다.",
+  "@communityImageLimitReached": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "communityImageTooLarge": "이미지 1장은 {maxMb}MB 이하여야 합니다.",
+  "@communityImageTooLarge": {
+    "placeholders": {
+      "maxMb": {
+        "type": "int"
+      }
+    }
+  },
+  "communityTimeAgoSeconds": "{seconds}초 전",
+  "@communityTimeAgoSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "communityTimeAgoMinutes": "{minutes}분 전",
+  "@communityTimeAgoMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "communityTimeAgoHours": "{hours}시간 전",
+  "@communityTimeAgoHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "communityTimeAgoDays": "{days}일 전",
+  "@communityTimeAgoDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "communityTimeAgoWeeks": "{weeks}주 전",
+  "@communityTimeAgoWeeks": {
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
   "noticePublishedAt": "등록일 {date}",
   "@noticePublishedAt": {
     "placeholders": {
@@ -168,7 +263,7 @@
   "settingsPrivacyPolicyBody": "개인정보처리방침 내용은 운영 정책에 따라 제공 및 업데이트됩니다.",
   "settingsDeleteAccount": "계정삭제",
   "settingsDeleteAccountSubtitle": "계정과 관련 데이터가 영구 삭제됩니다.",
-  "settingsDeleteAccountMemberOnly": "member 권한 계정만 삭제할 수 있습니다.",
+  "settingsDeleteAccountMemberOnly": "코치/오너 권한 계정은 삭제할 수 없습니다.",
   "settingsDeleteAccountDialogTitle": "계정을 영구 삭제할까요?",
   "settingsDeleteAccountDialogBody": "탈퇴 시 계정이 즉시 삭제되며 복구할 수 없습니다. 구매 내역, 운동 기록, 프로필 정보, 작성한 오프라인 클래스 및 신청 정보가 모두 삭제됩니다. 삭제 후에는 동일 계정으로도 이전 데이터를 복원할 수 없습니다.",
   "settingsDeleteAccountCancel": "취소",
