@@ -45,7 +45,7 @@ class SupabaseStorageService implements StorageService {
     final nowMs = DateTime.now().microsecondsSinceEpoch;
     final path = 'users/$userId/avatar_$nowMs.$ext';
 
-    final uploadedPath = await supabase.storage
+    await supabase.storage
         .from(_avatarsBucket)
         .uploadBinary(
           path,
@@ -57,7 +57,7 @@ class SupabaseStorageService implements StorageService {
           ),
         );
 
-    return supabase.storage.from(_avatarsBucket).getPublicUrl(uploadedPath);
+    return supabase.storage.from(_avatarsBucket).getPublicUrl(path);
   }
 
   @override
@@ -100,7 +100,7 @@ class SupabaseStorageService implements StorageService {
     final nowMs = DateTime.now().millisecondsSinceEpoch;
     final path = 'users/$userId/community/img_$nowMs.$ext';
 
-    final uploadedPath = await supabase.storage
+    await supabase.storage
         .from(_communityMediaBucket)
         .uploadBinary(
           path,
@@ -112,9 +112,7 @@ class SupabaseStorageService implements StorageService {
           ),
         );
 
-    return supabase.storage
-        .from(_communityMediaBucket)
-        .getPublicUrl(uploadedPath);
+    return supabase.storage.from(_communityMediaBucket).getPublicUrl(path);
   }
 
   String _resolveFileExtension(String fileName) {
