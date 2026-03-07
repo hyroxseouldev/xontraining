@@ -2,6 +2,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/src/feature/community/data/repository/community_repository.dart';
 import 'package:xontraining/src/feature/community/infra/entity/community_entity.dart';
 
+class CheckCommunityAccessUseCase {
+  CheckCommunityAccessUseCase({required this.repository});
+
+  final CommunityRepository repository;
+
+  Future<bool> call({required String tenantId, required String userId}) {
+    return repository.hasCommunityAccess(tenantId: tenantId, userId: userId);
+  }
+}
+
 class GetCommunityPostsPageUseCase {
   GetCommunityPostsPageUseCase({required this.repository});
 
@@ -206,6 +216,13 @@ class BlockCommunityUserUseCase {
 final getCommunityPostsPageUseCaseProvider =
     Provider<GetCommunityPostsPageUseCase>((ref) {
       return GetCommunityPostsPageUseCase(
+        repository: ref.read(communityRepositoryProvider),
+      );
+    });
+
+final checkCommunityAccessUseCaseProvider =
+    Provider<CheckCommunityAccessUseCase>((ref) {
+      return CheckCommunityAccessUseCase(
         repository: ref.read(communityRepositoryProvider),
       );
     });

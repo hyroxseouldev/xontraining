@@ -115,6 +115,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Failed to load community posts. Please try again.';
 
   @override
+  String get communityMembershipRequired =>
+      'Community is available only for members with an active pass.';
+
+  @override
   String get communityEmpty => 'No posts yet.';
 
   @override

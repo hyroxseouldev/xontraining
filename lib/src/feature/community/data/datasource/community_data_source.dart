@@ -5,6 +5,11 @@ import 'package:xontraining/src/core/supabase/supabase_provider.dart';
 abstract interface class CommunityDataSource {
   String getCurrentUserId();
 
+  Future<bool> hasCommunityAccess({
+    required String tenantId,
+    required String userId,
+  });
+
   Future<List<Map<String, dynamic>>> getPostsPage({
     required String tenantId,
     required int limit,
@@ -114,6 +119,39 @@ class SupabaseCommunityDataSource implements CommunityDataSource {
       throw AuthException('No authenticated user found.');
     }
     return userId;
+  }
+
+  @override
+  Future<bool> hasCommunityAccess({
+    required String tenantId,
+    required String userId,
+  }) async {
+    final nowIso = DateTime.now().toUtc().toIso8601String();
+
+    final entitlement = await supabase
+        .from('program_entitlements')
+        .select('id')
+        .eq('tenant_id', tenantId)
+        .eq('user_id', userId)
+        .eq('is_active', true)
+        .lte('starts_at', nowIso)
+        .or('ends_at.is.null,ends_at.gte.$nowIso')
+        .limit(1)
+        .maybeSingle();
+
+    if (entitlement != null) {
+      return true;
+    }
+
+    final activeState = await supabase
+        .from('user_program_states')
+        .select('active_program_id')
+        .eq('tenant_id', tenantId)
+        .eq('user_id', userId)
+        .not('active_program_id', 'is', null)
+        .maybeSingle();
+
+    return activeState != null;
   }
 
   @override

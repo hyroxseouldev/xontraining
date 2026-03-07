@@ -113,6 +113,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get communityLoadFailed => '커뮤니티 글을 불러오지 못했습니다. 다시 시도해 주세요.';
 
   @override
+  String get communityMembershipRequired => '커뮤니티는 회원권이 활성화된 회원만 이용할 수 있습니다.';
+
+  @override
   String get communityEmpty => '아직 게시글이 없습니다.';
 
   @override

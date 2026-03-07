@@ -302,6 +302,12 @@ abstract class AppLocalizations {
   /// **'Failed to load community posts. Please try again.'**
   String get communityLoadFailed;
 
+  /// No description provided for @communityMembershipRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Community is available only for members with an active pass.'**
+  String get communityMembershipRequired;
+
   /// No description provided for @communityEmpty.
   ///
   /// In en, this message translates to:

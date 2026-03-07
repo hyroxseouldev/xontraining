@@ -88,9 +88,8 @@ class _CommunityImageViewerPageState extends State<_CommunityImageViewerPage> {
               child: CachedNetworkImage(
                 imageUrl: widget.imageUrls[index],
                 fit: BoxFit.contain,
-                placeholder: (context, imageUrl) => const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                ),
+                placeholder: (context, imageUrl) =>
+                    const ColoredBox(color: Colors.black),
                 errorWidget: (context, imageUrl, error) => const Icon(
                   Icons.broken_image_outlined,
                   color: Colors.white,

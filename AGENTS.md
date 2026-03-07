@@ -100,6 +100,7 @@ Guidance for coding agents working in this repository.
 ## Network Image Rule
 - For network images in app UI, use `CachedNetworkImage` instead of `Image.network`.
 - Always provide both `placeholder` and `errorWidget` states.
+- For `CachedNetworkImage.placeholder`, do not use loading spinners (`CircularProgressIndicator`); use a static placeholder surface, existing fallback avatar/icon, or the screen's existing skeleton pattern.
 
 ## AppBar Title Layout Rule
 - For primary feature screens, place section/page titles in `AppBar.bottom` using `PreferredSize` instead of the default `AppBar.title`.

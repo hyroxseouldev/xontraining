@@ -9,39 +9,39 @@ import 'package:xontraining/src/feature/profile/infra/usecase/legal_document_use
 part 'legal_document_provider.g.dart';
 
 @riverpod
-Future<LegalDocumentEntity> termsDocument(Ref ref) async {
+Future<LegalDocumentEntity> legalDocument(
+  Ref ref, {
+  required LegalDocumentType type,
+  required String localeCode,
+}) async {
   return _loadDocumentWithFallback(
     ref: ref,
-    type: LegalDocumentType.termsOfService,
-  );
-}
-
-@riverpod
-Future<LegalDocumentEntity> privacyPolicyDocument(Ref ref) async {
-  return _loadDocumentWithFallback(
-    ref: ref,
-    type: LegalDocumentType.privacyPolicy,
+    type: type,
+    localeCode: localeCode,
   );
 }
 
 Future<LegalDocumentEntity> _loadDocumentWithFallback({
   required Ref ref,
   required LegalDocumentType type,
+  required String localeCode,
 }) async {
   final tenantId = ref.read(tenantIdProvider);
-  final localeCode = PlatformDispatcher.instance.locale.languageCode;
+  final normalizedLocaleCode = localeCode.trim().isEmpty
+      ? PlatformDispatcher.instance.locale.languageCode
+      : localeCode.trim().toLowerCase();
   final useCase = ref.read(getLegalDocumentUseCaseProvider);
 
   final preferredDoc = await useCase(
     tenantId: tenantId,
     type: type,
-    locale: localeCode,
+    locale: normalizedLocaleCode,
   );
   if (preferredDoc != null) {
     return preferredDoc;
   }
 
-  if (localeCode != 'ko') {
+  if (normalizedLocaleCode != 'ko') {
     final koreanDoc = await useCase(
       tenantId: tenantId,
       type: type,

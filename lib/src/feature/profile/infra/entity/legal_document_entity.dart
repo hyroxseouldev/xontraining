@@ -3,6 +3,8 @@ enum LegalDocumentType { termsOfService, privacyPolicy }
 class LegalDocumentEntity {
   const LegalDocumentEntity({
     required this.type,
+    required this.locale,
+    required this.title,
     required this.version,
     required this.updatedAt,
     required this.rawHtml,
@@ -10,6 +12,8 @@ class LegalDocumentEntity {
   });
 
   final LegalDocumentType type;
+  final String locale;
+  final String title;
   final String version;
   final DateTime updatedAt;
   final String rawHtml;

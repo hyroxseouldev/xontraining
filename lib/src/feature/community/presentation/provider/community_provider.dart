@@ -1,10 +1,23 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/src/core/storage/storage_service.dart';
 import 'package:xontraining/src/core/tenant/tenant_provider.dart';
+import 'package:xontraining/src/feature/auth/presentation/provider/auth_session_provider.dart';
 import 'package:xontraining/src/feature/community/infra/entity/community_entity.dart';
 import 'package:xontraining/src/feature/community/infra/usecase/community_usecases.dart';
 
 const _communityPageSize = 10;
+
+final communityAccessProvider = FutureProvider<bool>((ref) async {
+  final tenantId = ref.read(tenantIdProvider);
+  final user = await ref.watch(authSessionProvider.future);
+  if (user == null) {
+    return false;
+  }
+
+  return ref
+      .read(checkCommunityAccessUseCaseProvider)
+      .call(tenantId: tenantId, userId: user.id);
+});
 
 class CommunityFeedState {
   const CommunityFeedState({

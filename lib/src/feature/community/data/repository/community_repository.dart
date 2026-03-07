@@ -6,6 +6,11 @@ import 'package:xontraining/src/feature/community/data/datasource/community_data
 import 'package:xontraining/src/feature/community/infra/entity/community_entity.dart';
 
 abstract interface class CommunityRepository {
+  Future<bool> hasCommunityAccess({
+    required String tenantId,
+    required String userId,
+  });
+
   Future<List<CommunityPostEntity>> getPostsPage({
     required String tenantId,
     required int limit,
@@ -80,6 +85,34 @@ class CommunityRepositoryImpl implements CommunityRepository {
   CommunityRepositoryImpl({required this.dataSource});
 
   final CommunityDataSource dataSource;
+
+  @override
+  Future<bool> hasCommunityAccess({
+    required String tenantId,
+    required String userId,
+  }) async {
+    try {
+      return await dataSource.hasCommunityAccess(
+        tenantId: tenantId,
+        userId: userId,
+      );
+    } on AuthException catch (error, stackTrace) {
+      debugPrint(
+        '[CommunityRepository] hasCommunityAccess auth failure: $error',
+      );
+      debugPrint('[CommunityRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint(
+        '[CommunityRepository] hasCommunityAccess unexpected failure: $error',
+      );
+      debugPrint('[CommunityRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to check community access.',
+        cause: error,
+      );
+    }
+  }
 
   @override
   Future<List<CommunityPostEntity>> getPostsPage({

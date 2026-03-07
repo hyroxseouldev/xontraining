@@ -50,8 +50,16 @@ class _CommunityDetailViewState extends ConsumerState<CommunityDetailView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final detailState = ref.watch(communityPostDetailProvider(widget.postId));
-    final commentsState = ref.watch(communityCommentsProvider(widget.postId));
+    final accessState = ref.watch(communityAccessProvider);
+    final hasCommunityAccess = accessState.asData?.value ?? false;
+    final detailState = hasCommunityAccess
+        ? ref.watch(communityPostDetailProvider(widget.postId))
+        : const AsyncLoading<CommunityPostEntity>();
+    final commentsState = hasCommunityAccess
+        ? ref.watch(communityCommentsProvider(widget.postId))
+        : const AsyncData<List<CommunityCommentEntity>>(
+            <CommunityCommentEntity>[],
+          );
     final actionState = ref.watch(communityActionControllerProvider);
     final currentUserId = ref.watch(authSessionProvider).asData?.value?.id;
 
@@ -70,141 +78,158 @@ class _CommunityDetailViewState extends ConsumerState<CommunityDetailView> {
 
     return Scaffold(
       appBar: AppBar(toolbarHeight: 56),
-      body: detailState.when(
+      body: accessState.when(
         loading: () => const CommunityDetailLoadingSkeleton(),
         error: (error, stackTrace) =>
             EmptyState(message: l10n.communityLoadFailed),
-        data: (post) {
-          final isMyPost =
-              currentUserId != null && currentUserId == post.authorId;
+        data: (canAccess) {
+          if (!canAccess) {
+            return EmptyState(
+              message: l10n.communityMembershipRequired,
+              icon: Icons.lock_outline,
+            );
+          }
 
-          return Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                  children: [
-                    _PostHeader(
-                      post: post,
-                      isMyPost: isMyPost,
-                      onLikePressed: () {
-                        ref
-                            .read(communityActionControllerProvider.notifier)
-                            .toggleLike(
-                              postId: post.id,
-                              currentLike: post.isLikedByMe,
-                            );
-                      },
-                      onEditPressed: () {
-                        context.pushNamed(
-                          AppRoutes.communityEditName,
-                          pathParameters: {'postId': post.id},
-                          extra: {
-                            'content': post.normalizedContent,
-                            'images': post.normalizedImageUrls,
+          return detailState.when(
+            loading: () => const CommunityDetailLoadingSkeleton(),
+            error: (error, stackTrace) =>
+                EmptyState(message: l10n.communityLoadFailed),
+            data: (post) {
+              final isMyPost =
+                  currentUserId != null && currentUserId == post.authorId;
+
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                      children: [
+                        _PostHeader(
+                          post: post,
+                          isMyPost: isMyPost,
+                          onLikePressed: () {
+                            ref
+                                .read(
+                                  communityActionControllerProvider.notifier,
+                                )
+                                .toggleLike(
+                                  postId: post.id,
+                                  currentLike: post.isLikedByMe,
+                                );
                           },
-                        );
-                      },
-                      onDeletePressed: () => _onDeletePostPressed(
-                        context,
-                        post.id,
-                        post.normalizedImageUrls,
-                      ),
-                      onReportPressed: () =>
-                          _onReportPostPressed(context, postId: post.id),
-                      onHidePressed: () =>
-                          _onHidePostPressed(context, postId: post.id),
-                      onBlockAuthorPressed: () => _onBlockAuthorPressed(
-                        context,
-                        authorId: post.authorId,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.communityComments,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    commentsState.when(
-                      loading: () => const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        child: CommunityCommentLoadingSkeleton(),
-                      ),
-                      error: (error, stackTrace) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Text(
-                          l10n.communityCommentLoadFailed,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ),
-                      data: (comments) {
-                        if (comments.isEmpty) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            child: Text(
-                              l10n.communityCommentEmpty,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          );
-                        }
-                        return Column(
-                          children: comments
-                              .map(
-                                (comment) => _CommentItem(
-                                  comment: comment,
-                                  isMine: currentUserId == comment.authorId,
-                                  onDeletePressed: () =>
-                                      _onDeleteCommentPressed(
-                                        context,
-                                        commentId: comment.id,
-                                      ),
-                                  onReportPressed: () =>
-                                      _onReportCommentPressed(
-                                        context,
-                                        commentId: comment.id,
-                                      ),
-                                ),
-                              )
-                              .toList(growable: false),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              SafeArea(
-                top: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _commentController,
-                          enabled: !actionState.isLoading,
-                          maxLines: 3,
-                          minLines: 1,
-                          decoration: InputDecoration(
-                            hintText: l10n.communityCommentHint,
-                            border: const OutlineInputBorder(),
-                            isDense: true,
+                          onEditPressed: () {
+                            context.pushNamed(
+                              AppRoutes.communityEditName,
+                              pathParameters: {'postId': post.id},
+                              extra: {
+                                'content': post.normalizedContent,
+                                'images': post.normalizedImageUrls,
+                              },
+                            );
+                          },
+                          onDeletePressed: () => _onDeletePostPressed(
+                            context,
+                            post.id,
+                            post.normalizedImageUrls,
+                          ),
+                          onReportPressed: () =>
+                              _onReportPostPressed(context, postId: post.id),
+                          onHidePressed: () =>
+                              _onHidePostPressed(context, postId: post.id),
+                          onBlockAuthorPressed: () => _onBlockAuthorPressed(
+                            context,
+                            authorId: post.authorId,
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      FilledButton(
-                        onPressed: actionState.isLoading
-                            ? null
-                            : () => _onCommentSubmitPressed(context),
-                        child: Text(l10n.communityCommentSend),
-                      ),
-                    ],
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.communityComments,
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: 8),
+                        commentsState.when(
+                          loading: () => const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: CommunityCommentLoadingSkeleton(),
+                          ),
+                          error: (error, stackTrace) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              l10n.communityCommentLoadFailed,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                          data: (comments) {
+                            if (comments.isEmpty) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                child: Text(
+                                  l10n.communityCommentEmpty,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              );
+                            }
+                            return Column(
+                              children: comments
+                                  .map(
+                                    (comment) => _CommentItem(
+                                      comment: comment,
+                                      isMine: currentUserId == comment.authorId,
+                                      onDeletePressed: () =>
+                                          _onDeleteCommentPressed(
+                                            context,
+                                            commentId: comment.id,
+                                          ),
+                                      onReportPressed: () =>
+                                          _onReportCommentPressed(
+                                            context,
+                                            commentId: comment.id,
+                                          ),
+                                    ),
+                                  )
+                                  .toList(growable: false),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
-            ],
+                  SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _commentController,
+                              enabled: !actionState.isLoading,
+                              maxLines: 3,
+                              minLines: 1,
+                              decoration: InputDecoration(
+                                hintText: l10n.communityCommentHint,
+                                border: const OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          FilledButton(
+                            onPressed: actionState.isLoading
+                                ? null
+                                : () => _onCommentSubmitPressed(context),
+                            child: Text(l10n.communityCommentSend),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           );
         },
       ),
@@ -614,12 +639,8 @@ class _DetailImageGallery extends StatelessWidget {
                 child: CachedNetworkImage(
                   imageUrl: imageUrl,
                   fit: BoxFit.cover,
-                  placeholder: (context, imageUrl) => const ColoredBox(
-                    color: Colors.black12,
-                    child: Center(
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  ),
+                  placeholder: (context, imageUrl) =>
+                      const ColoredBox(color: Colors.black12),
                   errorWidget: (context, imageUrl, error) => const ColoredBox(
                     color: Colors.black12,
                     child: Center(child: Icon(Icons.broken_image_outlined)),

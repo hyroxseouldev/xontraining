@@ -19,7 +19,19 @@ class CommunityView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final feedState = ref.watch(communityFeedControllerProvider);
+    final accessState = ref.watch(communityAccessProvider);
+    final hasCommunityAccess = accessState.asData?.value ?? false;
+    final feedState = hasCommunityAccess
+        ? ref.watch(communityFeedControllerProvider)
+        : const AsyncData<CommunityFeedState>(
+            CommunityFeedState(
+              items: <CommunityPostEntity>[],
+              offset: 0,
+              hasMore: false,
+              isLoadingMore: false,
+              hasLoadMoreError: false,
+            ),
+          );
     final actionState = ref.watch(communityActionControllerProvider);
     final currentUserId = ref.watch(authSessionProvider).asData?.value?.id;
     final scrollController = useScrollController();
@@ -34,6 +46,7 @@ class CommunityView extends HookConsumerWidget {
         final current = ref.read(communityFeedControllerProvider).asData?.value;
         final canLoadMore =
             current != null &&
+            hasCommunityAccess &&
             current.hasMore &&
             !current.isLoadingMore &&
             !current.hasLoadMoreError;
@@ -46,18 +59,20 @@ class CommunityView extends HookConsumerWidget {
       return () => scrollController.removeListener(listener);
     }, [scrollController, ref]);
 
-    ref.listen<AsyncValue<CommunityFeedState>>(
-      communityFeedControllerProvider,
-      (previous, next) {
-        next.whenOrNull(
-          error: (error, stackTrace) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(l10n.communityLoadFailed)));
-          },
-        );
-      },
-    );
+    if (hasCommunityAccess) {
+      ref.listen<AsyncValue<CommunityFeedState>>(
+        communityFeedControllerProvider,
+        (previous, next) {
+          next.whenOrNull(
+            error: (error, stackTrace) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(l10n.communityLoadFailed)));
+            },
+          );
+        },
+      );
+    }
 
     ref.listen<AsyncValue<void>>(communityActionControllerProvider, (
       previous,
@@ -93,159 +108,189 @@ class CommunityView extends HookConsumerWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.pushNamed(AppRoutes.communityWriteName),
-        icon: const Icon(Icons.edit_outlined),
-        label: Text(l10n.communityWrite),
-      ),
-      body: feedState.when(
+      floatingActionButton: hasCommunityAccess
+          ? FloatingActionButton.extended(
+              onPressed: () => context.pushNamed(AppRoutes.communityWriteName),
+              icon: const Icon(Icons.edit_outlined),
+              label: Text(l10n.communityWrite),
+            )
+          : null,
+      body: accessState.when(
         loading: () => const CommunityFeedLoadingSkeleton(),
         error: (error, stackTrace) =>
             EmptyState(message: l10n.communityLoadFailed),
-        data: (feed) {
-          if (feed.items.isEmpty) {
+        data: (canAccess) {
+          if (!canAccess) {
             return EmptyState(
-              message: l10n.communityEmpty,
-              icon: Icons.forum_outlined,
+              message: l10n.communityMembershipRequired,
+              icon: Icons.lock_outline,
             );
           }
 
-          return RefreshIndicator(
-            onRefresh: () =>
-                ref.read(communityFeedControllerProvider.notifier).refresh(),
-            child: ListView.separated(
-              controller: scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
-              itemCount:
-                  feed.items.length +
-                  ((feed.isLoadingMore || feed.hasLoadMoreError) ? 1 : 0),
-              separatorBuilder: (context, index) => const SizedBox(height: 10),
-              itemBuilder: (context, index) {
-                if (index >= feed.items.length) {
-                  if (feed.hasLoadMoreError) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Center(
-                        child: OutlinedButton.icon(
-                          onPressed: () => ref
-                              .read(communityFeedControllerProvider.notifier)
-                              .retryLoadMore(),
-                          icon: const Icon(Icons.refresh),
-                          label: Text(l10n.communityRetry),
-                        ),
-                      ),
-                    );
-                  }
-
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-
-                final post = feed.items[index];
-                return _CommunityPostCard(
-                  post: post,
-                  isMine: currentUserId == post.authorId,
-                  onTap: () {
-                    context.pushNamed(
-                      AppRoutes.communityDetailName,
-                      pathParameters: {'postId': post.id},
-                    );
-                  },
-                  onLikePressed: () {
-                    ref
-                        .read(communityActionControllerProvider.notifier)
-                        .toggleLike(
-                          postId: post.id,
-                          currentLike: post.isLikedByMe,
-                        );
-                  },
-                  onReportPressed: actionState.isLoading
-                      ? null
-                      : () async {
-                          final report = await _showReportDialog(context);
-                          if (!context.mounted || report == null) {
-                            return;
-                          }
-                          await ref
-                              .read(communityActionControllerProvider.notifier)
-                              .reportPost(
-                                postId: post.id,
-                                reason: report.reason,
-                                detail: report.detail,
-                              );
-                          if (!context.mounted) {
-                            return;
-                          }
-                          if (!ref
-                              .read(communityActionControllerProvider)
-                              .hasError) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(l10n.communityReportSubmitted),
-                              ),
-                            );
-                          }
-                        },
-                  onHidePressed: actionState.isLoading
-                      ? null
-                      : () async {
-                          final confirmed = await _showConfirmDialog(
-                            context,
-                            title: l10n.communityHidePostTitle,
-                            body: l10n.communityHidePostBody,
-                            confirmText: l10n.communityHide,
-                          );
-                          if (!context.mounted || !confirmed) {
-                            return;
-                          }
-                          await ref
-                              .read(communityActionControllerProvider.notifier)
-                              .hidePost(postId: post.id);
-                          if (!context.mounted) {
-                            return;
-                          }
-                          if (!ref
-                              .read(communityActionControllerProvider)
-                              .hasError) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(l10n.communityPostHidden)),
-                            );
-                          }
-                        },
-                  onBlockUserPressed: actionState.isLoading
-                      ? null
-                      : () async {
-                          final confirmed = await _showConfirmDialog(
-                            context,
-                            title: l10n.communityBlockUserTitle,
-                            body: l10n.communityBlockUserBody,
-                            confirmText: l10n.communityBlockUser,
-                          );
-                          if (!context.mounted || !confirmed) {
-                            return;
-                          }
-                          await ref
-                              .read(communityActionControllerProvider.notifier)
-                              .blockUser(blockedUserId: post.authorId);
-                          if (!context.mounted) {
-                            return;
-                          }
-                          if (!ref
-                              .read(communityActionControllerProvider)
-                              .hasError) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(l10n.communityUserBlocked),
-                              ),
-                            );
-                          }
-                        },
+          return feedState.when(
+            loading: () => const CommunityFeedLoadingSkeleton(),
+            error: (error, stackTrace) =>
+                EmptyState(message: l10n.communityLoadFailed),
+            data: (feed) {
+              if (feed.items.isEmpty) {
+                return EmptyState(
+                  message: l10n.communityEmpty,
+                  icon: Icons.forum_outlined,
                 );
-              },
-            ),
+              }
+
+              return RefreshIndicator(
+                onRefresh: () => ref
+                    .read(communityFeedControllerProvider.notifier)
+                    .refresh(),
+                child: ListView.separated(
+                  controller: scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
+                  itemCount:
+                      feed.items.length +
+                      ((feed.isLoadingMore || feed.hasLoadMoreError) ? 1 : 0),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    if (index >= feed.items.length) {
+                      if (feed.hasLoadMoreError) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Center(
+                            child: OutlinedButton.icon(
+                              onPressed: () => ref
+                                  .read(
+                                    communityFeedControllerProvider.notifier,
+                                  )
+                                  .retryLoadMore(),
+                              icon: const Icon(Icons.refresh),
+                              label: Text(l10n.communityRetry),
+                            ),
+                          ),
+                        );
+                      }
+
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    final post = feed.items[index];
+                    return _CommunityPostCard(
+                      post: post,
+                      isMine: currentUserId == post.authorId,
+                      onTap: () {
+                        context.pushNamed(
+                          AppRoutes.communityDetailName,
+                          pathParameters: {'postId': post.id},
+                        );
+                      },
+                      onLikePressed: () {
+                        ref
+                            .read(communityActionControllerProvider.notifier)
+                            .toggleLike(
+                              postId: post.id,
+                              currentLike: post.isLikedByMe,
+                            );
+                      },
+                      onReportPressed: actionState.isLoading
+                          ? null
+                          : () async {
+                              final report = await _showReportDialog(context);
+                              if (!context.mounted || report == null) {
+                                return;
+                              }
+                              await ref
+                                  .read(
+                                    communityActionControllerProvider.notifier,
+                                  )
+                                  .reportPost(
+                                    postId: post.id,
+                                    reason: report.reason,
+                                    detail: report.detail,
+                                  );
+                              if (!context.mounted) {
+                                return;
+                              }
+                              if (!ref
+                                  .read(communityActionControllerProvider)
+                                  .hasError) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      l10n.communityReportSubmitted,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                      onHidePressed: actionState.isLoading
+                          ? null
+                          : () async {
+                              final confirmed = await _showConfirmDialog(
+                                context,
+                                title: l10n.communityHidePostTitle,
+                                body: l10n.communityHidePostBody,
+                                confirmText: l10n.communityHide,
+                              );
+                              if (!context.mounted || !confirmed) {
+                                return;
+                              }
+                              await ref
+                                  .read(
+                                    communityActionControllerProvider.notifier,
+                                  )
+                                  .hidePost(postId: post.id);
+                              if (!context.mounted) {
+                                return;
+                              }
+                              if (!ref
+                                  .read(communityActionControllerProvider)
+                                  .hasError) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(l10n.communityPostHidden),
+                                  ),
+                                );
+                              }
+                            },
+                      onBlockUserPressed: actionState.isLoading
+                          ? null
+                          : () async {
+                              final confirmed = await _showConfirmDialog(
+                                context,
+                                title: l10n.communityBlockUserTitle,
+                                body: l10n.communityBlockUserBody,
+                                confirmText: l10n.communityBlockUser,
+                              );
+                              if (!context.mounted || !confirmed) {
+                                return;
+                              }
+                              await ref
+                                  .read(
+                                    communityActionControllerProvider.notifier,
+                                  )
+                                  .blockUser(blockedUserId: post.authorId);
+                              if (!context.mounted) {
+                                return;
+                              }
+                              if (!ref
+                                  .read(communityActionControllerProvider)
+                                  .hasError) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(l10n.communityUserBlocked),
+                                  ),
+                                );
+                              }
+                            },
+                    );
+                  },
+                ),
+              );
+            },
           );
         },
       ),
@@ -588,12 +633,8 @@ class _FeedImagePreview extends StatelessWidget {
               CachedNetworkImage(
                 imageUrl: firstImageUrl,
                 fit: BoxFit.cover,
-                placeholder: (context, imageUrl) => const ColoredBox(
-                  color: Colors.black12,
-                  child: Center(
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                ),
+                placeholder: (context, imageUrl) =>
+                    const ColoredBox(color: Colors.black12),
                 errorWidget: (context, imageUrl, error) => const ColoredBox(
                   color: Colors.black12,
                   child: Center(child: Icon(Icons.broken_image_outlined)),

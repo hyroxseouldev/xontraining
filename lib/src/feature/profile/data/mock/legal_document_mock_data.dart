@@ -21,6 +21,8 @@ LegalDocumentEntity buildMockTermsOfService() {
 
   return LegalDocumentEntity(
     type: LegalDocumentType.termsOfService,
+    locale: 'ko',
+    title: '이용약관',
     version: 'v0.1.0',
     updatedAt: DateTime(2026, 3, 1),
     rawHtml: html,
@@ -46,6 +48,8 @@ LegalDocumentEntity buildMockPrivacyPolicy() {
 
   return LegalDocumentEntity(
     type: LegalDocumentType.privacyPolicy,
+    locale: 'ko',
+    title: '개인정보처리방침',
     version: 'v0.1.0',
     updatedAt: DateTime(2026, 3, 1),
     rawHtml: html,

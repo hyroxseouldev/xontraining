@@ -39,6 +39,7 @@
   "communitySaving": "Saving...",
   "communityRetry": "Retry",
   "communityLoadFailed": "Failed to load community posts. Please try again.",
+  "communityMembershipRequired": "Community is available only for members with an active pass.",
   "communityEmpty": "No posts yet.",
   "communityActionFailed": "Action failed. Please try again.",
   "communityContentHint": "Share your thoughts.",

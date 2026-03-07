@@ -9,10 +9,10 @@ part of 'legal_document_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(termsDocument)
-final termsDocumentProvider = TermsDocumentProvider._();
+@ProviderFor(legalDocument)
+final legalDocumentProvider = LegalDocumentFamily._();
 
-final class TermsDocumentProvider
+final class LegalDocumentProvider
     extends
         $FunctionalProvider<
           AsyncValue<LegalDocumentEntity>,
@@ -22,19 +22,26 @@ final class TermsDocumentProvider
     with
         $FutureModifier<LegalDocumentEntity>,
         $FutureProvider<LegalDocumentEntity> {
-  TermsDocumentProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'termsDocumentProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  LegalDocumentProvider._({
+    required LegalDocumentFamily super.from,
+    required ({LegalDocumentType type, String localeCode}) super.argument,
+  }) : super(
+         retry: null,
+         name: r'legalDocumentProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
-  String debugGetCreateSourceHash() => _$termsDocumentHash();
+  String debugGetCreateSourceHash() => _$legalDocumentHash();
+
+  @override
+  String toString() {
+    return r'legalDocumentProvider'
+        ''
+        '$argument';
+  }
 
   @$internal
   @override
@@ -44,50 +51,51 @@ final class TermsDocumentProvider
 
   @override
   FutureOr<LegalDocumentEntity> create(Ref ref) {
-    return termsDocument(ref);
+    final argument =
+        this.argument as ({LegalDocumentType type, String localeCode});
+    return legalDocument(
+      ref,
+      type: argument.type,
+      localeCode: argument.localeCode,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is LegalDocumentProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
-String _$termsDocumentHash() => r'6401f727a5e6ba893e5f88d0f924afa5f2883782';
+String _$legalDocumentHash() => r'41eecc088e63a77e8bead0c06808e521be699abf';
 
-@ProviderFor(privacyPolicyDocument)
-final privacyPolicyDocumentProvider = PrivacyPolicyDocumentProvider._();
-
-final class PrivacyPolicyDocumentProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<LegalDocumentEntity>,
-          LegalDocumentEntity,
-          FutureOr<LegalDocumentEntity>
-        >
+final class LegalDocumentFamily extends $Family
     with
-        $FutureModifier<LegalDocumentEntity>,
-        $FutureProvider<LegalDocumentEntity> {
-  PrivacyPolicyDocumentProvider._()
+        $FunctionalFamilyOverride<
+          FutureOr<LegalDocumentEntity>,
+          ({LegalDocumentType type, String localeCode})
+        > {
+  LegalDocumentFamily._()
     : super(
-        from: null,
-        argument: null,
         retry: null,
-        name: r'privacyPolicyDocumentProvider',
-        isAutoDispose: true,
+        name: r'legalDocumentProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
+        isAutoDispose: true,
       );
 
-  @override
-  String debugGetCreateSourceHash() => _$privacyPolicyDocumentHash();
+  LegalDocumentProvider call({
+    required LegalDocumentType type,
+    required String localeCode,
+  }) => LegalDocumentProvider._(
+    argument: (type: type, localeCode: localeCode),
+    from: this,
+  );
 
-  @$internal
   @override
-  $FutureProviderElement<LegalDocumentEntity> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<LegalDocumentEntity> create(Ref ref) {
-    return privacyPolicyDocument(ref);
-  }
+  String toString() => r'legalDocumentProvider';
 }
-
-String _$privacyPolicyDocumentHash() =>
-    r'7b6e1827dcf459a5b24ff5a20f65ecc44c77a480';

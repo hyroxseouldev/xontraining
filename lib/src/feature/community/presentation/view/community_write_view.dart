@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/core/storage/storage_service.dart';
 import 'package:xontraining/src/feature/community/presentation/provider/community_provider.dart';
+import 'package:xontraining/src/shared/empty_state.dart';
 
 const int _maxCommunityImages = 4;
 const int _maxCommunityImageBytes = 8 * 1024 * 1024;
@@ -73,6 +74,7 @@ class _CommunityWriteViewState extends ConsumerState<CommunityWriteView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final accessState = ref.watch(communityAccessProvider);
     final actionState = ref.watch(communityActionControllerProvider);
     final isLoading = actionState.isLoading;
 
@@ -114,103 +116,116 @@ class _CommunityWriteViewState extends ConsumerState<CommunityWriteView> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Row(
+      body: accessState.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) =>
+            EmptyState(message: l10n.communityLoadFailed),
+        data: (canAccess) {
+          if (!canAccess) {
+            return EmptyState(
+              message: l10n.communityMembershipRequired,
+              icon: Icons.lock_outline,
+            );
+          }
+
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
                 children: [
-                  OutlinedButton.icon(
-                    onPressed: isLoading ? null : _onPickImagesPressed,
-                    icon: const Icon(Icons.photo_library_outlined),
-                    label: Text(l10n.communityAddImages),
+                  Row(
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: isLoading ? null : _onPickImagesPressed,
+                        icon: const Icon(Icons.photo_library_outlined),
+                        label: Text(l10n.communityAddImages),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        l10n.communityImageCount(
+                          totalImageCount,
+                          _maxCommunityImages,
+                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  Text(
-                    l10n.communityImageCount(
-                      totalImageCount,
-                      _maxCommunityImages,
+                  if (totalImageCount > 0) ...[
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 92,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: totalImageCount,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: 8),
+                        itemBuilder: (context, index) {
+                          if (index < _remoteImageUrls.length) {
+                            final imageUrl = _remoteImageUrls[index];
+                            return _CommunityImageChip(
+                              image: CachedNetworkImage(
+                                imageUrl: imageUrl,
+                                fit: BoxFit.cover,
+                                placeholder: (context, imageUrl) =>
+                                    const ColoredBox(color: Colors.black12),
+                                errorWidget: (context, imageUrl, error) =>
+                                    const Icon(Icons.broken_image_outlined),
+                              ),
+                              onRemove: isLoading
+                                  ? null
+                                  : () {
+                                      setState(() {
+                                        _remoteImageUrls.removeAt(index);
+                                      });
+                                    },
+                            );
+                          }
+
+                          final localIndex = index - _remoteImageUrls.length;
+                          final local = _selectedImages[localIndex];
+                          return _CommunityImageChip(
+                            image: Image.memory(local.bytes, fit: BoxFit.cover),
+                            onRemove: isLoading
+                                ? null
+                                : () {
+                                    setState(() {
+                                      _selectedImages.removeAt(localIndex);
+                                    });
+                                  },
+                          );
+                        },
+                      ),
                     ),
-                    style: Theme.of(context).textTheme.bodySmall,
+                  ],
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: TextField(
+                      controller: _contentController,
+                      enabled: !isLoading,
+                      maxLines: null,
+                      expands: true,
+                      textAlignVertical: TextAlignVertical.top,
+                      decoration: InputDecoration(
+                        hintText: l10n.communityContentHint,
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: isLoading ? null : _onSubmitPressed,
+                      child: Text(
+                        isLoading ? l10n.communitySaving : l10n.communitySave,
+                      ),
+                    ),
                   ),
                 ],
               ),
-              if (totalImageCount > 0) ...[
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 92,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: totalImageCount,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: 8),
-                    itemBuilder: (context, index) {
-                      if (index < _remoteImageUrls.length) {
-                        final imageUrl = _remoteImageUrls[index];
-                        return _CommunityImageChip(
-                          image: CachedNetworkImage(
-                            imageUrl: imageUrl,
-                            fit: BoxFit.cover,
-                            placeholder: (context, imageUrl) => const Center(
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                            errorWidget: (context, imageUrl, error) =>
-                                const Icon(Icons.broken_image_outlined),
-                          ),
-                          onRemove: isLoading
-                              ? null
-                              : () {
-                                  setState(() {
-                                    _remoteImageUrls.removeAt(index);
-                                  });
-                                },
-                        );
-                      }
-
-                      final localIndex = index - _remoteImageUrls.length;
-                      final local = _selectedImages[localIndex];
-                      return _CommunityImageChip(
-                        image: Image.memory(local.bytes, fit: BoxFit.cover),
-                        onRemove: isLoading
-                            ? null
-                            : () {
-                                setState(() {
-                                  _selectedImages.removeAt(localIndex);
-                                });
-                              },
-                      );
-                    },
-                  ),
-                ),
-              ],
-              const SizedBox(height: 12),
-              Expanded(
-                child: TextField(
-                  controller: _contentController,
-                  enabled: !isLoading,
-                  maxLines: null,
-                  expands: true,
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: InputDecoration(
-                    hintText: l10n.communityContentHint,
-                    border: const OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: isLoading ? null : _onSubmitPressed,
-                  child: Text(
-                    isLoading ? l10n.communitySaving : l10n.communitySave,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

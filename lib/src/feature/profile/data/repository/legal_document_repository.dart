@@ -43,18 +43,24 @@ class LegalDocumentRepositoryImpl implements LegalDocumentRepository {
       }
 
       final contentHtml = row['content_html'];
+      final titleValue = row['title'];
+      final localeValue = row['locale'];
       final version = row['version'];
       final updatedAtValue = row['updated_at'] ?? row['published_at'];
 
       if (contentHtml is! String ||
+          titleValue is! String ||
+          localeValue is! String ||
           version is! String ||
-          updatedAtValue is! String) {
+          updatedAtValue is! String && updatedAtValue is! DateTime) {
         throw const AppException.unknown(
           message: 'Failed to parse legal document.',
         );
       }
 
-      final updatedAt = DateTime.tryParse(updatedAtValue);
+      final updatedAt = updatedAtValue is DateTime
+          ? updatedAtValue
+          : DateTime.tryParse(updatedAtValue);
       if (updatedAt == null) {
         throw const AppException.unknown(
           message: 'Failed to parse legal document date.',
@@ -63,6 +69,8 @@ class LegalDocumentRepositoryImpl implements LegalDocumentRepository {
 
       return LegalDocumentEntity(
         type: type,
+        locale: localeValue,
+        title: titleValue,
         version: version,
         updatedAt: updatedAt,
         rawHtml: contentHtml,

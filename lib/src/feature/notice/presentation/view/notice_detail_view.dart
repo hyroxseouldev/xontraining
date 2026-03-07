@@ -114,7 +114,6 @@ class _NoticeDetailThumbnail extends StatelessWidget {
         placeholder: (context, imageUrl) {
           return Container(
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            child: const Center(child: CircularProgressIndicator()),
           );
         },
         errorWidget: (context, imageUrl, error) {

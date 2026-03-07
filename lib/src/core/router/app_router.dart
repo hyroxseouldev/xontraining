@@ -48,6 +48,11 @@ GoRouter goRouter(Ref ref) {
       final isLoggedIn = supabase.auth.currentSession != null;
       final isLoginRoute = state.matchedLocation == AppRoutes.login;
       final isOnboardingRoute = state.matchedLocation == AppRoutes.onboarding;
+      final isNoticeRoute = state.uri.path.startsWith(AppRoutes.notice);
+
+      if (isNoticeRoute) {
+        return null;
+      }
 
       if (!isLoggedIn && !isLoginRoute) {
         return AppRoutes.login;
