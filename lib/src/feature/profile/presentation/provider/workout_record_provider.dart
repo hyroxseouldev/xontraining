@@ -28,6 +28,24 @@ Future<List<WorkoutExercisePresetEntity>> workoutExercisePresets(
 }
 
 @riverpod
+Future<List<WorkoutLeaderboardEntryEntity>> workoutLeaderboard(
+  Ref ref, {
+  required String exerciseKey,
+  required String presetKey,
+  int limit = 100,
+}) async {
+  final tenantId = ref.read(tenantIdProvider);
+  return ref
+      .read(getWorkoutLeaderboardUseCaseProvider)
+      .call(
+        tenantId: tenantId,
+        exerciseKey: exerciseKey,
+        presetKey: presetKey,
+        limit: limit,
+      );
+}
+
+@riverpod
 class WorkoutRecordController extends _$WorkoutRecordController {
   @override
   AsyncValue<void> build() {

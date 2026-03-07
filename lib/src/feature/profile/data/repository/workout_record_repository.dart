@@ -16,6 +16,13 @@ abstract interface class WorkoutRecordRepository {
 
   Future<List<WorkoutRecordEntity>> getMyRecords({required String tenantId});
 
+  Future<List<WorkoutLeaderboardEntryEntity>> getLeaderboard({
+    required String tenantId,
+    required String exerciseKey,
+    required String presetKey,
+    required int limit,
+  });
+
   Future<void> createMyRecord({
     required String tenantId,
     required String exerciseName,
@@ -215,6 +222,95 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
       debugPrint('[WorkoutRecordRepository] StackTrace: $stackTrace');
       throw AppException.unknown(
         message: 'Failed to load workout records.',
+        cause: error,
+      );
+    }
+  }
+
+  @override
+  Future<List<WorkoutLeaderboardEntryEntity>> getLeaderboard({
+    required String tenantId,
+    required String exerciseKey,
+    required String presetKey,
+    required int limit,
+  }) async {
+    try {
+      final rows = await dataSource.getLeaderboard(
+        tenantId: tenantId,
+        exerciseKey: exerciseKey,
+        presetKey: presetKey,
+        limit: limit,
+      );
+      final items = <WorkoutLeaderboardEntryEntity>[];
+
+      for (final row in rows) {
+        final rankValue = row['rank_position'];
+        final userIdValue = row['user_id'];
+        final userNameValue = row['full_name'];
+        final userAvatarUrlValue = row['avatar_url'];
+        final recordTypeValue = row['record_type'];
+        final recordedAtValue = row['recorded_at'];
+
+        if (rankValue is! num ||
+            userIdValue is! String ||
+            recordTypeValue is! String ||
+            recordedAtValue is! String) {
+          continue;
+        }
+
+        final recordType = _recordTypeByValue[recordTypeValue];
+        final recordedAt = DateTime.tryParse(recordedAtValue);
+        if (recordType == null || recordedAt == null) {
+          continue;
+        }
+
+        items.add(
+          WorkoutLeaderboardEntryEntity(
+            rank: rankValue.toInt(),
+            userId: userIdValue,
+            userName: userNameValue is String ? userNameValue : '',
+            userAvatarUrl: userAvatarUrlValue is String
+                ? userAvatarUrlValue
+                : '',
+            exerciseName: exerciseKey,
+            presetKey: presetKey,
+            recordType: recordType,
+            distance: _asInt(row['distance']),
+            recordSeconds: _asInt(row['record_seconds']),
+            recordWeightKg: _asDouble(row['record_weight_kg']),
+            recordReps: _asInt(row['record_reps']),
+            recordedAt: DateTime(
+              recordedAt.year,
+              recordedAt.month,
+              recordedAt.day,
+            ),
+          ),
+        );
+      }
+
+      return items;
+    } on AuthException catch (error, stackTrace) {
+      debugPrint(
+        '[WorkoutRecordRepository] getLeaderboard auth failure: $error',
+      );
+      debugPrint('[WorkoutRecordRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } on PostgrestException catch (error, stackTrace) {
+      debugPrint(
+        '[WorkoutRecordRepository] getLeaderboard postgrest failure: ${error.message} (code=${error.code}, details=${error.details})',
+      );
+      debugPrint('[WorkoutRecordRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to load workout leaderboard.',
+        cause: error,
+      );
+    } catch (error, stackTrace) {
+      debugPrint(
+        '[WorkoutRecordRepository] getLeaderboard unexpected failure: $error',
+      );
+      debugPrint('[WorkoutRecordRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to load workout leaderboard.',
         cause: error,
       );
     }

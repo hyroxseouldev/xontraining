@@ -108,37 +108,25 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const { error: deleteClassesError } = await adminClient
-      .from("offline_classes")
-      .delete()
-      .eq("tenant_id", tenantId)
-      .eq("created_by", userId);
-
-    if (deleteClassesError != null) {
+    const { error: softDeleteError } = await adminClient
+      .from("profiles")
+      .update({ is_deleted: true, deleted_at: new Date().toISOString() })
+      .eq("id", userId);
+    if (softDeleteError != null) {
       return jsonResponse(500, {
-        code: "OFFLINE_CLASSES_DELETE_FAILED",
-        message: "Failed to delete offline classes created by user.",
-      });
-    }
-
-    const { error: deleteUserError } = await adminClient.auth.admin.deleteUser(
-      userId,
-    );
-    if (deleteUserError != null) {
-      return jsonResponse(500, {
-        code: "DELETE_FAILED",
-        message: "Failed to delete account.",
+        code: "SOFT_DELETE_FAILED",
+        message: "Failed to deactivate account.",
       });
     }
 
     return jsonResponse(200, {
       code: "OK",
-      message: "Account deleted successfully.",
+      message: "Account deactivated successfully.",
     });
   } catch (_) {
     return jsonResponse(500, {
       code: "UNEXPECTED_ERROR",
-      message: "Unexpected error occurred while deleting account.",
+      message: "Unexpected error occurred while deactivating account.",
     });
   }
 });

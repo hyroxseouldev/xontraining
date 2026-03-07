@@ -330,6 +330,24 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeProgramDetailNoSessionForSelectedDate => '선택한 날짜에 세션이 없습니다.';
 
   @override
+  String get homeProgramDetailSessionTypeRest => '휴식';
+
+  @override
+  String get homeProgramDetailScheduled => '공개 예정';
+
+  @override
+  String get homeProgramDetailScheduledDescription => '아직 공개되지 않은 세션입니다.';
+
+  @override
+  String homeProgramDetailScheduledAt(Object dateTime) {
+    return '$dateTime에 공개됩니다';
+  }
+
+  @override
+  String get homeProgramDetailRestDescription =>
+      '오늘은 회복 중심의 휴식일입니다. 가벼운 회복 활동과 충분한 휴식을 진행해 주세요.';
+
+  @override
   String get homeCoachInfoAction => '코치';
 
   @override
@@ -508,29 +526,29 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsDeleteAccount => '계정삭제';
 
   @override
-  String get settingsDeleteAccountSubtitle => '계정과 관련 데이터가 영구 삭제됩니다.';
+  String get settingsDeleteAccountSubtitle => '계정을 비활성화하고 로그인을 차단합니다.';
 
   @override
   String get settingsDeleteAccountMemberOnly => '코치/오너 권한 계정은 삭제할 수 없습니다.';
 
   @override
-  String get settingsDeleteAccountDialogTitle => '계정을 영구 삭제할까요?';
+  String get settingsDeleteAccountDialogTitle => '계정을 비활성화할까요?';
 
   @override
   String get settingsDeleteAccountDialogBody =>
-      '탈퇴 시 계정이 즉시 삭제되며 복구할 수 없습니다. 구매 내역, 운동 기록, 프로필 정보, 작성한 오프라인 클래스 및 신청 정보가 모두 삭제됩니다. 삭제 후에는 동일 계정으로도 이전 데이터를 복원할 수 없습니다.';
+      '탈퇴 시 계정이 즉시 비활성화되며 로그인할 수 없습니다. 계정 및 서비스 이용 데이터는 운영 정책과 관련 법령에 따라 보관됩니다.';
 
   @override
   String get settingsDeleteAccountCancel => '취소';
 
   @override
-  String get settingsDeleteAccountConfirm => '영구 삭제';
+  String get settingsDeleteAccountConfirm => '탈퇴하기';
 
   @override
   String get settingsDeleteAccountFailed => '계정삭제에 실패했습니다. 다시 시도해 주세요.';
 
   @override
-  String get settingsDeleteAccountSuccess => '계정이 삭제되었습니다.';
+  String get settingsDeleteAccountSuccess => '계정이 비활성화되었습니다.';
 
   @override
   String get settingsContactOpenFailed => '연락 창을 열 수 없습니다. 이메일 앱을 확인해 주세요.';
@@ -682,6 +700,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workoutRecordViewRecords => '기록 보기';
 
   @override
+  String get workoutRecordViewLeaderboard => '리더보드 보기';
+
+  @override
   String workoutRecordEntryTitle(Object exercise) {
     return '$exercise 기록 입력';
   }
@@ -720,6 +741,20 @@ class AppLocalizationsKo extends AppLocalizations {
   String workoutRecordStrengthWeightAndReps(Object weight, Object reps) {
     return '중량 $weight · 횟수 $reps';
   }
+
+  @override
+  String workoutRecordLeaderboardTitle(Object exercise) {
+    return '$exercise 리더보드';
+  }
+
+  @override
+  String get workoutRecordLeaderboardFilterPreset => '프리셋';
+
+  @override
+  String get workoutRecordLeaderboardEmpty => '아직 리더보드 기록이 없습니다.';
+
+  @override
+  String get workoutRecordLeaderboardLoadFailed => '리더보드를 불러오지 못했습니다.';
 
   @override
   String get onboardingTitle => '환영합니다';

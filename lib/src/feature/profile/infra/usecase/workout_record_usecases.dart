@@ -66,6 +66,26 @@ class CreateWorkoutRecordUseCase {
   }
 }
 
+class GetWorkoutLeaderboardUseCase {
+  GetWorkoutLeaderboardUseCase({required this.repository});
+
+  final WorkoutRecordRepository repository;
+
+  Future<List<WorkoutLeaderboardEntryEntity>> call({
+    required String tenantId,
+    required String exerciseKey,
+    required String presetKey,
+    int limit = 100,
+  }) {
+    return repository.getLeaderboard(
+      tenantId: tenantId,
+      exerciseKey: exerciseKey,
+      presetKey: presetKey,
+      limit: limit,
+    );
+  }
+}
+
 class UpdateWorkoutRecordUseCase {
   UpdateWorkoutRecordUseCase({required this.repository});
 
@@ -134,6 +154,13 @@ GetWorkoutExercisePresetsUseCase getWorkoutExercisePresetsUseCase(Ref ref) {
 @riverpod
 CreateWorkoutRecordUseCase createWorkoutRecordUseCase(Ref ref) {
   return CreateWorkoutRecordUseCase(
+    repository: ref.read(workoutRecordRepositoryProvider),
+  );
+}
+
+@riverpod
+GetWorkoutLeaderboardUseCase getWorkoutLeaderboardUseCase(Ref ref) {
+  return GetWorkoutLeaderboardUseCase(
     repository: ref.read(workoutRecordRepositoryProvider),
   );
 }

@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:xontraining/src/core/exception/app_exception.dart';
 import 'package:xontraining/src/feature/auth/infra/usecase/auth_usecases.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/auth_session_provider.dart';
 
@@ -11,7 +12,20 @@ Future<bool> onboardingCompleted(Ref ref) async {
     return false;
   }
 
-  return ref.read(checkOnboardingStatusUseCaseProvider).call();
+  try {
+    return await ref.read(checkOnboardingStatusUseCaseProvider).call();
+  } on AppException catch (error) {
+    final shouldForceSignOut = error.maybeWhen(
+      auth: (message, _) => message == 'Account has been deactivated.',
+      orElse: () => false,
+    );
+
+    if (shouldForceSignOut) {
+      await ref.read(signOutUseCaseProvider).call();
+      return false;
+    }
+    rethrow;
+  }
 }
 
 @riverpod

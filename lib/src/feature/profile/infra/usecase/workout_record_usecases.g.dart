@@ -206,6 +206,55 @@ final class CreateWorkoutRecordUseCaseProvider
 String _$createWorkoutRecordUseCaseHash() =>
     r'dbf45a6ff0e823182ab75c5c331147e41f19f808';
 
+@ProviderFor(getWorkoutLeaderboardUseCase)
+final getWorkoutLeaderboardUseCaseProvider =
+    GetWorkoutLeaderboardUseCaseProvider._();
+
+final class GetWorkoutLeaderboardUseCaseProvider
+    extends
+        $FunctionalProvider<
+          GetWorkoutLeaderboardUseCase,
+          GetWorkoutLeaderboardUseCase,
+          GetWorkoutLeaderboardUseCase
+        >
+    with $Provider<GetWorkoutLeaderboardUseCase> {
+  GetWorkoutLeaderboardUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getWorkoutLeaderboardUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getWorkoutLeaderboardUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<GetWorkoutLeaderboardUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  GetWorkoutLeaderboardUseCase create(Ref ref) {
+    return getWorkoutLeaderboardUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GetWorkoutLeaderboardUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GetWorkoutLeaderboardUseCase>(value),
+    );
+  }
+}
+
+String _$getWorkoutLeaderboardUseCaseHash() =>
+    r'b6eaf54ec4a22f90ea3f5c7a9b7f45dd61bc4e6a';
+
 @ProviderFor(updateWorkoutRecordUseCase)
 final updateWorkoutRecordUseCaseProvider =
     UpdateWorkoutRecordUseCaseProvider._();

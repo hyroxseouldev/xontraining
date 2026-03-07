@@ -174,10 +174,14 @@ class HomeRepositoryImpl implements HomeRepository {
         final dateRaw = raw['session_date'];
         final title = raw['title'];
         final contentHtml = raw['content_html'];
+        final isPublishedRaw = raw['is_published'];
+        final publishAtRaw = raw['publish_at'];
+        final sessionTypeRaw = raw['session_type'];
         if (id is! String ||
             title is! String ||
             contentHtml is! String ||
-            dateRaw is! String) {
+            dateRaw is! String ||
+            isPublishedRaw is! bool) {
           continue;
         }
 
@@ -186,12 +190,18 @@ class HomeRepositoryImpl implements HomeRepository {
           continue;
         }
 
+        final parsedPublishAt = _asDateTime(publishAtRaw);
+        final parsedSessionType = _asSessionType(sessionTypeRaw);
+
         sessions.add(
           ProgramSessionEntity(
             id: id,
             sessionDate: _dateOnly(parsedDate),
             title: title,
             contentHtml: contentHtml,
+            isPublished: isPublishedRaw,
+            publishAt: parsedPublishAt,
+            sessionType: parsedSessionType,
           ),
         );
       }
@@ -267,6 +277,20 @@ class HomeRepositoryImpl implements HomeRepository {
         .map((item) => item.trim())
         .where((item) => item.isNotEmpty)
         .toList(growable: false);
+  }
+
+  DateTime? _asDateTime(Object? value) {
+    if (value is String) {
+      return DateTime.tryParse(value);
+    }
+    return null;
+  }
+
+  ProgramSessionType _asSessionType(Object? value) {
+    if (value is String && value == 'rest') {
+      return ProgramSessionType.rest;
+    }
+    return ProgramSessionType.training;
   }
 }
 

@@ -95,9 +95,14 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
     final profile = await supabase
         .from('profiles')
-        .select('onboarding_completed')
+        .select('onboarding_completed,is_deleted')
         .eq('id', userId)
         .maybeSingle();
+
+    final isDeleted = profile?['is_deleted'];
+    if (isDeleted is bool && isDeleted) {
+      throw AuthException('Account has been deactivated.');
+    }
 
     final onboardingCompleted = profile?['onboarding_completed'];
     if (onboardingCompleted is bool) {
@@ -222,7 +227,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
       final errorMessage = data is Map<String, dynamic>
           ? data['message'] as String?
           : null;
-      throw AuthException(errorMessage ?? 'Failed to delete account.');
+      throw AuthException(errorMessage ?? 'Failed to deactivate account.');
     }
   }
 }

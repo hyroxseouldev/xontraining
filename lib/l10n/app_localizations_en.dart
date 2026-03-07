@@ -342,6 +342,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'No session for the selected date.';
 
   @override
+  String get homeProgramDetailSessionTypeRest => 'Rest';
+
+  @override
+  String get homeProgramDetailScheduled => 'Scheduled';
+
+  @override
+  String get homeProgramDetailScheduledDescription =>
+      'This session is not open yet.';
+
+  @override
+  String homeProgramDetailScheduledAt(Object dateTime) {
+    return 'Opens at $dateTime';
+  }
+
+  @override
+  String get homeProgramDetailRestDescription =>
+      'Today is a recovery day. Follow light recovery activities and take enough rest.';
+
+  @override
   String get homeCoachInfoAction => 'Coach';
 
   @override
@@ -524,31 +543,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountSubtitle =>
-      'Permanently delete your account and all related data.';
+      'Deactivate your account and block sign-in.';
 
   @override
   String get settingsDeleteAccountMemberOnly =>
       'Coach and owner accounts cannot be deleted.';
 
   @override
-  String get settingsDeleteAccountDialogTitle => 'Delete account permanently?';
+  String get settingsDeleteAccountDialogTitle => 'Deactivate this account?';
 
   @override
   String get settingsDeleteAccountDialogBody =>
-      'Deleting your account is immediate and cannot be undone. Purchase history, workout records, profile information, offline classes you created, and class registrations will all be deleted. Your previous data cannot be restored even if you sign in again.';
+      'Your account will be deactivated immediately and sign-in will be blocked. Account and service usage data will be retained according to policy and applicable laws.';
 
   @override
   String get settingsDeleteAccountCancel => 'Cancel';
 
   @override
-  String get settingsDeleteAccountConfirm => 'Delete permanently';
+  String get settingsDeleteAccountConfirm => 'Deactivate account';
 
   @override
   String get settingsDeleteAccountFailed =>
       'Failed to delete account. Please try again.';
 
   @override
-  String get settingsDeleteAccountSuccess => 'Your account has been deleted.';
+  String get settingsDeleteAccountSuccess =>
+      'Your account has been deactivated.';
 
   @override
   String get settingsContactOpenFailed =>
@@ -705,6 +725,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutRecordViewRecords => 'View records';
 
   @override
+  String get workoutRecordViewLeaderboard => 'View leaderboard';
+
+  @override
   String workoutRecordEntryTitle(Object exercise) {
     return 'Add $exercise record';
   }
@@ -743,6 +766,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String workoutRecordStrengthWeightAndReps(Object weight, Object reps) {
     return 'Weight $weight · Reps $reps';
   }
+
+  @override
+  String workoutRecordLeaderboardTitle(Object exercise) {
+    return '$exercise leaderboard';
+  }
+
+  @override
+  String get workoutRecordLeaderboardFilterPreset => 'Preset';
+
+  @override
+  String get workoutRecordLeaderboardEmpty => 'No leaderboard records yet.';
+
+  @override
+  String get workoutRecordLeaderboardLoadFailed =>
+      'Failed to load leaderboard.';
 
   @override
   String get onboardingTitle => 'Welcome';

@@ -13,6 +13,13 @@ abstract interface class WorkoutRecordDataSource {
 
   Future<List<Map<String, dynamic>>> getMyRecords({required String tenantId});
 
+  Future<List<Map<String, dynamic>>> getLeaderboard({
+    required String tenantId,
+    required String exerciseKey,
+    required String presetKey,
+    required int limit,
+  });
+
   Future<void> createMyRecord({
     required String tenantId,
     required String exerciseName,
@@ -100,6 +107,26 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
         .order('created_at', ascending: false);
 
     return rows;
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getLeaderboard({
+    required String tenantId,
+    required String exerciseKey,
+    required String presetKey,
+    required int limit,
+  }) async {
+    final rows = await supabase.rpc(
+      'get_workout_leaderboard',
+      params: {
+        'p_tenant_id': tenantId,
+        'p_exercise_key': exerciseKey,
+        'p_preset_key': presetKey,
+        'p_limit': limit,
+      },
+    );
+
+    return List<Map<String, dynamic>>.from(rows as List);
   }
 
   @override

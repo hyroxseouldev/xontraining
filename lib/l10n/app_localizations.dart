@@ -698,6 +698,36 @@ abstract class AppLocalizations {
   /// **'No session for the selected date.'**
   String get homeProgramDetailNoSessionForSelectedDate;
 
+  /// No description provided for @homeProgramDetailSessionTypeRest.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest'**
+  String get homeProgramDetailSessionTypeRest;
+
+  /// No description provided for @homeProgramDetailScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get homeProgramDetailScheduled;
+
+  /// No description provided for @homeProgramDetailScheduledDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This session is not open yet.'**
+  String get homeProgramDetailScheduledDescription;
+
+  /// No description provided for @homeProgramDetailScheduledAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens at {dateTime}'**
+  String homeProgramDetailScheduledAt(Object dateTime);
+
+  /// No description provided for @homeProgramDetailRestDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Today is a recovery day. Follow light recovery activities and take enough rest.'**
+  String get homeProgramDetailRestDescription;
+
   /// No description provided for @homeCoachInfoAction.
   ///
   /// In en, this message translates to:
@@ -1013,7 +1043,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDeleteAccountSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Permanently delete your account and all related data.'**
+  /// **'Deactivate your account and block sign-in.'**
   String get settingsDeleteAccountSubtitle;
 
   /// No description provided for @settingsDeleteAccountMemberOnly.
@@ -1025,13 +1055,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDeleteAccountDialogTitle.
   ///
   /// In en, this message translates to:
-  /// **'Delete account permanently?'**
+  /// **'Deactivate this account?'**
   String get settingsDeleteAccountDialogTitle;
 
   /// No description provided for @settingsDeleteAccountDialogBody.
   ///
   /// In en, this message translates to:
-  /// **'Deleting your account is immediate and cannot be undone. Purchase history, workout records, profile information, offline classes you created, and class registrations will all be deleted. Your previous data cannot be restored even if you sign in again.'**
+  /// **'Your account will be deactivated immediately and sign-in will be blocked. Account and service usage data will be retained according to policy and applicable laws.'**
   String get settingsDeleteAccountDialogBody;
 
   /// No description provided for @settingsDeleteAccountCancel.
@@ -1043,7 +1073,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDeleteAccountConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Delete permanently'**
+  /// **'Deactivate account'**
   String get settingsDeleteAccountConfirm;
 
   /// No description provided for @settingsDeleteAccountFailed.
@@ -1055,7 +1085,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDeleteAccountSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Your account has been deleted.'**
+  /// **'Your account has been deactivated.'**
   String get settingsDeleteAccountSuccess;
 
   /// No description provided for @settingsContactOpenFailed.
@@ -1352,6 +1382,12 @@ abstract class AppLocalizations {
   /// **'View records'**
   String get workoutRecordViewRecords;
 
+  /// No description provided for @workoutRecordViewLeaderboard.
+  ///
+  /// In en, this message translates to:
+  /// **'View leaderboard'**
+  String get workoutRecordViewLeaderboard;
+
   /// No description provided for @workoutRecordEntryTitle.
   ///
   /// In en, this message translates to:
@@ -1411,6 +1447,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Weight {weight} · Reps {reps}'**
   String workoutRecordStrengthWeightAndReps(Object weight, Object reps);
+
+  /// No description provided for @workoutRecordLeaderboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{exercise} leaderboard'**
+  String workoutRecordLeaderboardTitle(Object exercise);
+
+  /// No description provided for @workoutRecordLeaderboardFilterPreset.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset'**
+  String get workoutRecordLeaderboardFilterPreset;
+
+  /// No description provided for @workoutRecordLeaderboardEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No leaderboard records yet.'**
+  String get workoutRecordLeaderboardEmpty;
+
+  /// No description provided for @workoutRecordLeaderboardLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load leaderboard.'**
+  String get workoutRecordLeaderboardLoadFailed;
 
   /// No description provided for @onboardingTitle.
   ///

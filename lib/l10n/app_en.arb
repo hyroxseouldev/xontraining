@@ -169,6 +169,16 @@
   "homeProgramDetailPurchaseRequired": "This page is available after purchase and activation.",
   "homeProgramDetailNoSessions": "No sessions are available for this program yet.",
   "homeProgramDetailNoSessionForSelectedDate": "No session for the selected date.",
+  "homeProgramDetailSessionTypeRest": "Rest",
+  "homeProgramDetailScheduled": "Scheduled",
+  "homeProgramDetailScheduledDescription": "This session is not open yet.",
+  "homeProgramDetailScheduledAt": "Opens at {dateTime}",
+  "@homeProgramDetailScheduledAt": {
+    "placeholders": {
+      "dateTime": {}
+    }
+  },
+  "homeProgramDetailRestDescription": "Today is a recovery day. Follow light recovery activities and take enough rest.",
   "homeCoachInfoAction": "Coach",
   "homeCoachInfoTitle": "Coach Info",
   "homeCoachInfoEmpty": "Coach information is not available yet.",
@@ -287,14 +297,14 @@
   "settingsPrivacyPolicyBody": "Privacy policy content will be provided and updated by your organization.",
   "settingsCommunitySupport": "Community report support",
   "settingsDeleteAccount": "Delete account",
-  "settingsDeleteAccountSubtitle": "Permanently delete your account and all related data.",
+  "settingsDeleteAccountSubtitle": "Deactivate your account and block sign-in.",
   "settingsDeleteAccountMemberOnly": "Coach and owner accounts cannot be deleted.",
-  "settingsDeleteAccountDialogTitle": "Delete account permanently?",
-  "settingsDeleteAccountDialogBody": "Deleting your account is immediate and cannot be undone. Purchase history, workout records, profile information, offline classes you created, and class registrations will all be deleted. Your previous data cannot be restored even if you sign in again.",
+  "settingsDeleteAccountDialogTitle": "Deactivate this account?",
+  "settingsDeleteAccountDialogBody": "Your account will be deactivated immediately and sign-in will be blocked. Account and service usage data will be retained according to policy and applicable laws.",
   "settingsDeleteAccountCancel": "Cancel",
-  "settingsDeleteAccountConfirm": "Delete permanently",
+  "settingsDeleteAccountConfirm": "Deactivate account",
   "settingsDeleteAccountFailed": "Failed to delete account. Please try again.",
-  "settingsDeleteAccountSuccess": "Your account has been deleted.",
+  "settingsDeleteAccountSuccess": "Your account has been deactivated.",
   "settingsContactOpenFailed": "Unable to open contact app. Please check your email app.",
   "legalDocumentLoading": "Loading document...",
   "legalDocumentLoadFailed": "Failed to load document.",
@@ -344,6 +354,7 @@
   "workoutRecordTemplateCardioDescription": "Record distance, duration, and date.",
   "workoutRecordTemplateStrengthDescription": "Record weight, reps, and date.",
   "workoutRecordViewRecords": "View records",
+  "workoutRecordViewLeaderboard": "View leaderboard",
   "workoutRecordEntryTitle": "Add {exercise} record",
   "@workoutRecordEntryTitle": {
     "placeholders": {
@@ -381,6 +392,15 @@
       "reps": {}
     }
   },
+  "workoutRecordLeaderboardTitle": "{exercise} leaderboard",
+  "@workoutRecordLeaderboardTitle": {
+    "placeholders": {
+      "exercise": {}
+    }
+  },
+  "workoutRecordLeaderboardFilterPreset": "Preset",
+  "workoutRecordLeaderboardEmpty": "No leaderboard records yet.",
+  "workoutRecordLeaderboardLoadFailed": "Failed to load leaderboard.",
   "onboardingTitle": "Welcome",
   "onboardingDescription": "Set up your profile to continue.",
   "onboardingNameLabel": "Name",

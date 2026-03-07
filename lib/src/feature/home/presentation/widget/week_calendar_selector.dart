@@ -7,6 +7,8 @@ class WeekCalendarSelector extends StatelessWidget {
     required this.visibleWeekAnchorDate,
     required this.selectedDate,
     required this.enabledDates,
+    required this.restDates,
+    required this.scheduledDates,
     required this.firstDayOfWeek,
     required this.onDateSelected,
     required this.onPreviousWeek,
@@ -19,6 +21,8 @@ class WeekCalendarSelector extends StatelessWidget {
   final DateTime visibleWeekAnchorDate;
   final DateTime selectedDate;
   final Set<DateTime> enabledDates;
+  final Set<DateTime> restDates;
+  final Set<DateTime> scheduledDates;
   final WeekStartDay firstDayOfWeek;
   final ValueChanged<DateTime> onDateSelected;
   final VoidCallback onPreviousWeek;
@@ -81,6 +85,8 @@ class WeekCalendarSelector extends StatelessWidget {
                 final isSelected = DateUtils.isSameDay(selectedDate, date);
                 final isEnabled = enabledDates.contains(_dateOnly(date));
                 final isToday = DateUtils.isSameDay(DateTime.now(), date);
+                final isRest = restDates.contains(_dateOnly(date));
+                final isScheduled = scheduledDates.contains(_dateOnly(date));
 
                 return Expanded(
                   child: _DayCell(
@@ -89,6 +95,8 @@ class WeekCalendarSelector extends StatelessWidget {
                     isSelected: isSelected,
                     isEnabled: isEnabled,
                     isToday: isToday,
+                    isRest: isRest,
+                    isScheduled: isScheduled,
                     onTap: () => onDateSelected(date),
                   ),
                 );
@@ -107,6 +115,8 @@ class _DayCell extends StatelessWidget {
     required this.isSelected,
     required this.isEnabled,
     required this.isToday,
+    required this.isRest,
+    required this.isScheduled,
     required this.onTap,
   });
 
@@ -115,6 +125,8 @@ class _DayCell extends StatelessWidget {
   final bool isSelected;
   final bool isEnabled;
   final bool isToday;
+  final bool isRest;
+  final bool isScheduled;
   final VoidCallback onTap;
 
   @override
@@ -145,6 +157,12 @@ class _DayCell extends StatelessWidget {
       textColor = colorScheme.onSurface;
     }
 
+    final markerColor = isScheduled
+        ? colorScheme.tertiary
+        : isRest
+        ? colorScheme.secondary
+        : colorScheme.primary;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: InkWell(
@@ -172,6 +190,17 @@ class _DayCell extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: textColor,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: isEnabled
+                      ? markerColor
+                      : markerColor.withValues(alpha: 0.18),
+                  shape: BoxShape.circle,
                 ),
               ),
             ],

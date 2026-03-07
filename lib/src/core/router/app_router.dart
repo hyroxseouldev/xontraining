@@ -20,6 +20,7 @@ import 'package:xontraining/src/feature/profile/presentation/view/profile_view.d
 import 'package:xontraining/src/feature/profile/presentation/view/privacy_policy_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/app_version_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/rowing_record_entry_view.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/workout_record_leaderboard_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/rowing_record_list_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/settings_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/terms_of_service_view.dart';
@@ -227,6 +228,20 @@ GoRouter goRouter(Ref ref) {
         ),
       ),
       GoRoute(
+        path: AppRoutes.workoutRecordLeaderboard,
+        name: AppRoutes.workoutRecordLeaderboardName,
+        redirect: (context, state) {
+          final exerciseKey = state.pathParameters['exercise'] ?? '';
+          if (!AppRoutes.isSupportedWorkoutExercise(exerciseKey)) {
+            return AppRoutes.workoutRecord;
+          }
+          return null;
+        },
+        builder: (context, state) => WorkoutRecordLeaderboardView(
+          exerciseKey: state.pathParameters['exercise'] ?? '',
+        ),
+      ),
+      GoRoute(
         path: AppRoutes.settings,
         name: AppRoutes.settingsName,
         builder: (context, state) => const SettingsView(),
@@ -271,6 +286,8 @@ abstract final class AppRoutes {
       '/profile/workout-record/:exercise/new';
   static const String workoutRecordList =
       '/profile/workout-record/:exercise/list';
+  static const String workoutRecordLeaderboard =
+      '/profile/workout-record/:exercise/leaderboard';
   static const String settings = '/settings';
   static const String appVersion = '/settings/app-version';
   static const String termsOfService = '/settings/terms';
@@ -292,6 +309,7 @@ abstract final class AppRoutes {
   static const String workoutRecordName = 'workoutRecord';
   static const String workoutRecordEntryName = 'workoutRecordEntry';
   static const String workoutRecordListName = 'workoutRecordList';
+  static const String workoutRecordLeaderboardName = 'workoutRecordLeaderboard';
   static const String settingsName = 'settings';
   static const String appVersionName = 'appVersion';
   static const String termsOfServiceName = 'termsOfService';

@@ -139,6 +139,65 @@ void main() {
       expect(repository.deleteCalls, 1);
       expect(repository.lastDeletedId, 'record-id');
     });
+
+    test('workoutLeaderboard forwards params and returns entries', () async {
+      final repository = _FakeWorkoutRecordRepository(
+        recordsResponse: const [],
+        leaderboardResponse: [
+          WorkoutLeaderboardEntryEntity(
+            rank: 1,
+            userId: 'user-1',
+            userName: 'Alice',
+            userAvatarUrl: '',
+            exerciseName: 'rowing',
+            presetKey: '2000m',
+            recordType: WorkoutRecordType.time,
+            distance: 2000,
+            recordSeconds: 430,
+            recordWeightKg: null,
+            recordReps: null,
+            recordedAt: DateTime(2026, 3, 1),
+          ),
+        ],
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          tenantIdProvider.overrideWithValue('tenant-test'),
+          getWorkoutRecordsUseCaseProvider.overrideWithValue(
+            GetWorkoutRecordsUseCase(repository: repository),
+          ),
+          getWorkoutLeaderboardUseCaseProvider.overrideWithValue(
+            GetWorkoutLeaderboardUseCase(repository: repository),
+          ),
+          createWorkoutRecordUseCaseProvider.overrideWithValue(
+            CreateWorkoutRecordUseCase(repository: repository),
+          ),
+          updateWorkoutRecordUseCaseProvider.overrideWithValue(
+            UpdateWorkoutRecordUseCase(repository: repository),
+          ),
+          deleteWorkoutRecordUseCaseProvider.overrideWithValue(
+            DeleteWorkoutRecordUseCase(repository: repository),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final result = await container.read(
+        workoutLeaderboardProvider(
+          exerciseKey: 'rowing',
+          presetKey: '2000m',
+          limit: 100,
+        ).future,
+      );
+
+      expect(result, hasLength(1));
+      expect(result.first.rank, 1);
+      expect(repository.getLeaderboardCalls, 1);
+      expect(repository.lastLeaderboardExerciseKey, 'rowing');
+      expect(repository.lastLeaderboardPresetKey, '2000m');
+      expect(repository.lastLeaderboardLimit, 100);
+    });
   });
 }
 
@@ -157,14 +216,19 @@ WorkoutRecordEntity _record({required String id}) {
 }
 
 class _FakeWorkoutRecordRepository implements WorkoutRecordRepository {
-  _FakeWorkoutRecordRepository({required this.recordsResponse});
+  _FakeWorkoutRecordRepository({
+    required this.recordsResponse,
+    this.leaderboardResponse = const [],
+  });
 
   final List<WorkoutRecordEntity> recordsResponse;
+  final List<WorkoutLeaderboardEntryEntity> leaderboardResponse;
 
   int getMyRecordsCalls = 0;
   int createCalls = 0;
   int updateCalls = 0;
   int deleteCalls = 0;
+  int getLeaderboardCalls = 0;
 
   String? lastCreatedExerciseName;
   WorkoutRecordType? lastCreatedRecordType;
@@ -178,6 +242,9 @@ class _FakeWorkoutRecordRepository implements WorkoutRecordRepository {
   int? lastUpdatedReps;
 
   String? lastDeletedId;
+  String? lastLeaderboardExerciseKey;
+  String? lastLeaderboardPresetKey;
+  int? lastLeaderboardLimit;
 
   @override
   Future<List<WorkoutExerciseEntity>> getExercises({
@@ -199,6 +266,20 @@ class _FakeWorkoutRecordRepository implements WorkoutRecordRepository {
   }) async {
     getMyRecordsCalls += 1;
     return recordsResponse;
+  }
+
+  @override
+  Future<List<WorkoutLeaderboardEntryEntity>> getLeaderboard({
+    required String tenantId,
+    required String exerciseKey,
+    required String presetKey,
+    required int limit,
+  }) async {
+    getLeaderboardCalls += 1;
+    lastLeaderboardExerciseKey = exerciseKey;
+    lastLeaderboardPresetKey = presetKey;
+    lastLeaderboardLimit = limit;
+    return leaderboardResponse;
   }
 
   @override

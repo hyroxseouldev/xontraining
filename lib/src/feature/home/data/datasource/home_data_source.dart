@@ -87,7 +87,9 @@ class SupabaseHomeDataSource implements HomeDataSource {
   }) async {
     final rows = await supabase
         .from('sessions')
-        .select('id,session_date,title,content_html')
+        .select(
+          'id,session_date,title,content_html,is_published,publish_at,session_type',
+        )
         .eq('tenant_id', tenantId)
         .eq('program_id', programId)
         .order('session_date', ascending: true);

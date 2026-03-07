@@ -61,3 +61,48 @@ class WorkoutRecordEntity {
 
   bool get isTimeRecord => recordType == WorkoutRecordType.time;
 }
+
+class WorkoutLeaderboardEntryEntity {
+  const WorkoutLeaderboardEntryEntity({
+    required this.rank,
+    required this.userId,
+    required this.userName,
+    required this.userAvatarUrl,
+    required this.exerciseName,
+    required this.presetKey,
+    required this.recordType,
+    required this.recordedAt,
+    this.distance,
+    this.recordSeconds,
+    this.recordWeightKg,
+    this.recordReps,
+  });
+
+  final int rank;
+  final String userId;
+  final String userName;
+  final String userAvatarUrl;
+  final String exerciseName;
+  final String presetKey;
+  final WorkoutRecordType recordType;
+  final int? distance;
+  final int? recordSeconds;
+  final double? recordWeightKg;
+  final int? recordReps;
+  final DateTime recordedAt;
+
+  bool get isTimeRecord => recordType == WorkoutRecordType.time;
+
+  String get normalizedUserName {
+    final value = userName.trim();
+    if (value.isNotEmpty) {
+      return value;
+    }
+    if (userId.length >= 8) {
+      return userId.substring(0, 8);
+    }
+    return userId;
+  }
+
+  String get normalizedUserAvatarUrl => userAvatarUrl.trim();
+}

@@ -133,6 +133,100 @@ final class WorkoutExercisePresetsProvider
 String _$workoutExercisePresetsHash() =>
     r'adb1407b7025f61a62bb025d5fa9af60c32a5dc2';
 
+@ProviderFor(workoutLeaderboard)
+final workoutLeaderboardProvider = WorkoutLeaderboardFamily._();
+
+final class WorkoutLeaderboardProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<WorkoutLeaderboardEntryEntity>>,
+          List<WorkoutLeaderboardEntryEntity>,
+          FutureOr<List<WorkoutLeaderboardEntryEntity>>
+        >
+    with
+        $FutureModifier<List<WorkoutLeaderboardEntryEntity>>,
+        $FutureProvider<List<WorkoutLeaderboardEntryEntity>> {
+  WorkoutLeaderboardProvider._({
+    required WorkoutLeaderboardFamily super.from,
+    required ({String exerciseKey, String presetKey, int limit}) super.argument,
+  }) : super(
+         retry: null,
+         name: r'workoutLeaderboardProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$workoutLeaderboardHash();
+
+  @override
+  String toString() {
+    return r'workoutLeaderboardProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<List<WorkoutLeaderboardEntryEntity>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<WorkoutLeaderboardEntryEntity>> create(Ref ref) {
+    final argument =
+        this.argument as ({String exerciseKey, String presetKey, int limit});
+    return workoutLeaderboard(
+      ref,
+      exerciseKey: argument.exerciseKey,
+      presetKey: argument.presetKey,
+      limit: argument.limit,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is WorkoutLeaderboardProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$workoutLeaderboardHash() =>
+    r'5c5d4eba8be682444052a5630ac118e8b28750a7';
+
+final class WorkoutLeaderboardFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          FutureOr<List<WorkoutLeaderboardEntryEntity>>,
+          ({String exerciseKey, String presetKey, int limit})
+        > {
+  WorkoutLeaderboardFamily._()
+    : super(
+        retry: null,
+        name: r'workoutLeaderboardProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  WorkoutLeaderboardProvider call({
+    required String exerciseKey,
+    required String presetKey,
+    int limit = 100,
+  }) => WorkoutLeaderboardProvider._(
+    argument: (exerciseKey: exerciseKey, presetKey: presetKey, limit: limit),
+    from: this,
+  );
+
+  @override
+  String toString() => r'workoutLeaderboardProvider';
+}
+
 @ProviderFor(WorkoutRecordController)
 final workoutRecordControllerProvider = WorkoutRecordControllerProvider._();
 

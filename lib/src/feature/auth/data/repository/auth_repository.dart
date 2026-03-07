@@ -261,7 +261,7 @@ class AuthRepositoryImpl implements AuthRepository {
       debugPrint('[AuthRepository] deleteMyAccount unexpected failure: $error');
       debugPrint('[AuthRepository] StackTrace: $stackTrace');
       throw AppException.unknown(
-        message: 'Failed to delete account.',
+        message: 'Failed to deactivate account.',
         cause: error,
       );
     }

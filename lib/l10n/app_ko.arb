@@ -169,6 +169,16 @@
   "homeProgramDetailPurchaseRequired": "이 페이지는 구매 후 활성화된 사용자만 이용할 수 있습니다.",
   "homeProgramDetailNoSessions": "아직 이 프로그램에 등록된 세션이 없습니다.",
   "homeProgramDetailNoSessionForSelectedDate": "선택한 날짜에 세션이 없습니다.",
+  "homeProgramDetailSessionTypeRest": "휴식",
+  "homeProgramDetailScheduled": "공개 예정",
+  "homeProgramDetailScheduledDescription": "아직 공개되지 않은 세션입니다.",
+  "homeProgramDetailScheduledAt": "{dateTime}에 공개됩니다",
+  "@homeProgramDetailScheduledAt": {
+    "placeholders": {
+      "dateTime": {}
+    }
+  },
+  "homeProgramDetailRestDescription": "오늘은 회복 중심의 휴식일입니다. 가벼운 회복 활동과 충분한 휴식을 진행해 주세요.",
   "homeCoachInfoAction": "코치",
   "homeCoachInfoTitle": "코치 정보",
   "homeCoachInfoEmpty": "등록된 코치 정보가 없습니다.",
@@ -287,14 +297,14 @@
   "settingsPrivacyPolicyBody": "개인정보처리방침 내용은 운영 정책에 따라 제공 및 업데이트됩니다.",
   "settingsCommunitySupport": "커뮤니티 신고 문의",
   "settingsDeleteAccount": "계정삭제",
-  "settingsDeleteAccountSubtitle": "계정과 관련 데이터가 영구 삭제됩니다.",
+  "settingsDeleteAccountSubtitle": "계정을 비활성화하고 로그인을 차단합니다.",
   "settingsDeleteAccountMemberOnly": "코치/오너 권한 계정은 삭제할 수 없습니다.",
-  "settingsDeleteAccountDialogTitle": "계정을 영구 삭제할까요?",
-  "settingsDeleteAccountDialogBody": "탈퇴 시 계정이 즉시 삭제되며 복구할 수 없습니다. 구매 내역, 운동 기록, 프로필 정보, 작성한 오프라인 클래스 및 신청 정보가 모두 삭제됩니다. 삭제 후에는 동일 계정으로도 이전 데이터를 복원할 수 없습니다.",
+  "settingsDeleteAccountDialogTitle": "계정을 비활성화할까요?",
+  "settingsDeleteAccountDialogBody": "탈퇴 시 계정이 즉시 비활성화되며 로그인할 수 없습니다. 계정 및 서비스 이용 데이터는 운영 정책과 관련 법령에 따라 보관됩니다.",
   "settingsDeleteAccountCancel": "취소",
-  "settingsDeleteAccountConfirm": "영구 삭제",
+  "settingsDeleteAccountConfirm": "탈퇴하기",
   "settingsDeleteAccountFailed": "계정삭제에 실패했습니다. 다시 시도해 주세요.",
-  "settingsDeleteAccountSuccess": "계정이 삭제되었습니다.",
+  "settingsDeleteAccountSuccess": "계정이 비활성화되었습니다.",
   "settingsContactOpenFailed": "연락 창을 열 수 없습니다. 이메일 앱을 확인해 주세요.",
   "legalDocumentLoading": "문서를 불러오는 중입니다...",
   "legalDocumentLoadFailed": "문서를 불러오지 못했습니다.",
@@ -344,6 +354,7 @@
   "workoutRecordTemplateCardioDescription": "거리, 시간, 날짜를 입력해 기록합니다.",
   "workoutRecordTemplateStrengthDescription": "중량, 횟수, 날짜를 입력해 기록합니다.",
   "workoutRecordViewRecords": "기록 보기",
+  "workoutRecordViewLeaderboard": "리더보드 보기",
   "workoutRecordEntryTitle": "{exercise} 기록 입력",
   "@workoutRecordEntryTitle": {
     "placeholders": {
@@ -381,6 +392,15 @@
       "reps": {}
     }
   },
+  "workoutRecordLeaderboardTitle": "{exercise} 리더보드",
+  "@workoutRecordLeaderboardTitle": {
+    "placeholders": {
+      "exercise": {}
+    }
+  },
+  "workoutRecordLeaderboardFilterPreset": "프리셋",
+  "workoutRecordLeaderboardEmpty": "아직 리더보드 기록이 없습니다.",
+  "workoutRecordLeaderboardLoadFailed": "리더보드를 불러오지 못했습니다.",
   "onboardingTitle": "환영합니다",
   "onboardingDescription": "서비스 이용을 위해 프로필을 설정해 주세요.",
   "onboardingNameLabel": "이름",

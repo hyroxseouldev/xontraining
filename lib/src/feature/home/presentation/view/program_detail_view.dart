@@ -153,6 +153,14 @@ class _ProgramSessionContentState extends State<_ProgramSessionContent> {
     final sessionDates = widget.sessions
         .map((session) => _dateOnly(session.sessionDate))
         .toSet();
+    final restDates = widget.sessions
+        .where((session) => session.isRest)
+        .map((session) => _dateOnly(session.sessionDate))
+        .toSet();
+    final scheduledDates = widget.sessions
+        .where((session) => session.isScheduled)
+        .map((session) => _dateOnly(session.sessionDate))
+        .toSet();
 
     final selectedSession = _sessionForSelectedDateOrNull(
       widget.sessions,
@@ -168,6 +176,8 @@ class _ProgramSessionContentState extends State<_ProgramSessionContent> {
             visibleWeekAnchorDate: _visibleWeekAnchorDate,
             selectedDate: _selectedDate,
             enabledDates: sessionDates,
+            restDates: restDates,
+            scheduledDates: scheduledDates,
             firstDayOfWeek: widget.firstDayOfWeek,
             todayButtonLabel: l10n.homeProgramDetailToday,
             onDateSelected: (date) {
@@ -224,6 +234,31 @@ class _ProgramSessionContentState extends State<_ProgramSessionContent> {
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.w700),
                         ),
+                        const SizedBox(height: 6),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
+                            if (selectedSession.isRest)
+                              _SessionTypeChip(
+                                label: l10n.homeProgramDetailSessionTypeRest,
+                                icon: Icons.self_improvement_outlined,
+                                color: Theme.of(context).colorScheme.secondary,
+                                onColor: Theme.of(
+                                  context,
+                                ).colorScheme.onSecondary,
+                              ),
+                            if (selectedSession.isScheduled)
+                              _SessionTypeChip(
+                                label: l10n.homeProgramDetailScheduled,
+                                icon: Icons.lock_clock_outlined,
+                                color: Theme.of(context).colorScheme.tertiary,
+                                onColor: Theme.of(
+                                  context,
+                                ).colorScheme.onTertiary,
+                              ),
+                          ],
+                        ),
                         const SizedBox(height: 8),
                         Text(
                           _sessionMetaText(
@@ -238,9 +273,14 @@ class _ProgramSessionContentState extends State<_ProgramSessionContent> {
                               ),
                         ),
                         const SizedBox(height: 14),
-                        _SessionHtmlRenderer(
-                          html: selectedSession.normalizedContentHtml,
-                        ),
+                        if (selectedSession.isScheduled)
+                          _ScheduledSessionMessage(session: selectedSession)
+                        else if (selectedSession.isRest)
+                          _RestSessionMessage(session: selectedSession)
+                        else
+                          _SessionHtmlRenderer(
+                            html: selectedSession.normalizedContentHtml,
+                          ),
                       ],
                     ),
                   ),
@@ -356,6 +396,145 @@ class _SessionHtmlRenderer extends StatelessWidget {
       },
     );
   }
+}
+
+class _SessionTypeChip extends StatelessWidget {
+  const _SessionTypeChip({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onColor,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color color;
+  final Color onColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: onColor),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: Theme.of(
+              context,
+            ).textTheme.labelMedium?.copyWith(color: onColor),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ScheduledSessionMessage extends StatelessWidget {
+  const _ScheduledSessionMessage({required this.session});
+
+  final ProgramSessionEntity session;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final publishAt = session.publishAt;
+    final message = publishAt == null
+        ? l10n.homeProgramDetailScheduledDescription
+        : l10n.homeProgramDetailScheduledAt(
+            _formatPublishAt(context, publishAt),
+          );
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.tertiaryContainer,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.lock_clock_outlined,
+            size: 18,
+            color: Theme.of(context).colorScheme.onTertiaryContainer,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              message,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onTertiaryContainer,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RestSessionMessage extends StatelessWidget {
+  const _RestSessionMessage({required this.session});
+
+  final ProgramSessionEntity session;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.self_improvement_outlined,
+                size: 18,
+                color: Theme.of(context).colorScheme.onSecondaryContainer,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.homeProgramDetailRestDescription,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (session.normalizedContentHtml.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          _SessionHtmlRenderer(html: session.normalizedContentHtml),
+        ],
+      ],
+    );
+  }
+}
+
+String _formatPublishAt(BuildContext context, DateTime value) {
+  final locale = Localizations.localeOf(context);
+  return DateFormat(
+    'yyyy.MM.dd HH:mm',
+    locale.languageCode,
+  ).format(value.toLocal());
 }
 
 class _ShimmerBox extends StatefulWidget {

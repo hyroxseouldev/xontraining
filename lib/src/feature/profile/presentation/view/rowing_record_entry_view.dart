@@ -74,6 +74,14 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
         actions: [
           IconButton(
             onPressed: () => context.pushNamed(
+              AppRoutes.workoutRecordLeaderboardName,
+              pathParameters: {'exercise': exerciseKey},
+            ),
+            icon: const Icon(Icons.emoji_events_outlined),
+            tooltip: l10n.workoutRecordViewLeaderboard,
+          ),
+          IconButton(
+            onPressed: () => context.pushNamed(
               AppRoutes.workoutRecordListName,
               pathParameters: {'exercise': exerciseKey},
             ),
