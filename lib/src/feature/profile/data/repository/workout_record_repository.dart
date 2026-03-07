@@ -13,10 +13,11 @@ abstract interface class WorkoutRecordRepository {
   Future<void> createMyRecord({
     required String tenantId,
     required String exerciseName,
-    required WorkoutRecordMetricType metricType,
-    required double? valueNumeric,
-    required int? valueSeconds,
-    required String unit,
+    required WorkoutRecordType recordType,
+    required int? distance,
+    required int? recordSeconds,
+    required double? recordWeightKg,
+    required int? recordReps,
     required DateTime recordedAt,
     required String memo,
   });
@@ -25,10 +26,11 @@ abstract interface class WorkoutRecordRepository {
     required String id,
     required String tenantId,
     required String exerciseName,
-    required WorkoutRecordMetricType metricType,
-    required double? valueNumeric,
-    required int? valueSeconds,
-    required String unit,
+    required WorkoutRecordType recordType,
+    required int? distance,
+    required int? recordSeconds,
+    required double? recordWeightKg,
+    required int? recordReps,
     required DateTime recordedAt,
     required String memo,
   });
@@ -41,18 +43,14 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
 
   final WorkoutRecordDataSource dataSource;
 
-  static const _metricByValue = <String, WorkoutRecordMetricType>{
-    'weight': WorkoutRecordMetricType.weight,
-    'reps': WorkoutRecordMetricType.reps,
-    'distance': WorkoutRecordMetricType.distance,
-    'duration': WorkoutRecordMetricType.duration,
+  static const _recordTypeByValue = <String, WorkoutRecordType>{
+    'time': WorkoutRecordType.time,
+    'weight': WorkoutRecordType.weight,
   };
 
-  static const _metricByType = <WorkoutRecordMetricType, String>{
-    WorkoutRecordMetricType.weight: 'weight',
-    WorkoutRecordMetricType.reps: 'reps',
-    WorkoutRecordMetricType.distance: 'distance',
-    WorkoutRecordMetricType.duration: 'duration',
+  static const _recordTypeByEntity = <WorkoutRecordType, String>{
+    WorkoutRecordType.time: 'time',
+    WorkoutRecordType.weight: 'weight',
   };
 
   @override
@@ -65,23 +63,21 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
 
       for (final row in rows) {
         final id = row['id'];
-        final exerciseName = row['exercise_name'];
-        final metricValue = row['metric_type'];
-        final unit = row['unit'];
+        final exerciseName = row['exercise_key'];
+        final recordTypeValue = row['record_type'];
         final recordedAtValue = row['recorded_at'];
 
         if (id is! String ||
             exerciseName is! String ||
-            metricValue is! String ||
-            unit is! String ||
+            recordTypeValue is! String ||
             recordedAtValue is! String) {
           continue;
         }
 
-        final metricType = _metricByValue[metricValue];
+        final recordType = _recordTypeByValue[recordTypeValue];
         final recordedAt = DateTime.tryParse(recordedAtValue);
 
-        if (metricType == null || recordedAt == null) {
+        if (recordType == null || recordedAt == null) {
           continue;
         }
 
@@ -89,10 +85,11 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
           WorkoutRecordEntity(
             id: id,
             exerciseName: exerciseName,
-            metricType: metricType,
-            valueNumeric: _asDouble(row['value_numeric']),
-            valueSeconds: _asInt(row['value_seconds']),
-            unit: unit,
+            recordType: recordType,
+            distance: _asInt(row['distance']),
+            recordSeconds: _asInt(row['record_seconds']),
+            recordWeightKg: _asDouble(row['record_weight_kg']),
+            recordReps: _asInt(row['record_reps']),
             recordedAt: DateTime(
               recordedAt.year,
               recordedAt.month,
@@ -124,10 +121,11 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
   Future<void> createMyRecord({
     required String tenantId,
     required String exerciseName,
-    required WorkoutRecordMetricType metricType,
-    required double? valueNumeric,
-    required int? valueSeconds,
-    required String unit,
+    required WorkoutRecordType recordType,
+    required int? distance,
+    required int? recordSeconds,
+    required double? recordWeightKg,
+    required int? recordReps,
     required DateTime recordedAt,
     required String memo,
   }) async {
@@ -135,10 +133,11 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
       await dataSource.createMyRecord(
         tenantId: tenantId,
         exerciseName: exerciseName,
-        metricType: _metricByType[metricType]!,
-        valueNumeric: valueNumeric,
-        valueSeconds: valueSeconds,
-        unit: unit,
+        recordType: _recordTypeByEntity[recordType]!,
+        distance: distance,
+        recordSeconds: recordSeconds,
+        recordWeightKg: recordWeightKg,
+        recordReps: recordReps,
         recordedAt: recordedAt,
         memo: memo,
       );
@@ -148,6 +147,15 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
       );
       debugPrint('[WorkoutRecordRepository] StackTrace: $stackTrace');
       throw AppException.auth(message: error.message, cause: error);
+    } on PostgrestException catch (error, stackTrace) {
+      debugPrint(
+        '[WorkoutRecordRepository] createMyRecord postgrest failure: ${error.message} (code=${error.code}, details=${error.details})',
+      );
+      debugPrint('[WorkoutRecordRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to save workout record.',
+        cause: error,
+      );
     } catch (error, stackTrace) {
       debugPrint(
         '[WorkoutRecordRepository] createMyRecord unexpected failure: $error',
@@ -165,10 +173,11 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
     required String id,
     required String tenantId,
     required String exerciseName,
-    required WorkoutRecordMetricType metricType,
-    required double? valueNumeric,
-    required int? valueSeconds,
-    required String unit,
+    required WorkoutRecordType recordType,
+    required int? distance,
+    required int? recordSeconds,
+    required double? recordWeightKg,
+    required int? recordReps,
     required DateTime recordedAt,
     required String memo,
   }) async {
@@ -177,10 +186,11 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
         id: id,
         tenantId: tenantId,
         exerciseName: exerciseName,
-        metricType: _metricByType[metricType]!,
-        valueNumeric: valueNumeric,
-        valueSeconds: valueSeconds,
-        unit: unit,
+        recordType: _recordTypeByEntity[recordType]!,
+        distance: distance,
+        recordSeconds: recordSeconds,
+        recordWeightKg: recordWeightKg,
+        recordReps: recordReps,
         recordedAt: recordedAt,
         memo: memo,
       );

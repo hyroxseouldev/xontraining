@@ -9,6 +9,8 @@ import 'package:xontraining/src/feature/profile/presentation/provider/profile_pr
 class SettingsView extends ConsumerWidget {
   const SettingsView({super.key});
 
+  static const String _communitySupportEmail = 'vividxxxxx@gmail.com';
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
@@ -90,6 +92,16 @@ class SettingsView extends ConsumerWidget {
                 leading: const Icon(Icons.privacy_tip_outlined),
                 title: Text(l10n.settingsPrivacyPolicy),
                 trailing: const Icon(Icons.chevron_right),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                enabled: false,
+                onTap: null,
+                leading: const Icon(Icons.support_agent_outlined),
+                title: Text(l10n.settingsCommunitySupport),
+                subtitle: Text(_communitySupportEmail),
               ),
             ),
             const SizedBox(height: 12),

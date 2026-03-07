@@ -326,6 +326,12 @@ abstract class AppLocalizations {
   /// **'Please enter post content.'**
   String get communityContentRequired;
 
+  /// No description provided for @communityContentRestricted.
+  ///
+  /// In en, this message translates to:
+  /// **'This content includes restricted terms and cannot be posted.'**
+  String get communityContentRestricted;
+
   /// No description provided for @communityEdit.
   ///
   /// In en, this message translates to:
@@ -380,6 +386,12 @@ abstract class AppLocalizations {
   /// **'Please enter a comment.'**
   String get communityCommentRequired;
 
+  /// No description provided for @communityCommentRestricted.
+  ///
+  /// In en, this message translates to:
+  /// **'This comment includes restricted terms and cannot be posted.'**
+  String get communityCommentRestricted;
+
   /// No description provided for @communityCommentLoadFailed.
   ///
   /// In en, this message translates to:
@@ -397,6 +409,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Comment deleted.'**
   String get communityCommentDeleted;
+
+  /// No description provided for @communityReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get communityReport;
+
+  /// No description provided for @communityReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get communityReportTitle;
+
+  /// No description provided for @communityReportReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get communityReportReason;
+
+  /// No description provided for @communityReportReasonSpam.
+  ///
+  /// In en, this message translates to:
+  /// **'Spam or advertising'**
+  String get communityReportReasonSpam;
+
+  /// No description provided for @communityReportReasonHate.
+  ///
+  /// In en, this message translates to:
+  /// **'Hate or discrimination'**
+  String get communityReportReasonHate;
+
+  /// No description provided for @communityReportReasonSexual.
+  ///
+  /// In en, this message translates to:
+  /// **'Sexual content'**
+  String get communityReportReasonSexual;
+
+  /// No description provided for @communityReportReasonHarassment.
+  ///
+  /// In en, this message translates to:
+  /// **'Harassment or threats'**
+  String get communityReportReasonHarassment;
+
+  /// No description provided for @communityReportReasonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get communityReportReasonOther;
+
+  /// No description provided for @communityReportDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Details (optional)'**
+  String get communityReportDetail;
+
+  /// No description provided for @communityReportDetailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us more about this report.'**
+  String get communityReportDetailHint;
+
+  /// No description provided for @communityReportSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit report'**
+  String get communityReportSubmit;
+
+  /// No description provided for @communityReportSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Report submitted.'**
+  String get communityReportSubmitted;
+
+  /// No description provided for @communityHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get communityHide;
+
+  /// No description provided for @communityHidePostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide this post?'**
+  String get communityHidePostTitle;
+
+  /// No description provided for @communityHidePostBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden posts will not appear in your feed.'**
+  String get communityHidePostBody;
+
+  /// No description provided for @communityPostHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Post hidden.'**
+  String get communityPostHidden;
+
+  /// No description provided for @communityBlockUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Block author'**
+  String get communityBlockUser;
+
+  /// No description provided for @communityBlockUserTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Block this author?'**
+  String get communityBlockUserTitle;
+
+  /// No description provided for @communityBlockUserBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked users\' posts and comments will no longer be shown.'**
+  String get communityBlockUserBody;
+
+  /// No description provided for @communityUserBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'User blocked.'**
+  String get communityUserBlocked;
 
   /// No description provided for @communityAddImages.
   ///
@@ -854,6 +986,12 @@ abstract class AppLocalizations {
   /// **'Privacy policy content will be provided and updated by your organization.'**
   String get settingsPrivacyPolicyBody;
 
+  /// No description provided for @settingsCommunitySupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Community report support'**
+  String get settingsCommunitySupport;
+
   /// No description provided for @settingsDeleteAccount.
   ///
   /// In en, this message translates to:
@@ -907,6 +1045,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your account has been deleted.'**
   String get settingsDeleteAccountSuccess;
+
+  /// No description provided for @settingsContactOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open contact app. Please check your email app.'**
+  String get settingsContactOpenFailed;
 
   /// No description provided for @legalDocumentLoading.
   ///
@@ -1141,6 +1285,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Automatically lock unit for each metric type'**
   String get workoutRecordUseDefaultUnitSubtitle;
+
+  /// No description provided for @workoutRecordTemplateRowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Rowing'**
+  String get workoutRecordTemplateRowing;
+
+  /// No description provided for @workoutRecordTemplateRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get workoutRecordTemplateRunning;
+
+  /// No description provided for @workoutRecordTemplateSki.
+  ///
+  /// In en, this message translates to:
+  /// **'Ski'**
+  String get workoutRecordTemplateSki;
+
+  /// No description provided for @workoutRecordTemplateSquat.
+  ///
+  /// In en, this message translates to:
+  /// **'Squat'**
+  String get workoutRecordTemplateSquat;
+
+  /// No description provided for @workoutRecordTemplateDeadlift.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadlift'**
+  String get workoutRecordTemplateDeadlift;
+
+  /// No description provided for @workoutRecordTemplateBenchPress.
+  ///
+  /// In en, this message translates to:
+  /// **'Bench Press'**
+  String get workoutRecordTemplateBenchPress;
+
+  /// No description provided for @workoutRecordTemplateCardioDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Record distance, duration, and date.'**
+  String get workoutRecordTemplateCardioDescription;
+
+  /// No description provided for @workoutRecordTemplateStrengthDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Record weight, reps, and date.'**
+  String get workoutRecordTemplateStrengthDescription;
+
+  /// No description provided for @workoutRecordViewRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'View records'**
+  String get workoutRecordViewRecords;
+
+  /// No description provided for @workoutRecordEntryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {exercise} record'**
+  String workoutRecordEntryTitle(Object exercise);
+
+  /// No description provided for @workoutRecordListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{exercise} records'**
+  String workoutRecordListTitle(Object exercise);
+
+  /// No description provided for @workoutRecordDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get workoutRecordDistance;
+
+  /// No description provided for @workoutRecordDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration (mm:ss)'**
+  String get workoutRecordDuration;
+
+  /// No description provided for @workoutRecordWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get workoutRecordWeight;
+
+  /// No description provided for @workoutRecordReps.
+  ///
+  /// In en, this message translates to:
+  /// **'Reps'**
+  String get workoutRecordReps;
+
+  /// No description provided for @workoutRecordEmptyByExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'No {exercise} records yet.'**
+  String workoutRecordEmptyByExercise(Object exercise);
+
+  /// No description provided for @workoutRecordDistanceAndDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance {distance} · Duration {duration}'**
+  String workoutRecordDistanceAndDuration(Object distance, Object duration);
+
+  /// No description provided for @workoutRecordStrengthWeightAndReps.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight {weight} · Reps {reps}'**
+  String workoutRecordStrengthWeightAndReps(Object weight, Object reps);
 
   /// No description provided for @onboardingTitle.
   ///

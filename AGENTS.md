@@ -93,6 +93,9 @@ Guidance for coding agents working in this repository.
 - Keep widgets presentation-focused; do not place business/derived calculations in widget files.
 - Move derived domain values (normalization, duration calculations, etc.) to Entity getters or UseCase logic.
 - Widgets should only format localized strings and render values that are already prepared by upper layers.
+- When a widget consumes an Entity, prefer reading computed values through Entity getters/methods instead of recomputing inline.
+- Add reusable Entity getters for repeated UI-facing derived values (e.g., normalized text, local date labels, `isToday`, display-ready numbers).
+- Keep localization text selection in presentation (`AppLocalizations`), but keep non-localized derivation logic in Entity/UseCase.
 
 ## Network Image Rule
 - For network images in app UI, use `CachedNetworkImage` instead of `Image.network`.

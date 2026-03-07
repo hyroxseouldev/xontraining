@@ -43,6 +43,7 @@
   "communityActionFailed": "처리에 실패했습니다. 다시 시도해 주세요.",
   "communityContentHint": "내용을 입력해 주세요.",
   "communityContentRequired": "게시글 내용을 입력해 주세요.",
+  "communityContentRestricted": "운영 정책상 제한된 표현이 포함되어 등록할 수 없습니다.",
   "communityEdit": "수정",
   "communityDelete": "삭제",
   "communityCancel": "취소",
@@ -52,9 +53,30 @@
   "communityCommentHint": "댓글을 입력해 주세요",
   "communityCommentSend": "등록",
   "communityCommentRequired": "댓글 내용을 입력해 주세요.",
+  "communityCommentRestricted": "운영 정책상 제한된 표현이 포함되어 등록할 수 없습니다.",
   "communityCommentLoadFailed": "댓글을 불러오지 못했습니다.",
   "communityCommentEmpty": "아직 댓글이 없습니다.",
   "communityCommentDeleted": "댓글이 삭제되었습니다.",
+  "communityReport": "신고",
+  "communityReportTitle": "신고하기",
+  "communityReportReason": "신고 사유",
+  "communityReportReasonSpam": "스팸/광고",
+  "communityReportReasonHate": "혐오/차별",
+  "communityReportReasonSexual": "음란/선정성",
+  "communityReportReasonHarassment": "괴롭힘/위협",
+  "communityReportReasonOther": "기타",
+  "communityReportDetail": "상세 내용 (선택)",
+  "communityReportDetailHint": "신고 사유를 자세히 적어주세요.",
+  "communityReportSubmit": "신고 접수",
+  "communityReportSubmitted": "신고가 접수되었습니다.",
+  "communityHide": "숨김",
+  "communityHidePostTitle": "이 게시글을 숨길까요?",
+  "communityHidePostBody": "숨긴 게시글은 내 피드에서 보이지 않습니다.",
+  "communityPostHidden": "게시글을 숨겼습니다.",
+  "communityBlockUser": "작성자 차단",
+  "communityBlockUserTitle": "이 작성자를 차단할까요?",
+  "communityBlockUserBody": "차단하면 해당 사용자의 게시글과 댓글이 보이지 않습니다.",
+  "communityUserBlocked": "사용자를 차단했습니다.",
   "communityAddImages": "이미지 추가",
   "communityImageUnsupportedType": "JPG, PNG, WEBP 형식만 지원합니다.",
   "communityImagePickFailed": "이미지를 선택하지 못했습니다.",
@@ -261,6 +283,7 @@
   "settingsTermsOfServiceBody": "이용약관 내용은 운영 정책에 따라 제공 및 업데이트됩니다.",
   "settingsPrivacyPolicy": "개인정보처리방침",
   "settingsPrivacyPolicyBody": "개인정보처리방침 내용은 운영 정책에 따라 제공 및 업데이트됩니다.",
+  "settingsCommunitySupport": "커뮤니티 신고 문의",
   "settingsDeleteAccount": "계정삭제",
   "settingsDeleteAccountSubtitle": "계정과 관련 데이터가 영구 삭제됩니다.",
   "settingsDeleteAccountMemberOnly": "코치/오너 권한 계정은 삭제할 수 없습니다.",
@@ -270,6 +293,7 @@
   "settingsDeleteAccountConfirm": "영구 삭제",
   "settingsDeleteAccountFailed": "계정삭제에 실패했습니다. 다시 시도해 주세요.",
   "settingsDeleteAccountSuccess": "계정이 삭제되었습니다.",
+  "settingsContactOpenFailed": "연락 창을 열 수 없습니다. 이메일 앱을 확인해 주세요.",
   "legalDocumentLoading": "문서를 불러오는 중입니다...",
   "legalDocumentLoadFailed": "문서를 불러오지 못했습니다.",
   "legalDocumentVersionLabel": "버전:",
@@ -309,6 +333,51 @@
   "workoutRecordNoSearchResult": "검색 결과가 없습니다.",
   "workoutRecordUseDefaultUnit": "기본 단위 사용",
   "workoutRecordUseDefaultUnitSubtitle": "측정 항목별 기본 단위를 자동 고정합니다.",
+  "workoutRecordTemplateRowing": "로잉",
+  "workoutRecordTemplateRunning": "러닝",
+  "workoutRecordTemplateSki": "스키",
+  "workoutRecordTemplateSquat": "스쿼트",
+  "workoutRecordTemplateDeadlift": "데드리프트",
+  "workoutRecordTemplateBenchPress": "벤치프레스",
+  "workoutRecordTemplateCardioDescription": "거리, 시간, 날짜를 입력해 기록합니다.",
+  "workoutRecordTemplateStrengthDescription": "중량, 횟수, 날짜를 입력해 기록합니다.",
+  "workoutRecordViewRecords": "기록 보기",
+  "workoutRecordEntryTitle": "{exercise} 기록 입력",
+  "@workoutRecordEntryTitle": {
+    "placeholders": {
+      "exercise": {}
+    }
+  },
+  "workoutRecordListTitle": "{exercise} 기록",
+  "@workoutRecordListTitle": {
+    "placeholders": {
+      "exercise": {}
+    }
+  },
+  "workoutRecordDistance": "거리",
+  "workoutRecordDuration": "시간 (mm:ss)",
+  "workoutRecordWeight": "중량",
+  "workoutRecordReps": "횟수",
+  "workoutRecordEmptyByExercise": "아직 {exercise} 기록이 없습니다.",
+  "@workoutRecordEmptyByExercise": {
+    "placeholders": {
+      "exercise": {}
+    }
+  },
+  "workoutRecordDistanceAndDuration": "거리 {distance} · 시간 {duration}",
+  "@workoutRecordDistanceAndDuration": {
+    "placeholders": {
+      "distance": {},
+      "duration": {}
+    }
+  },
+  "workoutRecordStrengthWeightAndReps": "중량 {weight} · 횟수 {reps}",
+  "@workoutRecordStrengthWeightAndReps": {
+    "placeholders": {
+      "weight": {},
+      "reps": {}
+    }
+  },
   "onboardingTitle": "환영합니다",
   "onboardingDescription": "서비스 이용을 위해 프로필을 설정해 주세요.",
   "onboardingNameLabel": "이름",

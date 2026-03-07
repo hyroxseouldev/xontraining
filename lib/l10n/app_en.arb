@@ -43,6 +43,7 @@
   "communityActionFailed": "Action failed. Please try again.",
   "communityContentHint": "Share your thoughts.",
   "communityContentRequired": "Please enter post content.",
+  "communityContentRestricted": "This content includes restricted terms and cannot be posted.",
   "communityEdit": "Edit",
   "communityDelete": "Delete",
   "communityCancel": "Cancel",
@@ -52,9 +53,30 @@
   "communityCommentHint": "Write a comment",
   "communityCommentSend": "Send",
   "communityCommentRequired": "Please enter a comment.",
+  "communityCommentRestricted": "This comment includes restricted terms and cannot be posted.",
   "communityCommentLoadFailed": "Failed to load comments.",
   "communityCommentEmpty": "No comments yet.",
   "communityCommentDeleted": "Comment deleted.",
+  "communityReport": "Report",
+  "communityReportTitle": "Report",
+  "communityReportReason": "Reason",
+  "communityReportReasonSpam": "Spam or advertising",
+  "communityReportReasonHate": "Hate or discrimination",
+  "communityReportReasonSexual": "Sexual content",
+  "communityReportReasonHarassment": "Harassment or threats",
+  "communityReportReasonOther": "Other",
+  "communityReportDetail": "Details (optional)",
+  "communityReportDetailHint": "Tell us more about this report.",
+  "communityReportSubmit": "Submit report",
+  "communityReportSubmitted": "Report submitted.",
+  "communityHide": "Hide",
+  "communityHidePostTitle": "Hide this post?",
+  "communityHidePostBody": "Hidden posts will not appear in your feed.",
+  "communityPostHidden": "Post hidden.",
+  "communityBlockUser": "Block author",
+  "communityBlockUserTitle": "Block this author?",
+  "communityBlockUserBody": "Blocked users' posts and comments will no longer be shown.",
+  "communityUserBlocked": "User blocked.",
   "communityAddImages": "Add Images",
   "communityImageUnsupportedType": "Only JPG, PNG, and WEBP are supported.",
   "communityImagePickFailed": "Failed to select images.",
@@ -261,6 +283,7 @@
   "settingsTermsOfServiceBody": "Terms of service content will be provided and updated by your organization.",
   "settingsPrivacyPolicy": "Privacy Policy",
   "settingsPrivacyPolicyBody": "Privacy policy content will be provided and updated by your organization.",
+  "settingsCommunitySupport": "Community report support",
   "settingsDeleteAccount": "Delete account",
   "settingsDeleteAccountSubtitle": "Permanently delete your account and all related data.",
   "settingsDeleteAccountMemberOnly": "Coach and owner accounts cannot be deleted.",
@@ -270,6 +293,7 @@
   "settingsDeleteAccountConfirm": "Delete permanently",
   "settingsDeleteAccountFailed": "Failed to delete account. Please try again.",
   "settingsDeleteAccountSuccess": "Your account has been deleted.",
+  "settingsContactOpenFailed": "Unable to open contact app. Please check your email app.",
   "legalDocumentLoading": "Loading document...",
   "legalDocumentLoadFailed": "Failed to load document.",
   "legalDocumentVersionLabel": "Version:",
@@ -309,6 +333,51 @@
   "workoutRecordNoSearchResult": "No records match your search.",
   "workoutRecordUseDefaultUnit": "Use default unit",
   "workoutRecordUseDefaultUnitSubtitle": "Automatically lock unit for each metric type",
+  "workoutRecordTemplateRowing": "Rowing",
+  "workoutRecordTemplateRunning": "Running",
+  "workoutRecordTemplateSki": "Ski",
+  "workoutRecordTemplateSquat": "Squat",
+  "workoutRecordTemplateDeadlift": "Deadlift",
+  "workoutRecordTemplateBenchPress": "Bench Press",
+  "workoutRecordTemplateCardioDescription": "Record distance, duration, and date.",
+  "workoutRecordTemplateStrengthDescription": "Record weight, reps, and date.",
+  "workoutRecordViewRecords": "View records",
+  "workoutRecordEntryTitle": "Add {exercise} record",
+  "@workoutRecordEntryTitle": {
+    "placeholders": {
+      "exercise": {}
+    }
+  },
+  "workoutRecordListTitle": "{exercise} records",
+  "@workoutRecordListTitle": {
+    "placeholders": {
+      "exercise": {}
+    }
+  },
+  "workoutRecordDistance": "Distance",
+  "workoutRecordDuration": "Duration (mm:ss)",
+  "workoutRecordWeight": "Weight",
+  "workoutRecordReps": "Reps",
+  "workoutRecordEmptyByExercise": "No {exercise} records yet.",
+  "@workoutRecordEmptyByExercise": {
+    "placeholders": {
+      "exercise": {}
+    }
+  },
+  "workoutRecordDistanceAndDuration": "Distance {distance} · Duration {duration}",
+  "@workoutRecordDistanceAndDuration": {
+    "placeholders": {
+      "distance": {},
+      "duration": {}
+    }
+  },
+  "workoutRecordStrengthWeightAndReps": "Weight {weight} · Reps {reps}",
+  "@workoutRecordStrengthWeightAndReps": {
+    "placeholders": {
+      "weight": {},
+      "reps": {}
+    }
+  },
   "onboardingTitle": "Welcome",
   "onboardingDescription": "Set up your profile to continue.",
   "onboardingNameLabel": "Name",

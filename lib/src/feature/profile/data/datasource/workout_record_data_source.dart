@@ -10,10 +10,11 @@ abstract interface class WorkoutRecordDataSource {
   Future<void> createMyRecord({
     required String tenantId,
     required String exerciseName,
-    required String metricType,
-    required double? valueNumeric,
-    required int? valueSeconds,
-    required String unit,
+    required String recordType,
+    required int? distance,
+    required int? recordSeconds,
+    required double? recordWeightKg,
+    required int? recordReps,
     required DateTime recordedAt,
     required String memo,
   });
@@ -22,10 +23,11 @@ abstract interface class WorkoutRecordDataSource {
     required String id,
     required String tenantId,
     required String exerciseName,
-    required String metricType,
-    required double? valueNumeric,
-    required int? valueSeconds,
-    required String unit,
+    required String recordType,
+    required int? distance,
+    required int? recordSeconds,
+    required double? recordWeightKg,
+    required int? recordReps,
     required DateTime recordedAt,
     required String memo,
   });
@@ -48,12 +50,13 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
     }
 
     final rows = await supabase
-        .from('user_personal_records')
+        .from('user_workout_records_v2')
         .select(
-          'id,exercise_name,metric_type,value_numeric,value_seconds,unit,recorded_at,memo,created_at',
+          'id,exercise_key,record_type,distance,record_seconds,record_weight_kg,record_reps,recorded_at,memo,created_at',
         )
         .eq('tenant_id', tenantId)
         .eq('user_id', userId)
+        .order('record_type', ascending: true)
         .order('recorded_at', ascending: false)
         .order('created_at', ascending: false);
 
@@ -64,10 +67,11 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
   Future<void> createMyRecord({
     required String tenantId,
     required String exerciseName,
-    required String metricType,
-    required double? valueNumeric,
-    required int? valueSeconds,
-    required String unit,
+    required String recordType,
+    required int? distance,
+    required int? recordSeconds,
+    required double? recordWeightKg,
+    required int? recordReps,
     required DateTime recordedAt,
     required String memo,
   }) async {
@@ -76,14 +80,15 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
       throw AuthException('No authenticated user found.');
     }
 
-    await supabase.from('user_personal_records').insert({
+    await supabase.from('user_workout_records_v2').insert({
       'tenant_id': tenantId,
       'user_id': userId,
-      'exercise_name': exerciseName,
-      'metric_type': metricType,
-      'value_numeric': valueNumeric,
-      'value_seconds': valueSeconds,
-      'unit': unit,
+      'exercise_key': exerciseName,
+      'record_type': recordType,
+      'distance': distance,
+      'record_seconds': recordSeconds,
+      'record_weight_kg': recordWeightKg,
+      'record_reps': recordReps,
       'recorded_at': recordedAt.toIso8601String().split('T').first,
       'memo': memo,
     });
@@ -94,10 +99,11 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
     required String id,
     required String tenantId,
     required String exerciseName,
-    required String metricType,
-    required double? valueNumeric,
-    required int? valueSeconds,
-    required String unit,
+    required String recordType,
+    required int? distance,
+    required int? recordSeconds,
+    required double? recordWeightKg,
+    required int? recordReps,
     required DateTime recordedAt,
     required String memo,
   }) async {
@@ -107,13 +113,14 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
     }
 
     await supabase
-        .from('user_personal_records')
+        .from('user_workout_records_v2')
         .update({
-          'exercise_name': exerciseName,
-          'metric_type': metricType,
-          'value_numeric': valueNumeric,
-          'value_seconds': valueSeconds,
-          'unit': unit,
+          'exercise_key': exerciseName,
+          'record_type': recordType,
+          'distance': distance,
+          'record_seconds': recordSeconds,
+          'record_weight_kg': recordWeightKg,
+          'record_reps': recordReps,
           'recorded_at': recordedAt.toIso8601String().split('T').first,
           'memo': memo,
         })
@@ -133,7 +140,7 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
     }
 
     await supabase
-        .from('user_personal_records')
+        .from('user_workout_records_v2')
         .delete()
         .eq('id', id)
         .eq('tenant_id', tenantId)

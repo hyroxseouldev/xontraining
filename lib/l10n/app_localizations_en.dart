@@ -127,6 +127,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get communityContentRequired => 'Please enter post content.';
 
   @override
+  String get communityContentRestricted =>
+      'This content includes restricted terms and cannot be posted.';
+
+  @override
   String get communityEdit => 'Edit';
 
   @override
@@ -155,6 +159,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get communityCommentRequired => 'Please enter a comment.';
 
   @override
+  String get communityCommentRestricted =>
+      'This comment includes restricted terms and cannot be posted.';
+
+  @override
   String get communityCommentLoadFailed => 'Failed to load comments.';
 
   @override
@@ -162,6 +170,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get communityCommentDeleted => 'Comment deleted.';
+
+  @override
+  String get communityReport => 'Report';
+
+  @override
+  String get communityReportTitle => 'Report';
+
+  @override
+  String get communityReportReason => 'Reason';
+
+  @override
+  String get communityReportReasonSpam => 'Spam or advertising';
+
+  @override
+  String get communityReportReasonHate => 'Hate or discrimination';
+
+  @override
+  String get communityReportReasonSexual => 'Sexual content';
+
+  @override
+  String get communityReportReasonHarassment => 'Harassment or threats';
+
+  @override
+  String get communityReportReasonOther => 'Other';
+
+  @override
+  String get communityReportDetail => 'Details (optional)';
+
+  @override
+  String get communityReportDetailHint => 'Tell us more about this report.';
+
+  @override
+  String get communityReportSubmit => 'Submit report';
+
+  @override
+  String get communityReportSubmitted => 'Report submitted.';
+
+  @override
+  String get communityHide => 'Hide';
+
+  @override
+  String get communityHidePostTitle => 'Hide this post?';
+
+  @override
+  String get communityHidePostBody =>
+      'Hidden posts will not appear in your feed.';
+
+  @override
+  String get communityPostHidden => 'Post hidden.';
+
+  @override
+  String get communityBlockUser => 'Block author';
+
+  @override
+  String get communityBlockUserTitle => 'Block this author?';
+
+  @override
+  String get communityBlockUserBody =>
+      'Blocked users\' posts and comments will no longer be shown.';
+
+  @override
+  String get communityUserBlocked => 'User blocked.';
 
   @override
   String get communityAddImages => 'Add Images';
@@ -440,6 +510,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Privacy policy content will be provided and updated by your organization.';
 
   @override
+  String get settingsCommunitySupport => 'Community report support';
+
+  @override
   String get settingsDeleteAccount => 'Delete account';
 
   @override
@@ -469,6 +542,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountSuccess => 'Your account has been deleted.';
+
+  @override
+  String get settingsContactOpenFailed =>
+      'Unable to open contact app. Please check your email app.';
 
   @override
   String get legalDocumentLoading => 'Loading document...';
@@ -590,6 +667,72 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get workoutRecordUseDefaultUnitSubtitle =>
       'Automatically lock unit for each metric type';
+
+  @override
+  String get workoutRecordTemplateRowing => 'Rowing';
+
+  @override
+  String get workoutRecordTemplateRunning => 'Running';
+
+  @override
+  String get workoutRecordTemplateSki => 'Ski';
+
+  @override
+  String get workoutRecordTemplateSquat => 'Squat';
+
+  @override
+  String get workoutRecordTemplateDeadlift => 'Deadlift';
+
+  @override
+  String get workoutRecordTemplateBenchPress => 'Bench Press';
+
+  @override
+  String get workoutRecordTemplateCardioDescription =>
+      'Record distance, duration, and date.';
+
+  @override
+  String get workoutRecordTemplateStrengthDescription =>
+      'Record weight, reps, and date.';
+
+  @override
+  String get workoutRecordViewRecords => 'View records';
+
+  @override
+  String workoutRecordEntryTitle(Object exercise) {
+    return 'Add $exercise record';
+  }
+
+  @override
+  String workoutRecordListTitle(Object exercise) {
+    return '$exercise records';
+  }
+
+  @override
+  String get workoutRecordDistance => 'Distance';
+
+  @override
+  String get workoutRecordDuration => 'Duration (mm:ss)';
+
+  @override
+  String get workoutRecordWeight => 'Weight';
+
+  @override
+  String get workoutRecordReps => 'Reps';
+
+  @override
+  String workoutRecordEmptyByExercise(Object exercise) {
+    return 'No $exercise records yet.';
+  }
+
+  @override
+  String workoutRecordDistanceAndDuration(Object distance, Object duration) {
+    return 'Distance $distance · Duration $duration';
+  }
+
+  @override
+  String workoutRecordStrengthWeightAndReps(Object weight, Object reps) {
+    return 'Weight $weight · Reps $reps';
+  }
 
   @override
   String get onboardingTitle => 'Welcome';

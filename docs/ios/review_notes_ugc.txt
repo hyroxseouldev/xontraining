@@ -1,0 +1,14 @@
+This app includes user-generated community content and moderation tools required by App Review Guideline 1.2.
+
+Implemented moderation features:
+1) Users can report posts and comments with reason categories (spam, hate/discrimination, sexual content, harassment/threats, other).
+2) Users can hide posts from their own feed.
+3) Users can block authors, and blocked users' posts/comments are filtered out.
+4) Basic restricted-term filtering is applied before posting content.
+
+Support contact for moderation inquiries:
+vividxxxxx@gmail.com
+
+Guideline references:
+- 1.2 User-Generated Content
+- 1.5 Developer Information

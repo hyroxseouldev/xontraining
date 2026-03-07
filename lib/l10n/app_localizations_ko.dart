@@ -125,6 +125,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get communityContentRequired => '게시글 내용을 입력해 주세요.';
 
   @override
+  String get communityContentRestricted => '운영 정책상 제한된 표현이 포함되어 등록할 수 없습니다.';
+
+  @override
   String get communityEdit => '수정';
 
   @override
@@ -152,6 +155,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get communityCommentRequired => '댓글 내용을 입력해 주세요.';
 
   @override
+  String get communityCommentRestricted => '운영 정책상 제한된 표현이 포함되어 등록할 수 없습니다.';
+
+  @override
   String get communityCommentLoadFailed => '댓글을 불러오지 못했습니다.';
 
   @override
@@ -159,6 +165,66 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get communityCommentDeleted => '댓글이 삭제되었습니다.';
+
+  @override
+  String get communityReport => '신고';
+
+  @override
+  String get communityReportTitle => '신고하기';
+
+  @override
+  String get communityReportReason => '신고 사유';
+
+  @override
+  String get communityReportReasonSpam => '스팸/광고';
+
+  @override
+  String get communityReportReasonHate => '혐오/차별';
+
+  @override
+  String get communityReportReasonSexual => '음란/선정성';
+
+  @override
+  String get communityReportReasonHarassment => '괴롭힘/위협';
+
+  @override
+  String get communityReportReasonOther => '기타';
+
+  @override
+  String get communityReportDetail => '상세 내용 (선택)';
+
+  @override
+  String get communityReportDetailHint => '신고 사유를 자세히 적어주세요.';
+
+  @override
+  String get communityReportSubmit => '신고 접수';
+
+  @override
+  String get communityReportSubmitted => '신고가 접수되었습니다.';
+
+  @override
+  String get communityHide => '숨김';
+
+  @override
+  String get communityHidePostTitle => '이 게시글을 숨길까요?';
+
+  @override
+  String get communityHidePostBody => '숨긴 게시글은 내 피드에서 보이지 않습니다.';
+
+  @override
+  String get communityPostHidden => '게시글을 숨겼습니다.';
+
+  @override
+  String get communityBlockUser => '작성자 차단';
+
+  @override
+  String get communityBlockUserTitle => '이 작성자를 차단할까요?';
+
+  @override
+  String get communityBlockUserBody => '차단하면 해당 사용자의 게시글과 댓글이 보이지 않습니다.';
+
+  @override
+  String get communityUserBlocked => '사용자를 차단했습니다.';
 
   @override
   String get communityAddImages => '이미지 추가';
@@ -430,6 +496,9 @@ class AppLocalizationsKo extends AppLocalizations {
       '개인정보처리방침 내용은 운영 정책에 따라 제공 및 업데이트됩니다.';
 
   @override
+  String get settingsCommunitySupport => '커뮤니티 신고 문의';
+
+  @override
   String get settingsDeleteAccount => '계정삭제';
 
   @override
@@ -456,6 +525,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountSuccess => '계정이 삭제되었습니다.';
+
+  @override
+  String get settingsContactOpenFailed => '연락 창을 열 수 없습니다. 이메일 앱을 확인해 주세요.';
 
   @override
   String get legalDocumentLoading => '문서를 불러오는 중입니다...';
@@ -574,6 +646,71 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get workoutRecordUseDefaultUnitSubtitle => '측정 항목별 기본 단위를 자동 고정합니다.';
+
+  @override
+  String get workoutRecordTemplateRowing => '로잉';
+
+  @override
+  String get workoutRecordTemplateRunning => '러닝';
+
+  @override
+  String get workoutRecordTemplateSki => '스키';
+
+  @override
+  String get workoutRecordTemplateSquat => '스쿼트';
+
+  @override
+  String get workoutRecordTemplateDeadlift => '데드리프트';
+
+  @override
+  String get workoutRecordTemplateBenchPress => '벤치프레스';
+
+  @override
+  String get workoutRecordTemplateCardioDescription => '거리, 시간, 날짜를 입력해 기록합니다.';
+
+  @override
+  String get workoutRecordTemplateStrengthDescription =>
+      '중량, 횟수, 날짜를 입력해 기록합니다.';
+
+  @override
+  String get workoutRecordViewRecords => '기록 보기';
+
+  @override
+  String workoutRecordEntryTitle(Object exercise) {
+    return '$exercise 기록 입력';
+  }
+
+  @override
+  String workoutRecordListTitle(Object exercise) {
+    return '$exercise 기록';
+  }
+
+  @override
+  String get workoutRecordDistance => '거리';
+
+  @override
+  String get workoutRecordDuration => '시간 (mm:ss)';
+
+  @override
+  String get workoutRecordWeight => '중량';
+
+  @override
+  String get workoutRecordReps => '횟수';
+
+  @override
+  String workoutRecordEmptyByExercise(Object exercise) {
+    return '아직 $exercise 기록이 없습니다.';
+  }
+
+  @override
+  String workoutRecordDistanceAndDuration(Object distance, Object duration) {
+    return '거리 $distance · 시간 $duration';
+  }
+
+  @override
+  String workoutRecordStrengthWeightAndReps(Object weight, Object reps) {
+    return '중량 $weight · 횟수 $reps';
+  }
 
   @override
   String get onboardingTitle => '환영합니다';

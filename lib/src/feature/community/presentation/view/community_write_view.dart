@@ -16,6 +16,14 @@ const Set<String> _allowedCommunityImageExtensions = <String>{
   'png',
   'webp',
 };
+const List<String> _restrictedCommunityTerms = <String>[
+  'porn',
+  'nude',
+  '성인',
+  '음란',
+  '혐오',
+  'kill',
+];
 
 class CommunityWriteView extends ConsumerStatefulWidget {
   const CommunityWriteView({
@@ -294,6 +302,12 @@ class _CommunityWriteViewState extends ConsumerState<CommunityWriteView> {
       ).showSnackBar(SnackBar(content: Text(l10n.communityContentRequired)));
       return;
     }
+    if (_containsRestrictedTerms(content)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.communityContentRestricted)));
+      return;
+    }
 
     final imageUrls = List<String>.from(_remoteImageUrls);
     try {
@@ -359,6 +373,16 @@ class _CommunityWriteViewState extends ConsumerState<CommunityWriteView> {
       return '';
     }
     return fileName.substring(dot + 1).trim().toLowerCase();
+  }
+
+  bool _containsRestrictedTerms(String content) {
+    final normalized = content.toLowerCase();
+    for (final term in _restrictedCommunityTerms) {
+      if (normalized.contains(term)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 

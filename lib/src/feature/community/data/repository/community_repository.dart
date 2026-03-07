@@ -53,6 +53,27 @@ abstract interface class CommunityRepository {
     required String postId,
     required bool like,
   });
+
+  Future<void> reportPost({
+    required String tenantId,
+    required String postId,
+    required String reason,
+    required String detail,
+  });
+
+  Future<void> reportComment({
+    required String tenantId,
+    required String commentId,
+    required String reason,
+    required String detail,
+  });
+
+  Future<void> hidePost({required String tenantId, required String postId});
+
+  Future<void> blockUser({
+    required String tenantId,
+    required String blockedUserId,
+  });
 }
 
 class CommunityRepositoryImpl implements CommunityRepository {
@@ -68,6 +89,14 @@ class CommunityRepositoryImpl implements CommunityRepository {
   }) async {
     try {
       final userId = dataSource.getCurrentUserId();
+      final hiddenPostIds = await dataSource.getHiddenPostIds(
+        tenantId: tenantId,
+        userId: userId,
+      );
+      final blockedUserIds = await dataSource.getBlockedUserIds(
+        tenantId: tenantId,
+        userId: userId,
+      );
       final rows = await dataSource.getPostsPage(
         tenantId: tenantId,
         limit: limit,
@@ -80,6 +109,10 @@ class CommunityRepositoryImpl implements CommunityRepository {
       for (final row in rows) {
         final post = _mapPostRow(row);
         if (post == null) {
+          continue;
+        }
+        if (hiddenPostIds.contains(post.id) ||
+            blockedUserIds.contains(post.authorId)) {
           continue;
         }
         posts.add(post);
@@ -196,6 +229,19 @@ class CommunityRepositoryImpl implements CommunityRepository {
         throw const AppException.unknown(message: 'Post has invalid schema.');
       }
 
+      final hiddenPostIds = await dataSource.getHiddenPostIds(
+        tenantId: tenantId,
+        userId: userId,
+      );
+      final blockedUserIds = await dataSource.getBlockedUserIds(
+        tenantId: tenantId,
+        userId: userId,
+      );
+      if (hiddenPostIds.contains(post.id) ||
+          blockedUserIds.contains(post.authorId)) {
+        throw const AppException.unknown(message: 'Post not found.');
+      }
+
       final likesRows = await dataSource.getLikesByPostIds(
         tenantId: tenantId,
         postIds: [post.id],
@@ -269,12 +315,20 @@ class CommunityRepositoryImpl implements CommunityRepository {
         tenantId: tenantId,
         postId: postId,
       );
+      final userId = dataSource.getCurrentUserId();
+      final blockedUserIds = await dataSource.getBlockedUserIds(
+        tenantId: tenantId,
+        userId: userId,
+      );
       final comments = <CommunityCommentEntity>[];
       final userIds = <String>{};
 
       for (final row in rows) {
         final comment = _mapCommentRow(row);
         if (comment == null) {
+          continue;
+        }
+        if (blockedUserIds.contains(comment.authorId)) {
           continue;
         }
         comments.add(comment);
@@ -411,6 +465,63 @@ class CommunityRepositoryImpl implements CommunityRepository {
         like: like,
       );
     }, defaultMessage: 'Failed to update like.');
+  }
+
+  @override
+  Future<void> reportPost({
+    required String tenantId,
+    required String postId,
+    required String reason,
+    required String detail,
+  }) async {
+    await _guard(() async {
+      await dataSource.createPostReport(
+        tenantId: tenantId,
+        postId: postId,
+        reason: reason,
+        detail: detail,
+      );
+    }, defaultMessage: 'Failed to report post.');
+  }
+
+  @override
+  Future<void> reportComment({
+    required String tenantId,
+    required String commentId,
+    required String reason,
+    required String detail,
+  }) async {
+    await _guard(() async {
+      await dataSource.createCommentReport(
+        tenantId: tenantId,
+        commentId: commentId,
+        reason: reason,
+        detail: detail,
+      );
+    }, defaultMessage: 'Failed to report comment.');
+  }
+
+  @override
+  Future<void> hidePost({
+    required String tenantId,
+    required String postId,
+  }) async {
+    await _guard(() async {
+      await dataSource.hidePost(tenantId: tenantId, postId: postId);
+    }, defaultMessage: 'Failed to hide post.');
+  }
+
+  @override
+  Future<void> blockUser({
+    required String tenantId,
+    required String blockedUserId,
+  }) async {
+    await _guard(() async {
+      await dataSource.blockUser(
+        tenantId: tenantId,
+        blockedUserId: blockedUserId,
+      );
+    }, defaultMessage: 'Failed to block user.');
   }
 
   Future<void> _guard(

@@ -1,25 +1,27 @@
-enum WorkoutRecordMetricType { weight, reps, distance, duration }
+enum WorkoutRecordType { time, weight }
 
 class WorkoutRecordEntity {
   const WorkoutRecordEntity({
     required this.id,
     required this.exerciseName,
-    required this.metricType,
-    required this.unit,
+    required this.recordType,
     required this.recordedAt,
     required this.memo,
-    this.valueNumeric,
-    this.valueSeconds,
+    this.distance,
+    this.recordSeconds,
+    this.recordWeightKg,
+    this.recordReps,
   });
 
   final String id;
   final String exerciseName;
-  final WorkoutRecordMetricType metricType;
-  final double? valueNumeric;
-  final int? valueSeconds;
-  final String unit;
+  final WorkoutRecordType recordType;
+  final int? distance;
+  final int? recordSeconds;
+  final double? recordWeightKg;
+  final int? recordReps;
   final DateTime recordedAt;
   final String memo;
 
-  bool get usesDuration => metricType == WorkoutRecordMetricType.duration;
+  bool get isTimeRecord => recordType == WorkoutRecordType.time;
 }

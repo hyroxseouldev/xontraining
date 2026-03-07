@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class CommunityPostEntity {
   const CommunityPostEntity({
     required this.id,
@@ -41,6 +43,21 @@ class CommunityPostEntity {
       .map((url) => url.trim())
       .where((url) => url.isNotEmpty)
       .toList();
+
+  DateTime get createdAtLocal => createdAt.toLocal();
+
+  String get createdAtEnglishDateLabel =>
+      DateFormat('MMMM dd, yyyy', 'en_US').format(createdAtLocal);
+
+  String get createdAtTimeLabel24h =>
+      DateFormat('HH:mm').format(createdAtLocal);
+
+  bool isCreatedToday(DateTime now) {
+    final nowLocal = now.toLocal();
+    return createdAtLocal.year == nowLocal.year &&
+        createdAtLocal.month == nowLocal.month &&
+        createdAtLocal.day == nowLocal.day;
+  }
 
   CommunityPostEntity copyWith({
     int? likeCount,
@@ -98,4 +115,19 @@ class CommunityCommentEntity {
   }
 
   String get normalizedAuthorAvatarUrl => authorAvatarUrl.trim();
+
+  DateTime get createdAtLocal => createdAt.toLocal();
+
+  String get createdAtEnglishDateLabel =>
+      DateFormat('MMMM dd, yyyy', 'en_US').format(createdAtLocal);
+
+  String get createdAtTimeLabel24h =>
+      DateFormat('HH:mm').format(createdAtLocal);
+
+  bool isCreatedToday(DateTime now) {
+    final nowLocal = now.toLocal();
+    return createdAtLocal.year == nowLocal.year &&
+        createdAtLocal.month == nowLocal.month &&
+        createdAtLocal.day == nowLocal.day;
+  }
 }

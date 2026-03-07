@@ -3,7 +3,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/core/router/app_router.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/auth_session_provider.dart';
@@ -13,6 +12,15 @@ import 'package:xontraining/src/feature/community/presentation/view/community_vi
 import 'package:xontraining/src/feature/community/presentation/widget/community_image_viewer.dart';
 import 'package:xontraining/src/feature/community/presentation/widget/community_skeleton.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
+
+const List<String> _restrictedCommunityTerms = <String>[
+  'porn',
+  'nude',
+  '성인',
+  '음란',
+  '혐오',
+  'kill',
+];
 
 class CommunityDetailView extends ConsumerStatefulWidget {
   const CommunityDetailView({required this.postId, super.key});
@@ -102,6 +110,14 @@ class _CommunityDetailViewState extends ConsumerState<CommunityDetailView> {
                         post.id,
                         post.normalizedImageUrls,
                       ),
+                      onReportPressed: () =>
+                          _onReportPostPressed(context, postId: post.id),
+                      onHidePressed: () =>
+                          _onHidePostPressed(context, postId: post.id),
+                      onBlockAuthorPressed: () => _onBlockAuthorPressed(
+                        context,
+                        authorId: post.authorId,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -141,6 +157,11 @@ class _CommunityDetailViewState extends ConsumerState<CommunityDetailView> {
                                   isMine: currentUserId == comment.authorId,
                                   onDeletePressed: () =>
                                       _onDeleteCommentPressed(
+                                        context,
+                                        commentId: comment.id,
+                                      ),
+                                  onReportPressed: () =>
+                                      _onReportCommentPressed(
                                         context,
                                         commentId: comment.id,
                                       ),
@@ -249,6 +270,119 @@ class _CommunityDetailViewState extends ConsumerState<CommunityDetailView> {
     }
   }
 
+  Future<void> _onReportPostPressed(
+    BuildContext context, {
+    required String postId,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    final report = await _showCommunityReportDialog(context);
+    if (report == null || !context.mounted) {
+      return;
+    }
+
+    await ref
+        .read(communityActionControllerProvider.notifier)
+        .reportPost(
+          postId: postId,
+          reason: report.reason,
+          detail: report.detail,
+        );
+    if (!context.mounted) {
+      return;
+    }
+    if (!ref.read(communityActionControllerProvider).hasError) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.communityReportSubmitted)));
+    }
+  }
+
+  Future<void> _onHidePostPressed(
+    BuildContext context, {
+    required String postId,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await _showCommunityConfirmDialog(
+      context,
+      title: l10n.communityHidePostTitle,
+      body: l10n.communityHidePostBody,
+      confirmText: l10n.communityHide,
+    );
+    if (!confirmed || !context.mounted) {
+      return;
+    }
+
+    await ref
+        .read(communityActionControllerProvider.notifier)
+        .hidePost(postId: postId);
+    if (!context.mounted) {
+      return;
+    }
+    if (!ref.read(communityActionControllerProvider).hasError) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.communityPostHidden)));
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _onBlockAuthorPressed(
+    BuildContext context, {
+    required String authorId,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await _showCommunityConfirmDialog(
+      context,
+      title: l10n.communityBlockUserTitle,
+      body: l10n.communityBlockUserBody,
+      confirmText: l10n.communityBlockUser,
+    );
+    if (!confirmed || !context.mounted) {
+      return;
+    }
+
+    await ref
+        .read(communityActionControllerProvider.notifier)
+        .blockUser(blockedUserId: authorId, postId: widget.postId);
+    if (!context.mounted) {
+      return;
+    }
+    if (!ref.read(communityActionControllerProvider).hasError) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.communityUserBlocked)));
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _onReportCommentPressed(
+    BuildContext context, {
+    required String commentId,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    final report = await _showCommunityReportDialog(context);
+    if (report == null || !context.mounted) {
+      return;
+    }
+
+    await ref
+        .read(communityActionControllerProvider.notifier)
+        .reportComment(
+          postId: widget.postId,
+          commentId: commentId,
+          reason: report.reason,
+          detail: report.detail,
+        );
+    if (!context.mounted) {
+      return;
+    }
+    if (!ref.read(communityActionControllerProvider).hasError) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.communityReportSubmitted)));
+    }
+  }
+
   Future<void> _onCommentSubmitPressed(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final content = _commentController.text.trim();
@@ -256,6 +390,12 @@ class _CommunityDetailViewState extends ConsumerState<CommunityDetailView> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.communityCommentRequired)));
+      return;
+    }
+    if (_containsRestrictedTerms(content)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.communityCommentRestricted)));
       return;
     }
 
@@ -269,6 +409,16 @@ class _CommunityDetailViewState extends ConsumerState<CommunityDetailView> {
       _commentController.clear();
     }
   }
+
+  bool _containsRestrictedTerms(String content) {
+    final normalized = content.toLowerCase();
+    for (final term in _restrictedCommunityTerms) {
+      if (normalized.contains(term)) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 class _PostHeader extends StatelessWidget {
@@ -278,6 +428,9 @@ class _PostHeader extends StatelessWidget {
     required this.onLikePressed,
     required this.onEditPressed,
     required this.onDeletePressed,
+    required this.onReportPressed,
+    required this.onHidePressed,
+    required this.onBlockAuthorPressed,
   });
 
   final CommunityPostEntity post;
@@ -285,17 +438,15 @@ class _PostHeader extends StatelessWidget {
   final VoidCallback onLikePressed;
   final VoidCallback onEditPressed;
   final VoidCallback onDeletePressed;
+  final VoidCallback onReportPressed;
+  final VoidCallback onHidePressed;
+  final VoidCallback onBlockAuthorPressed;
 
   @override
   Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context);
     final l10n = AppLocalizations.of(context)!;
-    final dateText = DateFormat(
-      'MMMM dd, yyyy, HH:mm',
-      locale.languageCode,
-    ).format(post.createdAt.toLocal());
-    final timeAgo = buildCommunityTimeAgo(
-      createdAt: post.createdAt,
+    final dateTimeLabel = buildCommunityPostDateTimeLabel(
+      post: post,
       now: DateTime.now(),
       l10n: l10n,
     );
@@ -327,7 +478,7 @@ class _PostHeader extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          '$dateText · $timeAgo',
+                          dateTimeLabel,
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(
                                 color: Theme.of(
@@ -338,17 +489,29 @@ class _PostHeader extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (isMyPost)
-                    PopupMenuButton<String>(
-                      onSelected: (value) {
-                        if (value == 'edit') {
-                          onEditPressed();
-                          return;
-                        }
+                  PopupMenuButton<String>(
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        onEditPressed();
+                        return;
+                      }
+                      if (value == 'delete') {
                         onDeletePressed();
-                      },
-                      itemBuilder: (context) {
-                        final l10n = AppLocalizations.of(context)!;
+                        return;
+                      }
+                      if (value == 'report') {
+                        onReportPressed();
+                        return;
+                      }
+                      if (value == 'hide') {
+                        onHidePressed();
+                        return;
+                      }
+                      onBlockAuthorPressed();
+                    },
+                    itemBuilder: (context) {
+                      final l10n = AppLocalizations.of(context)!;
+                      if (isMyPost) {
                         return [
                           PopupMenuItem<String>(
                             value: 'edit',
@@ -359,8 +522,24 @@ class _PostHeader extends StatelessWidget {
                             child: Text(l10n.communityDelete),
                           ),
                         ];
-                      },
-                    ),
+                      }
+
+                      return [
+                        PopupMenuItem<String>(
+                          value: 'report',
+                          child: Text(l10n.communityReport),
+                        ),
+                        PopupMenuItem<String>(
+                          value: 'hide',
+                          child: Text(l10n.communityHide),
+                        ),
+                        PopupMenuItem<String>(
+                          value: 'block',
+                          child: Text(l10n.communityBlockUser),
+                        ),
+                      ];
+                    },
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -541,22 +720,19 @@ class _CommentItem extends StatelessWidget {
     required this.comment,
     required this.isMine,
     required this.onDeletePressed,
+    required this.onReportPressed,
   });
 
   final CommunityCommentEntity comment;
   final bool isMine;
   final VoidCallback onDeletePressed;
+  final VoidCallback onReportPressed;
 
   @override
   Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context);
-    final dateText = DateFormat(
-      'MMMM dd, yyyy, HH:mm',
-      locale.languageCode,
-    ).format(comment.createdAt.toLocal());
     final l10n = AppLocalizations.of(context)!;
-    final timeAgo = buildCommunityTimeAgo(
-      createdAt: comment.createdAt,
+    final dateTimeLabel = buildCommunityCommentDateTimeLabel(
+      comment: comment,
       now: DateTime.now(),
       l10n: l10n,
     );
@@ -583,17 +759,37 @@ class _CommentItem extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$dateText · $timeAgo',
+                    dateTimeLabel,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  if (isMine)
-                    IconButton(
-                      onPressed: onDeletePressed,
-                      icon: const Icon(Icons.delete_outline, size: 18),
-                      visualDensity: VisualDensity.compact,
-                    ),
+                  PopupMenuButton<String>(
+                    onSelected: (value) {
+                      if (value == 'delete') {
+                        onDeletePressed();
+                        return;
+                      }
+                      onReportPressed();
+                    },
+                    itemBuilder: (context) {
+                      final l10n = AppLocalizations.of(context)!;
+                      if (isMine) {
+                        return [
+                          PopupMenuItem<String>(
+                            value: 'delete',
+                            child: Text(l10n.communityDelete),
+                          ),
+                        ];
+                      }
+                      return [
+                        PopupMenuItem<String>(
+                          value: 'report',
+                          child: Text(l10n.communityReport),
+                        ),
+                      ];
+                    },
+                  ),
                 ],
               ),
               const SizedBox(height: 6),
@@ -604,4 +800,131 @@ class _CommentItem extends StatelessWidget {
       ),
     );
   }
+}
+
+class _CommunityReportDialogResult {
+  const _CommunityReportDialogResult({
+    required this.reason,
+    required this.detail,
+  });
+
+  final String reason;
+  final String detail;
+}
+
+Future<_CommunityReportDialogResult?> _showCommunityReportDialog(
+  BuildContext context,
+) async {
+  final l10n = AppLocalizations.of(context)!;
+  final detailController = TextEditingController();
+  var selectedReason = 'spam';
+
+  return showDialog<_CommunityReportDialogResult>(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text(l10n.communityReportTitle),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DropdownButtonFormField<String>(
+                  initialValue: selectedReason,
+                  decoration: InputDecoration(
+                    labelText: l10n.communityReportReason,
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      value: 'spam',
+                      child: Text(l10n.communityReportReasonSpam),
+                    ),
+                    DropdownMenuItem(
+                      value: 'hate',
+                      child: Text(l10n.communityReportReasonHate),
+                    ),
+                    DropdownMenuItem(
+                      value: 'sexual',
+                      child: Text(l10n.communityReportReasonSexual),
+                    ),
+                    DropdownMenuItem(
+                      value: 'harassment',
+                      child: Text(l10n.communityReportReasonHarassment),
+                    ),
+                    DropdownMenuItem(
+                      value: 'other',
+                      child: Text(l10n.communityReportReasonOther),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+                    setState(() {
+                      selectedReason = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: detailController,
+                  minLines: 2,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    labelText: l10n.communityReportDetail,
+                    hintText: l10n.communityReportDetailHint,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(l10n.communityCancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(
+                  _CommunityReportDialogResult(
+                    reason: selectedReason,
+                    detail: detailController.text.trim(),
+                  ),
+                ),
+                child: Text(l10n.communityReportSubmit),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
+Future<bool> _showCommunityConfirmDialog(
+  BuildContext context, {
+  required String title,
+  required String body,
+  required String confirmText,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  final result = await showDialog<bool>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(body),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.communityCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(confirmText),
+          ),
+        ],
+      );
+    },
+  );
+  return result ?? false;
 }

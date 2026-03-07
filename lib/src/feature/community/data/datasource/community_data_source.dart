@@ -69,6 +69,37 @@ abstract interface class CommunityDataSource {
     required String postId,
     required bool like,
   });
+
+  Future<void> createPostReport({
+    required String tenantId,
+    required String postId,
+    required String reason,
+    required String detail,
+  });
+
+  Future<void> createCommentReport({
+    required String tenantId,
+    required String commentId,
+    required String reason,
+    required String detail,
+  });
+
+  Future<void> hidePost({required String tenantId, required String postId});
+
+  Future<void> blockUser({
+    required String tenantId,
+    required String blockedUserId,
+  });
+
+  Future<Set<String>> getHiddenPostIds({
+    required String tenantId,
+    required String userId,
+  });
+
+  Future<Set<String>> getBlockedUserIds({
+    required String tenantId,
+    required String userId,
+  });
 }
 
 class SupabaseCommunityDataSource implements CommunityDataSource {
@@ -301,6 +332,130 @@ class SupabaseCommunityDataSource implements CommunityDataSource {
         .eq('tenant_id', tenantId)
         .eq('post_id', postId)
         .eq('user_id', userId);
+  }
+
+  @override
+  Future<void> createPostReport({
+    required String tenantId,
+    required String postId,
+    required String reason,
+    required String detail,
+  }) async {
+    final userId = getCurrentUserId();
+
+    await supabase
+        .from('community_post_reports')
+        .upsert(
+          {
+            'tenant_id': tenantId,
+            'post_id': postId,
+            'reporter_id': userId,
+            'reason': reason,
+            'detail': detail,
+            'status': 'pending',
+          },
+          onConflict: 'tenant_id,post_id,reporter_id',
+          ignoreDuplicates: true,
+        );
+  }
+
+  @override
+  Future<void> createCommentReport({
+    required String tenantId,
+    required String commentId,
+    required String reason,
+    required String detail,
+  }) async {
+    final userId = getCurrentUserId();
+
+    await supabase
+        .from('community_comment_reports')
+        .upsert(
+          {
+            'tenant_id': tenantId,
+            'comment_id': commentId,
+            'reporter_id': userId,
+            'reason': reason,
+            'detail': detail,
+            'status': 'pending',
+          },
+          onConflict: 'tenant_id,comment_id,reporter_id',
+          ignoreDuplicates: true,
+        );
+  }
+
+  @override
+  Future<void> hidePost({
+    required String tenantId,
+    required String postId,
+  }) async {
+    final userId = getCurrentUserId();
+
+    await supabase
+        .from('community_hidden_posts')
+        .upsert(
+          {'tenant_id': tenantId, 'user_id': userId, 'post_id': postId},
+          onConflict: 'tenant_id,user_id,post_id',
+          ignoreDuplicates: true,
+        );
+  }
+
+  @override
+  Future<void> blockUser({
+    required String tenantId,
+    required String blockedUserId,
+  }) async {
+    final userId = getCurrentUserId();
+
+    await supabase
+        .from('community_user_blocks')
+        .upsert(
+          {
+            'tenant_id': tenantId,
+            'blocker_id': userId,
+            'blocked_user_id': blockedUserId,
+          },
+          onConflict: 'tenant_id,blocker_id,blocked_user_id',
+          ignoreDuplicates: true,
+        );
+  }
+
+  @override
+  Future<Set<String>> getHiddenPostIds({
+    required String tenantId,
+    required String userId,
+  }) async {
+    final rows = await supabase
+        .from('community_hidden_posts')
+        .select('post_id')
+        .eq('tenant_id', tenantId)
+        .eq('user_id', userId);
+
+    return rows
+        .map((row) => row['post_id'])
+        .whereType<String>()
+        .map((id) => id.trim())
+        .where((id) => id.isNotEmpty)
+        .toSet();
+  }
+
+  @override
+  Future<Set<String>> getBlockedUserIds({
+    required String tenantId,
+    required String userId,
+  }) async {
+    final rows = await supabase
+        .from('community_user_blocks')
+        .select('blocked_user_id')
+        .eq('tenant_id', tenantId)
+        .eq('blocker_id', userId);
+
+    return rows
+        .map((row) => row['blocked_user_id'])
+        .whereType<String>()
+        .map((id) => id.trim())
+        .where((id) => id.isNotEmpty)
+        .toSet();
   }
 }
 

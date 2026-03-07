@@ -140,6 +140,69 @@ class SetCommunityPostLikeUseCase {
   }
 }
 
+class ReportCommunityPostUseCase {
+  ReportCommunityPostUseCase({required this.repository});
+
+  final CommunityRepository repository;
+
+  Future<void> call({
+    required String tenantId,
+    required String postId,
+    required String reason,
+    required String detail,
+  }) {
+    return repository.reportPost(
+      tenantId: tenantId,
+      postId: postId,
+      reason: reason,
+      detail: detail,
+    );
+  }
+}
+
+class ReportCommunityCommentUseCase {
+  ReportCommunityCommentUseCase({required this.repository});
+
+  final CommunityRepository repository;
+
+  Future<void> call({
+    required String tenantId,
+    required String commentId,
+    required String reason,
+    required String detail,
+  }) {
+    return repository.reportComment(
+      tenantId: tenantId,
+      commentId: commentId,
+      reason: reason,
+      detail: detail,
+    );
+  }
+}
+
+class HideCommunityPostUseCase {
+  HideCommunityPostUseCase({required this.repository});
+
+  final CommunityRepository repository;
+
+  Future<void> call({required String tenantId, required String postId}) {
+    return repository.hidePost(tenantId: tenantId, postId: postId);
+  }
+}
+
+class BlockCommunityUserUseCase {
+  BlockCommunityUserUseCase({required this.repository});
+
+  final CommunityRepository repository;
+
+  Future<void> call({required String tenantId, required String blockedUserId}) {
+    return repository.blockUser(
+      tenantId: tenantId,
+      blockedUserId: blockedUserId,
+    );
+  }
+}
+
 final getCommunityPostsPageUseCaseProvider =
     Provider<GetCommunityPostsPageUseCase>((ref) {
       return GetCommunityPostsPageUseCase(
@@ -205,3 +268,34 @@ final setCommunityPostLikeUseCaseProvider =
         repository: ref.read(communityRepositoryProvider),
       );
     });
+
+final reportCommunityPostUseCaseProvider = Provider<ReportCommunityPostUseCase>(
+  (ref) {
+    return ReportCommunityPostUseCase(
+      repository: ref.read(communityRepositoryProvider),
+    );
+  },
+);
+
+final reportCommunityCommentUseCaseProvider =
+    Provider<ReportCommunityCommentUseCase>((ref) {
+      return ReportCommunityCommentUseCase(
+        repository: ref.read(communityRepositoryProvider),
+      );
+    });
+
+final hideCommunityPostUseCaseProvider = Provider<HideCommunityPostUseCase>((
+  ref,
+) {
+  return HideCommunityPostUseCase(
+    repository: ref.read(communityRepositoryProvider),
+  );
+});
+
+final blockCommunityUserUseCaseProvider = Provider<BlockCommunityUserUseCase>((
+  ref,
+) {
+  return BlockCommunityUserUseCase(
+    repository: ref.read(communityRepositoryProvider),
+  );
+});

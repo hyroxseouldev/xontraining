@@ -25,6 +25,7 @@ class XonTrainingApp extends ConsumerWidget {
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.light,
       routerConfig: router,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

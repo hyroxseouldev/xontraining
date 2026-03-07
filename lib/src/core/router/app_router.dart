@@ -19,6 +19,8 @@ import 'package:xontraining/src/feature/profile/presentation/view/profile_edit_v
 import 'package:xontraining/src/feature/profile/presentation/view/profile_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/privacy_policy_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/app_version_view.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/rowing_record_entry_view.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/rowing_record_list_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/settings_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/terms_of_service_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/workout_record_view.dart';
@@ -192,6 +194,34 @@ GoRouter goRouter(Ref ref) {
         builder: (context, state) => const WorkoutRecordView(),
       ),
       GoRoute(
+        path: AppRoutes.workoutRecordEntry,
+        name: AppRoutes.workoutRecordEntryName,
+        redirect: (context, state) {
+          final exerciseKey = state.pathParameters['exercise'] ?? '';
+          if (!AppRoutes.isSupportedWorkoutExercise(exerciseKey)) {
+            return AppRoutes.workoutRecord;
+          }
+          return null;
+        },
+        builder: (context, state) => WorkoutRecordEntryView(
+          exerciseKey: state.pathParameters['exercise'] ?? '',
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.workoutRecordList,
+        name: AppRoutes.workoutRecordListName,
+        redirect: (context, state) {
+          final exerciseKey = state.pathParameters['exercise'] ?? '';
+          if (!AppRoutes.isSupportedWorkoutExercise(exerciseKey)) {
+            return AppRoutes.workoutRecord;
+          }
+          return null;
+        },
+        builder: (context, state) => WorkoutRecordListView(
+          exerciseKey: state.pathParameters['exercise'] ?? '',
+        ),
+      ),
+      GoRoute(
         path: AppRoutes.settings,
         name: AppRoutes.settingsName,
         builder: (context, state) => const SettingsView(),
@@ -232,6 +262,10 @@ abstract final class AppRoutes {
   static const String profile = '/profile';
   static const String profileEdit = '/profile/edit';
   static const String workoutRecord = '/profile/workout-record';
+  static const String workoutRecordEntry =
+      '/profile/workout-record/:exercise/new';
+  static const String workoutRecordList =
+      '/profile/workout-record/:exercise/list';
   static const String settings = '/settings';
   static const String appVersion = '/settings/app-version';
   static const String termsOfService = '/settings/terms';
@@ -251,6 +285,8 @@ abstract final class AppRoutes {
   static const String profileName = 'profile';
   static const String profileEditName = 'profileEdit';
   static const String workoutRecordName = 'workoutRecord';
+  static const String workoutRecordEntryName = 'workoutRecordEntry';
+  static const String workoutRecordListName = 'workoutRecordList';
   static const String settingsName = 'settings';
   static const String appVersionName = 'appVersion';
   static const String termsOfServiceName = 'termsOfService';
@@ -267,5 +303,17 @@ abstract final class AppRoutes {
     r'[0-9a-fA-F]{12}$',
   );
 
+  static const Set<String> supportedWorkoutExercises = {
+    'rowing',
+    'running',
+    'ski',
+    'squat',
+    'deadlift',
+    'bench_press',
+  };
+
   static bool isValidUuid(String value) => _uuidRegex.hasMatch(value);
+
+  static bool isSupportedWorkoutExercise(String value) =>
+      supportedWorkoutExercises.contains(value);
 }

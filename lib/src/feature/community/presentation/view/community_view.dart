@@ -3,9 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/core/router/app_router.dart';
+import 'package:xontraining/src/feature/auth/presentation/provider/auth_session_provider.dart';
 import 'package:xontraining/src/feature/community/infra/entity/community_entity.dart';
 import 'package:xontraining/src/feature/community/presentation/provider/community_provider.dart';
 import 'package:xontraining/src/feature/community/presentation/view/community_view_helper.dart';
@@ -20,6 +20,8 @@ class CommunityView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final feedState = ref.watch(communityFeedControllerProvider);
+    final actionState = ref.watch(communityActionControllerProvider);
+    final currentUserId = ref.watch(authSessionProvider).asData?.value?.id;
     final scrollController = useScrollController();
 
     useEffect(() {
@@ -56,6 +58,19 @@ class CommunityView extends HookConsumerWidget {
         );
       },
     );
+
+    ref.listen<AsyncValue<void>>(communityActionControllerProvider, (
+      previous,
+      next,
+    ) {
+      next.whenOrNull(
+        error: (error, stackTrace) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(l10n.communityActionFailed)));
+        },
+      );
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -132,6 +147,7 @@ class CommunityView extends HookConsumerWidget {
                 final post = feed.items[index];
                 return _CommunityPostCard(
                   post: post,
+                  isMine: currentUserId == post.authorId,
                   onTap: () {
                     context.pushNamed(
                       AppRoutes.communityDetailName,
@@ -146,6 +162,87 @@ class CommunityView extends HookConsumerWidget {
                           currentLike: post.isLikedByMe,
                         );
                   },
+                  onReportPressed: actionState.isLoading
+                      ? null
+                      : () async {
+                          final report = await _showReportDialog(context);
+                          if (!context.mounted || report == null) {
+                            return;
+                          }
+                          await ref
+                              .read(communityActionControllerProvider.notifier)
+                              .reportPost(
+                                postId: post.id,
+                                reason: report.reason,
+                                detail: report.detail,
+                              );
+                          if (!context.mounted) {
+                            return;
+                          }
+                          if (!ref
+                              .read(communityActionControllerProvider)
+                              .hasError) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.communityReportSubmitted),
+                              ),
+                            );
+                          }
+                        },
+                  onHidePressed: actionState.isLoading
+                      ? null
+                      : () async {
+                          final confirmed = await _showConfirmDialog(
+                            context,
+                            title: l10n.communityHidePostTitle,
+                            body: l10n.communityHidePostBody,
+                            confirmText: l10n.communityHide,
+                          );
+                          if (!context.mounted || !confirmed) {
+                            return;
+                          }
+                          await ref
+                              .read(communityActionControllerProvider.notifier)
+                              .hidePost(postId: post.id);
+                          if (!context.mounted) {
+                            return;
+                          }
+                          if (!ref
+                              .read(communityActionControllerProvider)
+                              .hasError) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(l10n.communityPostHidden)),
+                            );
+                          }
+                        },
+                  onBlockUserPressed: actionState.isLoading
+                      ? null
+                      : () async {
+                          final confirmed = await _showConfirmDialog(
+                            context,
+                            title: l10n.communityBlockUserTitle,
+                            body: l10n.communityBlockUserBody,
+                            confirmText: l10n.communityBlockUser,
+                          );
+                          if (!context.mounted || !confirmed) {
+                            return;
+                          }
+                          await ref
+                              .read(communityActionControllerProvider.notifier)
+                              .blockUser(blockedUserId: post.authorId);
+                          if (!context.mounted) {
+                            return;
+                          }
+                          if (!ref
+                              .read(communityActionControllerProvider)
+                              .hasError) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.communityUserBlocked),
+                              ),
+                            );
+                          }
+                        },
                 );
               },
             ),
@@ -159,24 +256,27 @@ class CommunityView extends HookConsumerWidget {
 class _CommunityPostCard extends StatelessWidget {
   const _CommunityPostCard({
     required this.post,
+    required this.isMine,
     required this.onTap,
     required this.onLikePressed,
+    this.onReportPressed,
+    this.onHidePressed,
+    this.onBlockUserPressed,
   });
 
   final CommunityPostEntity post;
+  final bool isMine;
   final VoidCallback onTap;
   final VoidCallback onLikePressed;
+  final VoidCallback? onReportPressed;
+  final VoidCallback? onHidePressed;
+  final VoidCallback? onBlockUserPressed;
 
   @override
   Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context);
     final l10n = AppLocalizations.of(context)!;
-    final dateText = DateFormat(
-      'MMMM dd, yyyy, HH:mm',
-      locale.languageCode,
-    ).format(post.createdAt.toLocal());
-    final timeAgo = buildCommunityTimeAgo(
-      createdAt: post.createdAt,
+    final dateTimeLabel = buildCommunityPostDateTimeLabel(
+      post: post,
       now: DateTime.now(),
       l10n: l10n,
     );
@@ -212,7 +312,7 @@ class _CommunityPostCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            '$dateText · $timeAgo',
+                            dateTimeLabel,
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(
                                   color: Theme.of(
@@ -223,6 +323,39 @@ class _CommunityPostCard extends StatelessWidget {
                         ],
                       ),
                     ),
+                    if (!isMine)
+                      PopupMenuButton<_CommunityPostMenuAction>(
+                        onSelected: (value) {
+                          switch (value) {
+                            case _CommunityPostMenuAction.report:
+                              onReportPressed?.call();
+                              return;
+                            case _CommunityPostMenuAction.hide:
+                              onHidePressed?.call();
+                              return;
+                            case _CommunityPostMenuAction.block:
+                              onBlockUserPressed?.call();
+                              return;
+                          }
+                        },
+                        itemBuilder: (context) {
+                          final l10n = AppLocalizations.of(context)!;
+                          return [
+                            PopupMenuItem<_CommunityPostMenuAction>(
+                              value: _CommunityPostMenuAction.report,
+                              child: Text(l10n.communityReport),
+                            ),
+                            PopupMenuItem<_CommunityPostMenuAction>(
+                              value: _CommunityPostMenuAction.hide,
+                              child: Text(l10n.communityHide),
+                            ),
+                            PopupMenuItem<_CommunityPostMenuAction>(
+                              value: _CommunityPostMenuAction.block,
+                              child: Text(l10n.communityBlockUser),
+                            ),
+                          ];
+                        },
+                      ),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -263,6 +396,134 @@ class _CommunityPostCard extends StatelessWidget {
       ),
     );
   }
+}
+
+enum _CommunityPostMenuAction { report, hide, block }
+
+class _CommunityReportDialogResult {
+  const _CommunityReportDialogResult({
+    required this.reason,
+    required this.detail,
+  });
+
+  final String reason;
+  final String detail;
+}
+
+Future<_CommunityReportDialogResult?> _showReportDialog(
+  BuildContext context,
+) async {
+  final l10n = AppLocalizations.of(context)!;
+  final detailController = TextEditingController();
+  var selectedReason = 'spam';
+  return showDialog<_CommunityReportDialogResult>(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text(l10n.communityReportTitle),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DropdownButtonFormField<String>(
+                  initialValue: selectedReason,
+                  decoration: InputDecoration(
+                    labelText: l10n.communityReportReason,
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      value: 'spam',
+                      child: Text(l10n.communityReportReasonSpam),
+                    ),
+                    DropdownMenuItem(
+                      value: 'hate',
+                      child: Text(l10n.communityReportReasonHate),
+                    ),
+                    DropdownMenuItem(
+                      value: 'sexual',
+                      child: Text(l10n.communityReportReasonSexual),
+                    ),
+                    DropdownMenuItem(
+                      value: 'harassment',
+                      child: Text(l10n.communityReportReasonHarassment),
+                    ),
+                    DropdownMenuItem(
+                      value: 'other',
+                      child: Text(l10n.communityReportReasonOther),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+                    setState(() {
+                      selectedReason = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: detailController,
+                  minLines: 2,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    labelText: l10n.communityReportDetail,
+                    hintText: l10n.communityReportDetailHint,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(l10n.communityCancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(
+                  _CommunityReportDialogResult(
+                    reason: selectedReason,
+                    detail: detailController.text.trim(),
+                  ),
+                ),
+                child: Text(l10n.communityReportSubmit),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
+Future<bool> _showConfirmDialog(
+  BuildContext context, {
+  required String title,
+  required String body,
+  required String confirmText,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  final result = await showDialog<bool>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(body),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.communityCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(confirmText),
+          ),
+        ],
+      );
+    },
+  );
+  return result ?? false;
 }
 
 class _CommunityAvatar extends StatelessWidget {

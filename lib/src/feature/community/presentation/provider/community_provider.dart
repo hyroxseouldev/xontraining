@@ -290,6 +290,100 @@ class CommunityActionController extends AsyncNotifier<void> {
       ref.invalidate(communityPostDetailProvider(postId));
     }
   }
+
+  Future<void> reportPost({
+    required String postId,
+    required String reason,
+    required String detail,
+  }) async {
+    state = const AsyncLoading();
+    final tenantId = ref.read(tenantIdProvider);
+    final nextState = await AsyncValue.guard(
+      () => ref
+          .read(reportCommunityPostUseCaseProvider)
+          .call(
+            tenantId: tenantId,
+            postId: postId,
+            reason: reason,
+            detail: detail,
+          ),
+    );
+    if (!ref.mounted) {
+      return;
+    }
+    state = nextState;
+  }
+
+  Future<void> reportComment({
+    required String postId,
+    required String commentId,
+    required String reason,
+    required String detail,
+  }) async {
+    state = const AsyncLoading();
+    final tenantId = ref.read(tenantIdProvider);
+    final nextState = await AsyncValue.guard(
+      () => ref
+          .read(reportCommunityCommentUseCaseProvider)
+          .call(
+            tenantId: tenantId,
+            commentId: commentId,
+            reason: reason,
+            detail: detail,
+          ),
+    );
+    if (!ref.mounted) {
+      return;
+    }
+    state = nextState;
+    if (!state.hasError) {
+      ref.invalidate(communityPostDetailProvider(postId));
+      ref.invalidate(communityCommentsProvider(postId));
+    }
+  }
+
+  Future<void> hidePost({required String postId}) async {
+    state = const AsyncLoading();
+    final tenantId = ref.read(tenantIdProvider);
+    final nextState = await AsyncValue.guard(
+      () => ref
+          .read(hideCommunityPostUseCaseProvider)
+          .call(tenantId: tenantId, postId: postId),
+    );
+    if (!ref.mounted) {
+      return;
+    }
+    state = nextState;
+    if (!state.hasError) {
+      ref.invalidate(communityFeedControllerProvider);
+      ref.invalidate(communityPostDetailProvider(postId));
+      ref.invalidate(communityCommentsProvider(postId));
+    }
+  }
+
+  Future<void> blockUser({
+    required String blockedUserId,
+    String? postId,
+  }) async {
+    state = const AsyncLoading();
+    final tenantId = ref.read(tenantIdProvider);
+    final nextState = await AsyncValue.guard(
+      () => ref
+          .read(blockCommunityUserUseCaseProvider)
+          .call(tenantId: tenantId, blockedUserId: blockedUserId),
+    );
+    if (!ref.mounted) {
+      return;
+    }
+    state = nextState;
+    if (!state.hasError) {
+      ref.invalidate(communityFeedControllerProvider);
+      if (postId != null) {
+        ref.invalidate(communityPostDetailProvider(postId));
+        ref.invalidate(communityCommentsProvider(postId));
+      }
+    }
+  }
 }
 
 final communityActionControllerProvider =
