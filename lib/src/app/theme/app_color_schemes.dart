@@ -10,6 +10,7 @@ class AppColorSchemes {
       ).copyWith(
         primary: const Color(0xFF111111),
         onPrimary: Colors.white,
+        surface: Colors.white,
         primaryContainer: const Color(0xFFE7E7E7),
         onPrimaryContainer: const Color(0xFF111111),
         secondary: const Color(0xFF2F2F2F),

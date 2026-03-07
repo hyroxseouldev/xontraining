@@ -65,5 +65,15 @@
 		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
+
+		<key>UIDeviceFamily</key> <!-- Added to allow only iPhone -->
+		<array>
+			<integer>1</integer>
+		</array>
+
 	</dict>
+
+
+	
+
 </plist>
