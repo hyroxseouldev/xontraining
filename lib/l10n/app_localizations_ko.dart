@@ -170,6 +170,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get communityCommentDeleted => '댓글이 삭제되었습니다.';
 
   @override
+  String get communityCoachBadge => '코치';
+
+  @override
   String get communityReport => '신고';
 
   @override

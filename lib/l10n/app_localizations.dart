@@ -416,6 +416,12 @@ abstract class AppLocalizations {
   /// **'Comment deleted.'**
   String get communityCommentDeleted;
 
+  /// No description provided for @communityCoachBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach'**
+  String get communityCoachBadge;
+
   /// No description provided for @communityReport.
   ///
   /// In en, this message translates to:

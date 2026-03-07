@@ -164,6 +164,10 @@ class CommunityRepositoryImpl implements CommunityRepository {
       final profileRows = await dataSource.getProfilesByIds(
         userIds: authorIds.toList(growable: false),
       );
+      final roleRows = await dataSource.getMembershipRolesByUserIds(
+        tenantId: tenantId,
+        userIds: authorIds.toList(growable: false),
+      );
 
       final likesByPost = <String, int>{};
       final likedByMe = <String>{};
@@ -202,6 +206,15 @@ class CommunityRepositoryImpl implements CommunityRepository {
         }
       }
 
+      final rolesByUserId = <String, String>{};
+      for (final row in roleRows) {
+        final userId = row['user_id'];
+        final role = row['role'];
+        if (userId is String && role is String) {
+          rolesByUserId[userId] = role;
+        }
+      }
+
       return posts
           .map(
             (post) => post.copyWith(
@@ -216,6 +229,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
               authorId: post.authorId,
               authorName: namesByUserId[post.authorId] ?? '',
               authorAvatarUrl: avatarsByUserId[post.authorId] ?? '',
+              authorRole: rolesByUserId[post.authorId] ?? '',
               content: post.content,
               imageUrls: post.imageUrls,
               createdAt: post.createdAt,
@@ -286,6 +300,10 @@ class CommunityRepositoryImpl implements CommunityRepository {
       final profileRows = await dataSource.getProfilesByIds(
         userIds: [post.authorId],
       );
+      final roleRows = await dataSource.getMembershipRolesByUserIds(
+        tenantId: tenantId,
+        userIds: [post.authorId],
+      );
 
       var likeCount = 0;
       var isLikedByMe = false;
@@ -306,12 +324,16 @@ class CommunityRepositoryImpl implements CommunityRepository {
           profileRows.isNotEmpty && profileRows.first['avatar_url'] is String
           ? profileRows.first['avatar_url'] as String
           : '';
+      final authorRole = roleRows.isNotEmpty && roleRows.first['role'] is String
+          ? roleRows.first['role'] as String
+          : '';
 
       return CommunityPostEntity(
         id: post.id,
         authorId: post.authorId,
         authorName: fullName,
         authorAvatarUrl: avatarUrl,
+        authorRole: authorRole,
         content: post.content,
         imageUrls: post.imageUrls,
         createdAt: post.createdAt,
@@ -371,6 +393,10 @@ class CommunityRepositoryImpl implements CommunityRepository {
       final profileRows = await dataSource.getProfilesByIds(
         userIds: userIds.toList(growable: false),
       );
+      final roleRows = await dataSource.getMembershipRolesByUserIds(
+        tenantId: tenantId,
+        userIds: userIds.toList(growable: false),
+      );
       final namesByUserId = <String, String>{};
       final avatarsByUserId = <String, String>{};
       for (final row in profileRows) {
@@ -385,6 +411,15 @@ class CommunityRepositoryImpl implements CommunityRepository {
         }
       }
 
+      final rolesByUserId = <String, String>{};
+      for (final row in roleRows) {
+        final userId = row['user_id'];
+        final role = row['role'];
+        if (userId is String && role is String) {
+          rolesByUserId[userId] = role;
+        }
+      }
+
       return comments
           .map(
             (comment) => CommunityCommentEntity(
@@ -393,6 +428,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
               authorId: comment.authorId,
               authorName: namesByUserId[comment.authorId] ?? '',
               authorAvatarUrl: avatarsByUserId[comment.authorId] ?? '',
+              authorRole: rolesByUserId[comment.authorId] ?? '',
               content: comment.content,
               createdAt: comment.createdAt,
               updatedAt: comment.updatedAt,
@@ -610,6 +646,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
       authorId: authorId,
       authorName: '',
       authorAvatarUrl: '',
+      authorRole: '',
       content: content,
       imageUrls: imageUrls,
       createdAt: createdAt,
@@ -648,6 +685,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
       authorId: authorId,
       authorName: '',
       authorAvatarUrl: '',
+      authorRole: '',
       content: content,
       createdAt: createdAt,
       updatedAt: updatedAt,

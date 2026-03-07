@@ -58,6 +58,7 @@
   "communityCommentLoadFailed": "댓글을 불러오지 못했습니다.",
   "communityCommentEmpty": "아직 댓글이 없습니다.",
   "communityCommentDeleted": "댓글이 삭제되었습니다.",
+  "communityCoachBadge": "코치",
   "communityReport": "신고",
   "communityReportTitle": "신고하기",
   "communityReportReason": "신고 사유",

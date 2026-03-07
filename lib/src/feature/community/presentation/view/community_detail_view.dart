@@ -496,10 +496,24 @@ class _PostHeader extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          post.normalizedAuthorName,
-                          style: Theme.of(context).textTheme.labelLarge
-                              ?.copyWith(fontWeight: FontWeight.w700),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                post.normalizedAuthorName,
+                                style: Theme.of(context).textTheme.labelLarge
+                                    ?.copyWith(fontWeight: FontWeight.w700),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            if (post.hasCoachBadge) ...[
+                              const SizedBox(width: 6),
+                              _CommunityCoachBadge(
+                                label: l10n.communityCoachBadge,
+                              ),
+                            ],
+                          ],
                         ),
                         const SizedBox(height: 2),
                         Text(
@@ -772,11 +786,22 @@ class _CommentItem extends StatelessWidget {
                   _CommentAvatar(imageUrl: comment.normalizedAuthorAvatarUrl),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      comment.normalizedAuthorName,
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            comment.normalizedAuthorName,
+                            style: Theme.of(context).textTheme.labelMedium
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (comment.hasCoachBadge) ...[
+                          const SizedBox(width: 6),
+                          _CommunityCoachBadge(label: l10n.communityCoachBadge),
+                        ],
+                      ],
                     ),
                   ),
                   Text(
@@ -817,6 +842,31 @@ class _CommentItem extends StatelessWidget {
               Text(comment.normalizedContent),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CommunityCoachBadge extends StatelessWidget {
+  const _CommunityCoachBadge({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: colorScheme.onPrimaryContainer,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );

@@ -6,6 +6,7 @@ class CommunityPostEntity {
     required this.authorId,
     required this.authorName,
     required this.authorAvatarUrl,
+    required this.authorRole,
     required this.content,
     required this.imageUrls,
     required this.createdAt,
@@ -19,6 +20,7 @@ class CommunityPostEntity {
   final String authorId;
   final String authorName;
   final String authorAvatarUrl;
+  final String authorRole;
   final String content;
   final List<String> imageUrls;
   final DateTime createdAt;
@@ -38,6 +40,11 @@ class CommunityPostEntity {
   }
 
   String get normalizedAuthorAvatarUrl => authorAvatarUrl.trim();
+
+  String get normalizedAuthorRole => authorRole.trim().toLowerCase();
+
+  bool get hasCoachBadge =>
+      normalizedAuthorRole == 'coach' || normalizedAuthorRole == 'owner';
 
   List<String> get normalizedImageUrls => imageUrls
       .map((url) => url.trim())
@@ -72,6 +79,7 @@ class CommunityPostEntity {
       authorId: authorId,
       authorName: authorName,
       authorAvatarUrl: authorAvatarUrl,
+      authorRole: authorRole,
       content: content ?? this.content,
       imageUrls: imageUrls ?? this.imageUrls,
       createdAt: createdAt,
@@ -90,6 +98,7 @@ class CommunityCommentEntity {
     required this.authorId,
     required this.authorName,
     required this.authorAvatarUrl,
+    required this.authorRole,
     required this.content,
     required this.createdAt,
     required this.updatedAt,
@@ -100,6 +109,7 @@ class CommunityCommentEntity {
   final String authorId;
   final String authorName;
   final String authorAvatarUrl;
+  final String authorRole;
   final String content;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -115,6 +125,11 @@ class CommunityCommentEntity {
   }
 
   String get normalizedAuthorAvatarUrl => authorAvatarUrl.trim();
+
+  String get normalizedAuthorRole => authorRole.trim().toLowerCase();
+
+  bool get hasCoachBadge =>
+      normalizedAuthorRole == 'coach' || normalizedAuthorRole == 'owner';
 
   DateTime get createdAtLocal => createdAt.toLocal();
 

@@ -58,6 +58,7 @@
   "communityCommentLoadFailed": "Failed to load comments.",
   "communityCommentEmpty": "No comments yet.",
   "communityCommentDeleted": "Comment deleted.",
+  "communityCoachBadge": "Coach",
   "communityReport": "Report",
   "communityReportTitle": "Report",
   "communityReportReason": "Reason",

@@ -129,6 +129,7 @@ CommunityPostEntity _post({required String id, required DateTime createdAt}) {
     authorId: 'author-$id',
     authorName: 'Author $id',
     authorAvatarUrl: '',
+    authorRole: '',
     content: 'content $id',
     imageUrls: const [],
     createdAt: createdAt,

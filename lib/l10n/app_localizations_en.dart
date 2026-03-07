@@ -176,6 +176,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get communityCommentDeleted => 'Comment deleted.';
 
   @override
+  String get communityCoachBadge => 'Coach';
+
+  @override
   String get communityReport => 'Report';
 
   @override

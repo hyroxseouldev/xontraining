@@ -30,6 +30,11 @@ abstract interface class CommunityDataSource {
     required List<String> userIds,
   });
 
+  Future<List<Map<String, dynamic>>> getMembershipRolesByUserIds({
+    required String tenantId,
+    required List<String> userIds,
+  });
+
   Future<List<Map<String, dynamic>>> getLikesByPostIds({
     required String tenantId,
     required List<String> postIds,
@@ -225,6 +230,24 @@ class SupabaseCommunityDataSource implements CommunityDataSource {
         .from('profiles')
         .select('id,full_name,avatar_url')
         .inFilter('id', userIds);
+
+    return List<Map<String, dynamic>>.from(rows);
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getMembershipRolesByUserIds({
+    required String tenantId,
+    required List<String> userIds,
+  }) async {
+    if (userIds.isEmpty) {
+      return const [];
+    }
+
+    final rows = await supabase
+        .from('tenant_memberships')
+        .select('user_id,role')
+        .eq('tenant_id', tenantId)
+        .inFilter('user_id', userIds);
 
     return List<Map<String, dynamic>>.from(rows);
   }
