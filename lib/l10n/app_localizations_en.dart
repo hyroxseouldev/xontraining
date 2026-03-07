@@ -715,6 +715,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutRecordDistance => 'Distance';
 
   @override
+  String get workoutRecordPreset => 'Preset';
+
+  @override
   String get workoutRecordDuration => 'Duration (mm:ss)';
 
   @override

@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:xontraining/src/shared/layout_breakpoints.dart';
 
 class CommunityFeedLoadingSkeleton extends StatelessWidget {
   const CommunityFeedLoadingSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
+    final isTablet = LayoutBreakpoints.isTablet(context);
+    if (!isTablet) {
+      return ListView.separated(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
+        itemCount: 5,
+        separatorBuilder: (context, index) => const SizedBox(height: 10),
+        itemBuilder: (context, index) => const _FeedSkeletonCard(),
+      );
+    }
+
+    return GridView.builder(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
-      itemCount: 5,
-      separatorBuilder: (context, index) => const SizedBox(height: 10),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 0.78,
+      ),
+      itemCount: 6,
       itemBuilder: (context, index) => const _FeedSkeletonCard(),
     );
   }

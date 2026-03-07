@@ -1364,6 +1364,12 @@ abstract class AppLocalizations {
   /// **'Distance'**
   String get workoutRecordDistance;
 
+  /// No description provided for @workoutRecordPreset.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset'**
+  String get workoutRecordPreset;
+
   /// No description provided for @workoutRecordDuration.
   ///
   /// In en, this message translates to:

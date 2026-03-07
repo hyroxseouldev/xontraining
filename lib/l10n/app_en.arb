@@ -356,6 +356,7 @@
     }
   },
   "workoutRecordDistance": "Distance",
+  "workoutRecordPreset": "Preset",
   "workoutRecordDuration": "Duration (mm:ss)",
   "workoutRecordWeight": "Weight",
   "workoutRecordReps": "Reps",

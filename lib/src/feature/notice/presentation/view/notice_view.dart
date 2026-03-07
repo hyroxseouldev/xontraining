@@ -7,6 +7,7 @@ import 'package:xontraining/src/core/router/app_router.dart';
 import 'package:xontraining/src/feature/notice/presentation/provider/notice_provider.dart';
 import 'package:xontraining/src/feature/notice/presentation/widget/notice_list_item.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
+import 'package:xontraining/src/shared/layout_breakpoints.dart';
 
 class NoticeView extends HookConsumerWidget {
   const NoticeView({super.key});
@@ -16,6 +17,7 @@ class NoticeView extends HookConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final noticesState = ref.watch(noticeFeedControllerProvider);
     final scrollController = useScrollController();
+    final isTablet = LayoutBreakpoints.isTablet(context);
 
     useEffect(() {
       void listener() {
@@ -74,7 +76,7 @@ class NoticeView extends HookConsumerWidget {
         ),
       ),
       body: noticesState.when(
-        loading: () => const _NoticeLoadingSkeleton(),
+        loading: () => _NoticeLoadingSkeleton(isTablet: isTablet),
         error: (error, stackTrace) =>
             EmptyState(message: l10n.noticeLoadFailed),
         data: (items) {
@@ -89,59 +91,92 @@ class NoticeView extends HookConsumerWidget {
             onRefresh: () async {
               await ref.read(noticeFeedControllerProvider.notifier).refresh();
             },
-            child: ListView.separated(
-              controller: scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemCount:
-                  items.items.length +
-                  ((items.isLoadingMore || items.hasLoadMoreError) ? 1 : 0),
-              separatorBuilder: (context, index) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                if (index >= items.items.length) {
-                  if (items.hasLoadMoreError) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-                      child: Column(
-                        children: [
-                          Text(
-                            l10n.noticeLoadMoreFailed,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          const SizedBox(height: 8),
-                          OutlinedButton.icon(
-                            onPressed: () {
+            child: isTablet
+                ? CustomScrollView(
+                    controller: scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                        sliver: SliverGrid(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.82,
+                              ),
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
+                            final notice = items.items[index];
+                            return NoticeListItem(
+                              notice: notice,
+                              onTap: () {
+                                context.pushNamed(
+                                  AppRoutes.noticeDetailName,
+                                  pathParameters: {'noticeId': notice.id},
+                                  extra: notice,
+                                );
+                              },
+                            );
+                          }, childCount: items.items.length),
+                        ),
+                      ),
+                      if (items.isLoadingMore || items.hasLoadMoreError)
+                        SliverToBoxAdapter(
+                          child: _NoticeLoadMoreSection(
+                            hasLoadMoreError: items.hasLoadMoreError,
+                            loadMoreFailedText: l10n.noticeLoadMoreFailed,
+                            retryText: l10n.noticeRetry,
+                            onRetry: () {
                               ref
                                   .read(noticeFeedControllerProvider.notifier)
                                   .retryLoadMore();
                             },
-                            icon: const Icon(Icons.refresh),
-                            label: Text(l10n.noticeRetry),
                           ),
-                        ],
-                      ),
-                    );
-                  }
+                        ),
+                    ],
+                  )
+                : ListView.separated(
+                    controller: scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    itemCount:
+                        items.items.length +
+                        ((items.isLoadingMore || items.hasLoadMoreError)
+                            ? 1
+                            : 0),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 8),
+                    itemBuilder: (context, index) {
+                      if (index >= items.items.length) {
+                        return _NoticeLoadMoreSection(
+                          hasLoadMoreError: items.hasLoadMoreError,
+                          loadMoreFailedText: l10n.noticeLoadMoreFailed,
+                          retryText: l10n.noticeRetry,
+                          onRetry: () {
+                            ref
+                                .read(noticeFeedControllerProvider.notifier)
+                                .retryLoadMore();
+                          },
+                        );
+                      }
 
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-
-                final notice = items.items[index];
-                return NoticeListItem(
-                  notice: notice,
-                  onTap: () {
-                    context.pushNamed(
-                      AppRoutes.noticeDetailName,
-                      pathParameters: {'noticeId': notice.id},
-                      extra: notice,
-                    );
-                  },
-                );
-              },
-            ),
+                      final notice = items.items[index];
+                      return NoticeListItem(
+                        notice: notice,
+                        onTap: () {
+                          context.pushNamed(
+                            AppRoutes.noticeDetailName,
+                            pathParameters: {'noticeId': notice.id},
+                            extra: notice,
+                          );
+                        },
+                      );
+                    },
+                  ),
           );
         },
       ),
@@ -150,16 +185,75 @@ class NoticeView extends HookConsumerWidget {
 }
 
 class _NoticeLoadingSkeleton extends StatelessWidget {
-  const _NoticeLoadingSkeleton();
+  const _NoticeLoadingSkeleton({required this.isTablet});
+
+  final bool isTablet;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
+    if (!isTablet) {
+      return ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.zero,
+        itemCount: 3,
+        separatorBuilder: (context, index) => const SizedBox(height: 8),
+        itemBuilder: (context, index) => const _NoticeListItemSkeleton(),
+      );
+    }
+
+    return GridView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: EdgeInsets.zero,
-      itemCount: 3,
-      separatorBuilder: (context, index) => const SizedBox(height: 8),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 0.78,
+      ),
+      itemCount: 4,
       itemBuilder: (context, index) => const _NoticeListItemSkeleton(),
+    );
+  }
+}
+
+class _NoticeLoadMoreSection extends StatelessWidget {
+  const _NoticeLoadMoreSection({
+    required this.hasLoadMoreError,
+    required this.loadMoreFailedText,
+    required this.retryText,
+    required this.onRetry,
+  });
+
+  final bool hasLoadMoreError;
+  final String loadMoreFailedText;
+  final String retryText;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    if (hasLoadMoreError) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+        child: Column(
+          children: [
+            Text(
+              loadMoreFailedText,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh),
+              label: Text(retryText),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -172,7 +266,10 @@ class _NoticeListItemSkeleton extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AspectRatio(aspectRatio: 1, child: _ShimmerBox()),
+        Padding(
+          padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+          child: AspectRatio(aspectRatio: 1, child: _ShimmerBox()),
+        ),
         Padding(
           padding: EdgeInsets.fromLTRB(14, 12, 14, 14),
           child: Column(
@@ -181,10 +278,6 @@ class _NoticeListItemSkeleton extends StatelessWidget {
               _ShimmerBox(height: 22, width: 180),
               SizedBox(height: 10),
               _ShimmerBox(height: 14, width: 160),
-              SizedBox(height: 12),
-              _ShimmerBox(height: 14),
-              SizedBox(height: 8),
-              _ShimmerBox(height: 14, width: 220),
             ],
           ),
         ),

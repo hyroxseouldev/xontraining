@@ -12,6 +12,22 @@ Future<List<WorkoutRecordEntity>> workoutRecords(Ref ref) async {
 }
 
 @riverpod
+Future<List<WorkoutExerciseEntity>> workoutExercises(Ref ref) async {
+  final tenantId = ref.read(tenantIdProvider);
+  return ref.read(getWorkoutExercisesUseCaseProvider).call(tenantId: tenantId);
+}
+
+@riverpod
+Future<List<WorkoutExercisePresetEntity>> workoutExercisePresets(
+  Ref ref,
+) async {
+  final tenantId = ref.read(tenantIdProvider);
+  return ref
+      .read(getWorkoutExercisePresetsUseCaseProvider)
+      .call(tenantId: tenantId);
+}
+
+@riverpod
 class WorkoutRecordController extends _$WorkoutRecordController {
   @override
   AsyncValue<void> build() {
@@ -27,6 +43,7 @@ class WorkoutRecordController extends _$WorkoutRecordController {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   }) async {
     state = const AsyncLoading();
 
@@ -44,6 +61,7 @@ class WorkoutRecordController extends _$WorkoutRecordController {
             recordReps: recordReps,
             recordedAt: recordedAt,
             memo: memo,
+            presetKey: presetKey,
           ),
     );
 
@@ -67,6 +85,7 @@ class WorkoutRecordController extends _$WorkoutRecordController {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   }) async {
     state = const AsyncLoading();
 
@@ -85,6 +104,7 @@ class WorkoutRecordController extends _$WorkoutRecordController {
             recordReps: recordReps,
             recordedAt: recordedAt,
             memo: memo,
+            presetKey: presetKey,
           ),
     );
 

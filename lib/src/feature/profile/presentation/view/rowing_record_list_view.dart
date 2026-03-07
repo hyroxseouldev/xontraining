@@ -15,7 +15,6 @@ class WorkoutRecordListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
-    final isCardio = _isCardioExercise(exerciseKey);
     final recordsState = ref.watch(workoutRecordsProvider);
 
     return Scaffold(
@@ -69,7 +68,7 @@ class WorkoutRecordListView extends ConsumerWidget {
                       ),
                     ),
                     title: Text(
-                      isCardio
+                      record.isTimeRecord
                           ? l10n.workoutRecordDistanceAndDuration(
                               _distanceLabel(record),
                               _durationLabel(record.recordSeconds),
@@ -80,9 +79,7 @@ class WorkoutRecordListView extends ConsumerWidget {
                             ),
                     ),
                     subtitle: Text(
-                      DateFormat.yMMMd(
-                        locale.languageCode,
-                      ).format(record.recordedAt),
+                      '${_presetLabel(record.presetKey)} · ${DateFormat.yMMMd(locale.languageCode).format(record.recordedAt)}',
                     ),
                   ),
                 );
@@ -127,17 +124,6 @@ class WorkoutRecordListView extends ConsumerWidget {
     return value.toString();
   }
 
-  bool _isCardioExercise(String key) {
-    switch (key) {
-      case 'rowing':
-      case 'running':
-      case 'ski':
-        return true;
-      default:
-        return false;
-    }
-  }
-
   IconData _exerciseIcon(String key) {
     switch (key) {
       case 'rowing':
@@ -174,5 +160,16 @@ class WorkoutRecordListView extends ConsumerWidget {
       default:
         return key;
     }
+  }
+
+  String _presetLabel(String? presetKey) {
+    if (presetKey == null || presetKey.isEmpty) {
+      return '-';
+    }
+    final lower = presetKey.toLowerCase();
+    if (lower.endsWith('rm')) {
+      return lower.toUpperCase();
+    }
+    return presetKey;
   }
 }

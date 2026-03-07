@@ -7,6 +7,7 @@ import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
 import 'package:xontraining/src/feature/home/presentation/provider/home_controller.dart';
 import 'package:xontraining/src/feature/home/presentation/widget/program_list_item.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
+import 'package:xontraining/src/shared/layout_breakpoints.dart';
 
 class HomeView extends HookConsumerWidget {
   const HomeView({super.key});
@@ -15,6 +16,7 @@ class HomeView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final homeState = ref.watch(homeControllerProvider);
+    final isTablet = LayoutBreakpoints.isTablet(context);
 
     ref.listen<AsyncValue<List<ProgramEntity>>>(homeControllerProvider, (
       previous,
@@ -68,7 +70,7 @@ class HomeView extends HookConsumerWidget {
         ),
       ),
       body: homeState.when(
-        loading: () => const _HomeLoadingSkeleton(),
+        loading: () => _HomeLoadingSkeleton(isTablet: isTablet),
         error: (error, stackTrace) => EmptyState(message: l10n.homeLoadFailed),
         data: (programs) {
           if (programs.isEmpty) {
@@ -78,10 +80,36 @@ class HomeView extends HookConsumerWidget {
             );
           }
 
-          return ListView.separated(
-            padding: EdgeInsets.zero,
+          if (!isTablet) {
+            return ListView.separated(
+              padding: EdgeInsets.zero,
+              itemCount: programs.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final program = programs[index];
+                return ProgramListItem(
+                  program: program,
+                  onTap: () {
+                    context.pushNamed(
+                      AppRoutes.programDetailName,
+                      pathParameters: {'programId': program.id},
+                      extra: program,
+                    );
+                  },
+                );
+              },
+            );
+          }
+
+          return GridView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.62,
+            ),
             itemCount: programs.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 8),
             itemBuilder: (context, index) {
               final program = programs[index];
               return ProgramListItem(
@@ -103,14 +131,30 @@ class HomeView extends HookConsumerWidget {
 }
 
 class _HomeLoadingSkeleton extends StatelessWidget {
-  const _HomeLoadingSkeleton();
+  const _HomeLoadingSkeleton({required this.isTablet});
+
+  final bool isTablet;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: EdgeInsets.zero,
-      itemCount: 3,
-      separatorBuilder: (context, index) => const SizedBox(height: 8),
+    if (!isTablet) {
+      return ListView.separated(
+        padding: EdgeInsets.zero,
+        itemCount: 3,
+        separatorBuilder: (context, index) => const SizedBox(height: 8),
+        itemBuilder: (context, index) => const _ProgramListItemSkeleton(),
+      );
+    }
+
+    return GridView.builder(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 0.62,
+      ),
+      itemCount: 4,
       itemBuilder: (context, index) => const _ProgramListItemSkeleton(),
     );
   }

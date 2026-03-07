@@ -3,27 +3,18 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/core/router/app_router.dart';
+import 'package:xontraining/src/feature/profile/presentation/provider/workout_record_provider.dart';
+import 'package:xontraining/src/shared/layout_breakpoints.dart';
 
 class WorkoutRecordView extends ConsumerWidget {
   const WorkoutRecordView({super.key});
-
-  static const List<_WorkoutTemplate> _templates = [
-    _WorkoutTemplate(key: 'rowing', icon: Icons.rowing, cardio: true),
-    _WorkoutTemplate(key: 'running', icon: Icons.directions_run, cardio: true),
-    _WorkoutTemplate(key: 'ski', icon: Icons.downhill_skiing, cardio: true),
-    _WorkoutTemplate(key: 'squat', icon: Icons.fitness_center, cardio: false),
-    _WorkoutTemplate(
-      key: 'deadlift',
-      icon: Icons.sports_gymnastics,
-      cardio: false,
-    ),
-    _WorkoutTemplate(key: 'bench_press', icon: Icons.sports_mma, cardio: false),
-  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final isTablet = LayoutBreakpoints.isTablet(context);
+    final exercisesState = ref.watch(workoutExercisesProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -46,90 +37,126 @@ class WorkoutRecordView extends ConsumerWidget {
           ),
         ),
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-          childAspectRatio: 0.92,
-        ),
-        itemCount: _templates.length,
-        itemBuilder: (context, index) {
-          final template = _templates[index];
-          final iconColor = template.cardio
-              ? colorScheme.primary
-              : colorScheme.secondary;
-          final iconBackground = template.cardio
-              ? colorScheme.primaryContainer
-              : colorScheme.secondaryContainer;
+      body: exercisesState.when(
+        data: (exercises) {
+          final activeExercises = exercises
+              .where((exercise) => exercise.isActive)
+              .toList(growable: false);
 
-          return Card(
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: () => context.pushNamed(
-                AppRoutes.workoutRecordEntryName,
-                pathParameters: {'exercise': template.key},
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 46,
-                      height: 46,
-                      decoration: BoxDecoration(
-                        color: iconBackground,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      alignment: Alignment.center,
-                      child: Icon(template.icon, color: iconColor),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      _templateLabel(l10n, template.key),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      template.cardio
-                          ? l10n.workoutRecordTemplateCardioDescription
-                          : l10n.workoutRecordTemplateStrengthDescription,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const Spacer(),
-                    Row(
+          return GridView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: isTablet ? 4 : 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: isTablet ? 0.86 : 0.92,
+            ),
+            itemCount: activeExercises.length,
+            itemBuilder: (context, index) {
+              final exercise = activeExercises[index];
+              final iconColor = exercise.isCardio
+                  ? colorScheme.primary
+                  : colorScheme.secondary;
+              final iconBackground = exercise.isCardio
+                  ? colorScheme.primaryContainer
+                  : colorScheme.secondaryContainer;
+
+              return Card(
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: () => context.pushNamed(
+                    AppRoutes.workoutRecordEntryName,
+                    pathParameters: {'exercise': exercise.exerciseKey},
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Container(
+                          width: 46,
+                          height: 46,
+                          decoration: BoxDecoration(
+                            color: iconBackground,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          alignment: Alignment.center,
+                          child: Icon(
+                            _exerciseIcon(exercise.exerciseKey),
+                            color: iconColor,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
                         Text(
-                          l10n.workoutRecordAdd,
-                          style: Theme.of(context).textTheme.labelLarge
-                              ?.copyWith(
-                                color: iconColor,
-                                fontWeight: FontWeight.w700,
-                              ),
+                          _exerciseLabel(l10n, exercise.exerciseKey),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          exercise.isCardio
+                              ? l10n.workoutRecordTemplateCardioDescription
+                              : l10n.workoutRecordTemplateStrengthDescription,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                         const Spacer(),
-                        Icon(Icons.arrow_forward, size: 18, color: iconColor),
+                        Row(
+                          children: [
+                            Text(
+                              l10n.workoutRecordAdd,
+                              style: Theme.of(context).textTheme.labelLarge
+                                  ?.copyWith(
+                                    color: iconColor,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
+                            const Spacer(),
+                            Icon(
+                              Icons.arrow_forward,
+                              size: 18,
+                              color: iconColor,
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) =>
+            Center(child: Text(l10n.workoutRecordLoadFailed)),
       ),
     );
   }
 
-  String _templateLabel(AppLocalizations l10n, String exerciseKey) {
+  IconData _exerciseIcon(String key) {
+    switch (key) {
+      case 'rowing':
+        return Icons.rowing;
+      case 'running':
+        return Icons.directions_run;
+      case 'ski':
+        return Icons.downhill_skiing;
+      case 'squat':
+        return Icons.fitness_center;
+      case 'deadlift':
+        return Icons.sports_gymnastics;
+      case 'bench_press':
+        return Icons.sports_mma;
+      default:
+        return Icons.fitness_center;
+    }
+  }
+
+  String _exerciseLabel(AppLocalizations l10n, String exerciseKey) {
     switch (exerciseKey) {
       case 'rowing':
         return l10n.workoutRecordTemplateRowing;
@@ -147,16 +174,4 @@ class WorkoutRecordView extends ConsumerWidget {
         return exerciseKey;
     }
   }
-}
-
-class _WorkoutTemplate {
-  const _WorkoutTemplate({
-    required this.key,
-    required this.icon,
-    required this.cardio,
-  });
-
-  final String key;
-  final IconData icon;
-  final bool cardio;
 }

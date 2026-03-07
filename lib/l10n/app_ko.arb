@@ -356,6 +356,7 @@
     }
   },
   "workoutRecordDistance": "거리",
+  "workoutRecordPreset": "프리셋",
   "workoutRecordDuration": "시간 (mm:ss)",
   "workoutRecordWeight": "중량",
   "workoutRecordReps": "횟수",

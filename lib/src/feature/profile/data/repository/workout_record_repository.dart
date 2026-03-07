@@ -8,6 +8,12 @@ import 'package:xontraining/src/feature/profile/infra/entity/workout_record_enti
 part 'workout_record_repository.g.dart';
 
 abstract interface class WorkoutRecordRepository {
+  Future<List<WorkoutExerciseEntity>> getExercises({required String tenantId});
+
+  Future<List<WorkoutExercisePresetEntity>> getExercisePresets({
+    required String tenantId,
+  });
+
   Future<List<WorkoutRecordEntity>> getMyRecords({required String tenantId});
 
   Future<void> createMyRecord({
@@ -20,6 +26,7 @@ abstract interface class WorkoutRecordRepository {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   });
 
   Future<void> updateMyRecord({
@@ -33,6 +40,7 @@ abstract interface class WorkoutRecordRepository {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   });
 
   Future<void> deleteMyRecord({required String id, required String tenantId});
@@ -54,6 +62,99 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
   };
 
   @override
+  Future<List<WorkoutExerciseEntity>> getExercises({
+    required String tenantId,
+  }) async {
+    try {
+      final rows = await dataSource.getExercises(tenantId: tenantId);
+      final items = <WorkoutExerciseEntity>[];
+
+      for (final row in rows) {
+        final exerciseKey = row['exercise_key'];
+        final recordTypeValue = row['record_type'];
+        if (exerciseKey is! String || recordTypeValue is! String) {
+          continue;
+        }
+
+        final recordType = _recordTypeByValue[recordTypeValue];
+        if (recordType == null) {
+          continue;
+        }
+
+        items.add(
+          WorkoutExerciseEntity(
+            exerciseKey: exerciseKey,
+            recordType: recordType,
+            sortOrder: _asInt(row['sort_order']) ?? 0,
+            isActive: row['is_active'] as bool? ?? true,
+          ),
+        );
+      }
+
+      return items;
+    } on AuthException catch (error, stackTrace) {
+      debugPrint('[WorkoutRecordRepository] getExercises auth failure: $error');
+      debugPrint('[WorkoutRecordRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint(
+        '[WorkoutRecordRepository] getExercises unexpected failure: $error',
+      );
+      debugPrint('[WorkoutRecordRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to load workout exercises.',
+        cause: error,
+      );
+    }
+  }
+
+  @override
+  Future<List<WorkoutExercisePresetEntity>> getExercisePresets({
+    required String tenantId,
+  }) async {
+    try {
+      final rows = await dataSource.getExercisePresets(tenantId: tenantId);
+      final items = <WorkoutExercisePresetEntity>[];
+
+      for (final row in rows) {
+        final exerciseKey = row['exercise_key'];
+        final presetKey = row['preset_key'];
+        if (exerciseKey is! String || presetKey is! String) {
+          continue;
+        }
+
+        items.add(
+          WorkoutExercisePresetEntity(
+            exerciseKey: exerciseKey,
+            presetKey: presetKey,
+            distanceM: _asInt(row['distance_m']),
+            targetReps: _asInt(row['target_reps']),
+            sortOrder: _asInt(row['sort_order']) ?? 0,
+            isActive: row['is_active'] as bool? ?? true,
+          ),
+        );
+      }
+
+      return items;
+    } on AuthException catch (error, stackTrace) {
+      debugPrint(
+        '[WorkoutRecordRepository] getExercisePresets auth failure: $error',
+      );
+      debugPrint('[WorkoutRecordRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint(
+        '[WorkoutRecordRepository] getExercisePresets unexpected failure: $error',
+      );
+      debugPrint('[WorkoutRecordRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to load workout presets.',
+        cause: error,
+      );
+    }
+  }
+
+  @override
   Future<List<WorkoutRecordEntity>> getMyRecords({
     required String tenantId,
   }) async {
@@ -66,6 +167,7 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
         final exerciseName = row['exercise_key'];
         final recordTypeValue = row['record_type'];
         final recordedAtValue = row['recorded_at'];
+        final presetKeyValue = row['preset_key'];
 
         if (id is! String ||
             exerciseName is! String ||
@@ -85,6 +187,7 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
           WorkoutRecordEntity(
             id: id,
             exerciseName: exerciseName,
+            presetKey: presetKeyValue is String ? presetKeyValue : null,
             recordType: recordType,
             distance: _asInt(row['distance']),
             recordSeconds: _asInt(row['record_seconds']),
@@ -128,6 +231,7 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   }) async {
     try {
       await dataSource.createMyRecord(
@@ -140,6 +244,7 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
         recordReps: recordReps,
         recordedAt: recordedAt,
         memo: memo,
+        presetKey: presetKey,
       );
     } on AuthException catch (error, stackTrace) {
       debugPrint(
@@ -180,6 +285,7 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   }) async {
     try {
       await dataSource.updateMyRecord(
@@ -193,6 +299,7 @@ class WorkoutRecordRepositoryImpl implements WorkoutRecordRepository {
         recordReps: recordReps,
         recordedAt: recordedAt,
         memo: memo,
+        presetKey: presetKey,
       );
     } on AuthException catch (error, stackTrace) {
       debugPrint(

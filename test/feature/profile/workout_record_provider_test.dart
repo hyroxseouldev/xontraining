@@ -48,6 +48,7 @@ void main() {
             recordReps: null,
             recordedAt: DateTime(2026, 3, 1),
             memo: 'test memo',
+            presetKey: '2000m',
           );
 
       await container.read(workoutRecordsProvider.future);
@@ -96,6 +97,7 @@ void main() {
             recordReps: 5,
             recordedAt: DateTime(2026, 3, 2),
             memo: 'updated',
+            presetKey: '5rm',
           );
 
       expect(repository.updateCalls, 1);
@@ -178,6 +180,20 @@ class _FakeWorkoutRecordRepository implements WorkoutRecordRepository {
   String? lastDeletedId;
 
   @override
+  Future<List<WorkoutExerciseEntity>> getExercises({
+    required String tenantId,
+  }) async {
+    return const [];
+  }
+
+  @override
+  Future<List<WorkoutExercisePresetEntity>> getExercisePresets({
+    required String tenantId,
+  }) async {
+    return const [];
+  }
+
+  @override
   Future<List<WorkoutRecordEntity>> getMyRecords({
     required String tenantId,
   }) async {
@@ -196,6 +212,7 @@ class _FakeWorkoutRecordRepository implements WorkoutRecordRepository {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   }) async {
     createCalls += 1;
     lastCreatedExerciseName = exerciseName;
@@ -216,6 +233,7 @@ class _FakeWorkoutRecordRepository implements WorkoutRecordRepository {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   }) async {
     updateCalls += 1;
     lastUpdatedId = id;

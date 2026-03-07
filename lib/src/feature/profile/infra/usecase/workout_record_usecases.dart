@@ -14,6 +14,26 @@ class GetWorkoutRecordsUseCase {
   }
 }
 
+class GetWorkoutExercisesUseCase {
+  GetWorkoutExercisesUseCase({required this.repository});
+
+  final WorkoutRecordRepository repository;
+
+  Future<List<WorkoutExerciseEntity>> call({required String tenantId}) {
+    return repository.getExercises(tenantId: tenantId);
+  }
+}
+
+class GetWorkoutExercisePresetsUseCase {
+  GetWorkoutExercisePresetsUseCase({required this.repository});
+
+  final WorkoutRecordRepository repository;
+
+  Future<List<WorkoutExercisePresetEntity>> call({required String tenantId}) {
+    return repository.getExercisePresets(tenantId: tenantId);
+  }
+}
+
 class CreateWorkoutRecordUseCase {
   CreateWorkoutRecordUseCase({required this.repository});
 
@@ -29,6 +49,7 @@ class CreateWorkoutRecordUseCase {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   }) {
     return repository.createMyRecord(
       tenantId: tenantId,
@@ -40,6 +61,7 @@ class CreateWorkoutRecordUseCase {
       recordReps: recordReps,
       recordedAt: recordedAt,
       memo: memo,
+      presetKey: presetKey,
     );
   }
 }
@@ -60,6 +82,7 @@ class UpdateWorkoutRecordUseCase {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   }) {
     return repository.updateMyRecord(
       id: id,
@@ -72,6 +95,7 @@ class UpdateWorkoutRecordUseCase {
       recordReps: recordReps,
       recordedAt: recordedAt,
       memo: memo,
+      presetKey: presetKey,
     );
   }
 }
@@ -89,6 +113,20 @@ class DeleteWorkoutRecordUseCase {
 @riverpod
 GetWorkoutRecordsUseCase getWorkoutRecordsUseCase(Ref ref) {
   return GetWorkoutRecordsUseCase(
+    repository: ref.read(workoutRecordRepositoryProvider),
+  );
+}
+
+@riverpod
+GetWorkoutExercisesUseCase getWorkoutExercisesUseCase(Ref ref) {
+  return GetWorkoutExercisesUseCase(
+    repository: ref.read(workoutRecordRepositoryProvider),
+  );
+}
+
+@riverpod
+GetWorkoutExercisePresetsUseCase getWorkoutExercisePresetsUseCase(Ref ref) {
+  return GetWorkoutExercisePresetsUseCase(
     repository: ref.read(workoutRecordRepositoryProvider),
   );
 }

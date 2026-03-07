@@ -12,6 +12,7 @@ import 'package:xontraining/src/feature/community/presentation/view/community_vi
 import 'package:xontraining/src/feature/community/presentation/widget/community_image_viewer.dart';
 import 'package:xontraining/src/feature/community/presentation/widget/community_skeleton.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
+import 'package:xontraining/src/shared/layout_breakpoints.dart';
 
 class CommunityView extends HookConsumerWidget {
   const CommunityView({super.key});
@@ -35,6 +36,7 @@ class CommunityView extends HookConsumerWidget {
     final actionState = ref.watch(communityActionControllerProvider);
     final currentUserId = ref.watch(authSessionProvider).asData?.value?.id;
     final scrollController = useScrollController();
+    final isTablet = LayoutBreakpoints.isTablet(context);
 
     useEffect(() {
       void listener() {
@@ -143,157 +145,383 @@ class CommunityView extends HookConsumerWidget {
                 onRefresh: () => ref
                     .read(communityFeedControllerProvider.notifier)
                     .refresh(),
-                child: ListView.separated(
-                  controller: scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
-                  itemCount:
-                      feed.items.length +
-                      ((feed.isLoadingMore || feed.hasLoadMoreError) ? 1 : 0),
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 10),
-                  itemBuilder: (context, index) {
-                    if (index >= feed.items.length) {
-                      if (feed.hasLoadMoreError) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: Center(
-                            child: OutlinedButton.icon(
-                              onPressed: () => ref
-                                  .read(
-                                    communityFeedControllerProvider.notifier,
-                                  )
-                                  .retryLoadMore(),
-                              icon: const Icon(Icons.refresh),
-                              label: Text(l10n.communityRetry),
+                child: isTablet
+                    ? CustomScrollView(
+                        controller: scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        slivers: [
+                          SliverPadding(
+                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
+                            sliver: SliverGrid(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 12,
+                                    mainAxisSpacing: 12,
+                                    childAspectRatio: 0.78,
+                                  ),
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                final post = feed.items[index];
+                                return _CommunityPostCard(
+                                  post: post,
+                                  isMine: currentUserId == post.authorId,
+                                  onTap: () {
+                                    context.pushNamed(
+                                      AppRoutes.communityDetailName,
+                                      pathParameters: {'postId': post.id},
+                                    );
+                                  },
+                                  onLikePressed: () {
+                                    ref
+                                        .read(
+                                          communityActionControllerProvider
+                                              .notifier,
+                                        )
+                                        .toggleLike(
+                                          postId: post.id,
+                                          currentLike: post.isLikedByMe,
+                                        );
+                                  },
+                                  onReportPressed: actionState.isLoading
+                                      ? null
+                                      : () async {
+                                          final report =
+                                              await _showReportDialog(context);
+                                          if (!context.mounted ||
+                                              report == null) {
+                                            return;
+                                          }
+                                          await ref
+                                              .read(
+                                                communityActionControllerProvider
+                                                    .notifier,
+                                              )
+                                              .reportPost(
+                                                postId: post.id,
+                                                reason: report.reason,
+                                                detail: report.detail,
+                                              );
+                                          if (!context.mounted) {
+                                            return;
+                                          }
+                                          if (!ref
+                                              .read(
+                                                communityActionControllerProvider,
+                                              )
+                                              .hasError) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  l10n.communityReportSubmitted,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                  onHidePressed: actionState.isLoading
+                                      ? null
+                                      : () async {
+                                          final confirmed =
+                                              await _showConfirmDialog(
+                                                context,
+                                                title:
+                                                    l10n.communityHidePostTitle,
+                                                body:
+                                                    l10n.communityHidePostBody,
+                                                confirmText: l10n.communityHide,
+                                              );
+                                          if (!context.mounted || !confirmed) {
+                                            return;
+                                          }
+                                          await ref
+                                              .read(
+                                                communityActionControllerProvider
+                                                    .notifier,
+                                              )
+                                              .hidePost(postId: post.id);
+                                          if (!context.mounted) {
+                                            return;
+                                          }
+                                          if (!ref
+                                              .read(
+                                                communityActionControllerProvider,
+                                              )
+                                              .hasError) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  l10n.communityPostHidden,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                  onBlockUserPressed: actionState.isLoading
+                                      ? null
+                                      : () async {
+                                          final confirmed =
+                                              await _showConfirmDialog(
+                                                context,
+                                                title: l10n
+                                                    .communityBlockUserTitle,
+                                                body:
+                                                    l10n.communityBlockUserBody,
+                                                confirmText:
+                                                    l10n.communityBlockUser,
+                                              );
+                                          if (!context.mounted || !confirmed) {
+                                            return;
+                                          }
+                                          await ref
+                                              .read(
+                                                communityActionControllerProvider
+                                                    .notifier,
+                                              )
+                                              .blockUser(
+                                                blockedUserId: post.authorId,
+                                              );
+                                          if (!context.mounted) {
+                                            return;
+                                          }
+                                          if (!ref
+                                              .read(
+                                                communityActionControllerProvider,
+                                              )
+                                              .hasError) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  l10n.communityUserBlocked,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                );
+                              }, childCount: feed.items.length),
                             ),
                           ),
-                        );
-                      }
-
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(child: CircularProgressIndicator()),
-                      );
-                    }
-
-                    final post = feed.items[index];
-                    return _CommunityPostCard(
-                      post: post,
-                      isMine: currentUserId == post.authorId,
-                      onTap: () {
-                        context.pushNamed(
-                          AppRoutes.communityDetailName,
-                          pathParameters: {'postId': post.id},
-                        );
-                      },
-                      onLikePressed: () {
-                        ref
-                            .read(communityActionControllerProvider.notifier)
-                            .toggleLike(
-                              postId: post.id,
-                              currentLike: post.isLikedByMe,
+                          if (feed.isLoadingMore || feed.hasLoadMoreError)
+                            SliverToBoxAdapter(
+                              child: _CommunityLoadMoreSection(
+                                hasLoadMoreError: feed.hasLoadMoreError,
+                                retryText: l10n.communityRetry,
+                                onRetry: () {
+                                  ref
+                                      .read(
+                                        communityFeedControllerProvider
+                                            .notifier,
+                                      )
+                                      .retryLoadMore();
+                                },
+                              ),
+                            ),
+                        ],
+                      )
+                    : ListView.separated(
+                        controller: scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
+                        itemCount:
+                            feed.items.length +
+                            ((feed.isLoadingMore || feed.hasLoadMoreError)
+                                ? 1
+                                : 0),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          if (index >= feed.items.length) {
+                            return _CommunityLoadMoreSection(
+                              hasLoadMoreError: feed.hasLoadMoreError,
+                              retryText: l10n.communityRetry,
+                              onRetry: () {
+                                ref
+                                    .read(
+                                      communityFeedControllerProvider.notifier,
+                                    )
+                                    .retryLoadMore();
+                              },
                             );
-                      },
-                      onReportPressed: actionState.isLoading
-                          ? null
-                          : () async {
-                              final report = await _showReportDialog(context);
-                              if (!context.mounted || report == null) {
-                                return;
-                              }
-                              await ref
+                          }
+
+                          final post = feed.items[index];
+                          return _CommunityPostCard(
+                            post: post,
+                            isMine: currentUserId == post.authorId,
+                            onTap: () {
+                              context.pushNamed(
+                                AppRoutes.communityDetailName,
+                                pathParameters: {'postId': post.id},
+                              );
+                            },
+                            onLikePressed: () {
+                              ref
                                   .read(
                                     communityActionControllerProvider.notifier,
                                   )
-                                  .reportPost(
+                                  .toggleLike(
                                     postId: post.id,
-                                    reason: report.reason,
-                                    detail: report.detail,
+                                    currentLike: post.isLikedByMe,
                                   );
-                              if (!context.mounted) {
-                                return;
-                              }
-                              if (!ref
-                                  .read(communityActionControllerProvider)
-                                  .hasError) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      l10n.communityReportSubmitted,
-                                    ),
-                                  ),
-                                );
-                              }
                             },
-                      onHidePressed: actionState.isLoading
-                          ? null
-                          : () async {
-                              final confirmed = await _showConfirmDialog(
-                                context,
-                                title: l10n.communityHidePostTitle,
-                                body: l10n.communityHidePostBody,
-                                confirmText: l10n.communityHide,
-                              );
-                              if (!context.mounted || !confirmed) {
-                                return;
-                              }
-                              await ref
-                                  .read(
-                                    communityActionControllerProvider.notifier,
-                                  )
-                                  .hidePost(postId: post.id);
-                              if (!context.mounted) {
-                                return;
-                              }
-                              if (!ref
-                                  .read(communityActionControllerProvider)
-                                  .hasError) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(l10n.communityPostHidden),
-                                  ),
-                                );
-                              }
-                            },
-                      onBlockUserPressed: actionState.isLoading
-                          ? null
-                          : () async {
-                              final confirmed = await _showConfirmDialog(
-                                context,
-                                title: l10n.communityBlockUserTitle,
-                                body: l10n.communityBlockUserBody,
-                                confirmText: l10n.communityBlockUser,
-                              );
-                              if (!context.mounted || !confirmed) {
-                                return;
-                              }
-                              await ref
-                                  .read(
-                                    communityActionControllerProvider.notifier,
-                                  )
-                                  .blockUser(blockedUserId: post.authorId);
-                              if (!context.mounted) {
-                                return;
-                              }
-                              if (!ref
-                                  .read(communityActionControllerProvider)
-                                  .hasError) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(l10n.communityUserBlocked),
-                                  ),
-                                );
-                              }
-                            },
-                    );
-                  },
-                ),
+                            onReportPressed: actionState.isLoading
+                                ? null
+                                : () async {
+                                    final report = await _showReportDialog(
+                                      context,
+                                    );
+                                    if (!context.mounted || report == null) {
+                                      return;
+                                    }
+                                    await ref
+                                        .read(
+                                          communityActionControllerProvider
+                                              .notifier,
+                                        )
+                                        .reportPost(
+                                          postId: post.id,
+                                          reason: report.reason,
+                                          detail: report.detail,
+                                        );
+                                    if (!context.mounted) {
+                                      return;
+                                    }
+                                    if (!ref
+                                        .read(communityActionControllerProvider)
+                                        .hasError) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            l10n.communityReportSubmitted,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                            onHidePressed: actionState.isLoading
+                                ? null
+                                : () async {
+                                    final confirmed = await _showConfirmDialog(
+                                      context,
+                                      title: l10n.communityHidePostTitle,
+                                      body: l10n.communityHidePostBody,
+                                      confirmText: l10n.communityHide,
+                                    );
+                                    if (!context.mounted || !confirmed) {
+                                      return;
+                                    }
+                                    await ref
+                                        .read(
+                                          communityActionControllerProvider
+                                              .notifier,
+                                        )
+                                        .hidePost(postId: post.id);
+                                    if (!context.mounted) {
+                                      return;
+                                    }
+                                    if (!ref
+                                        .read(communityActionControllerProvider)
+                                        .hasError) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            l10n.communityPostHidden,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                            onBlockUserPressed: actionState.isLoading
+                                ? null
+                                : () async {
+                                    final confirmed = await _showConfirmDialog(
+                                      context,
+                                      title: l10n.communityBlockUserTitle,
+                                      body: l10n.communityBlockUserBody,
+                                      confirmText: l10n.communityBlockUser,
+                                    );
+                                    if (!context.mounted || !confirmed) {
+                                      return;
+                                    }
+                                    await ref
+                                        .read(
+                                          communityActionControllerProvider
+                                              .notifier,
+                                        )
+                                        .blockUser(
+                                          blockedUserId: post.authorId,
+                                        );
+                                    if (!context.mounted) {
+                                      return;
+                                    }
+                                    if (!ref
+                                        .read(communityActionControllerProvider)
+                                        .hasError) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            l10n.communityUserBlocked,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                          );
+                        },
+                      ),
               );
             },
           );
         },
       ),
+    );
+  }
+}
+
+class _CommunityLoadMoreSection extends StatelessWidget {
+  const _CommunityLoadMoreSection({
+    required this.hasLoadMoreError,
+    required this.retryText,
+    required this.onRetry,
+  });
+
+  final bool hasLoadMoreError;
+  final String retryText;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    if (hasLoadMoreError) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Center(
+          child: OutlinedButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: Text(retryText),
+          ),
+        ),
+      );
+    }
+
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: Center(child: CircularProgressIndicator()),
     );
   }
 }

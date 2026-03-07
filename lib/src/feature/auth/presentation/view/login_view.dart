@@ -6,6 +6,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/core/exception/app_exception.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/auth_controller.dart';
+import 'package:xontraining/src/shared/layout_breakpoints.dart';
 
 enum _LoginProvider { google, apple }
 
@@ -26,6 +27,7 @@ class LoginView extends HookConsumerWidget {
         isLoading && activeProvider.value == _LoginProvider.apple;
     final isAppleSignInAvailable =
         !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+    final logoHeight = LayoutBreakpoints.isTablet(context) ? 320.0 : 240.0;
 
     useEffect(() {
       if (!isLoading) {
@@ -53,9 +55,9 @@ class LoginView extends HookConsumerWidget {
               const Spacer(),
               Image.asset(
                 'assets/images/xon_logo.png',
-                height: 240,
+                height: logoHeight,
                 errorBuilder: (context, error, stackTrace) =>
-                    const SizedBox(height: 240),
+                    SizedBox(height: logoHeight),
               ),
               const Spacer(),
               if (isAppleSignInAvailable)

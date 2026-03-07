@@ -692,6 +692,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workoutRecordDistance => '거리';
 
   @override
+  String get workoutRecordPreset => '프리셋';
+
+  @override
   String get workoutRecordDuration => '시간 (mm:ss)';
 
   @override

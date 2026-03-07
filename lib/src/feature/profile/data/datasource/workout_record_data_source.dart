@@ -5,6 +5,12 @@ import 'package:xontraining/src/core/supabase/supabase_provider.dart';
 part 'workout_record_data_source.g.dart';
 
 abstract interface class WorkoutRecordDataSource {
+  Future<List<Map<String, dynamic>>> getExercises({required String tenantId});
+
+  Future<List<Map<String, dynamic>>> getExercisePresets({
+    required String tenantId,
+  });
+
   Future<List<Map<String, dynamic>>> getMyRecords({required String tenantId});
 
   Future<void> createMyRecord({
@@ -17,6 +23,7 @@ abstract interface class WorkoutRecordDataSource {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   });
 
   Future<void> updateMyRecord({
@@ -30,6 +37,7 @@ abstract interface class WorkoutRecordDataSource {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   });
 
   Future<void> deleteMyRecord({required String id, required String tenantId});
@@ -39,6 +47,37 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
   SupabaseWorkoutRecordDataSource({required this.supabase});
 
   final SupabaseClient supabase;
+
+  @override
+  Future<List<Map<String, dynamic>>> getExercises({
+    required String tenantId,
+  }) async {
+    final rows = await supabase
+        .from('workout_exercises')
+        .select('exercise_key,record_type,sort_order,is_active')
+        .eq('tenant_id', tenantId)
+        .eq('is_active', true)
+        .order('sort_order', ascending: true);
+
+    return rows;
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getExercisePresets({
+    required String tenantId,
+  }) async {
+    final rows = await supabase
+        .from('workout_exercise_presets')
+        .select(
+          'exercise_key,preset_key,distance_m,target_reps,sort_order,is_active',
+        )
+        .eq('tenant_id', tenantId)
+        .eq('is_active', true)
+        .order('exercise_key', ascending: true)
+        .order('sort_order', ascending: true);
+
+    return rows;
+  }
 
   @override
   Future<List<Map<String, dynamic>>> getMyRecords({
@@ -52,7 +91,7 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
     final rows = await supabase
         .from('user_workout_records_v2')
         .select(
-          'id,exercise_key,record_type,distance,record_seconds,record_weight_kg,record_reps,recorded_at,memo,created_at',
+          'id,exercise_key,preset_key,record_type,distance,record_seconds,record_weight_kg,record_reps,recorded_at,memo,created_at',
         )
         .eq('tenant_id', tenantId)
         .eq('user_id', userId)
@@ -74,6 +113,7 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   }) async {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) {
@@ -91,6 +131,7 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
       'record_reps': recordReps,
       'recorded_at': recordedAt.toIso8601String().split('T').first,
       'memo': memo,
+      'preset_key': presetKey,
     });
   }
 
@@ -106,6 +147,7 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
     required int? recordReps,
     required DateTime recordedAt,
     required String memo,
+    required String? presetKey,
   }) async {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) {
@@ -123,6 +165,7 @@ class SupabaseWorkoutRecordDataSource implements WorkoutRecordDataSource {
           'record_reps': recordReps,
           'recorded_at': recordedAt.toIso8601String().split('T').first,
           'memo': memo,
+          'preset_key': presetKey,
         })
         .eq('id', id)
         .eq('tenant_id', tenantId)

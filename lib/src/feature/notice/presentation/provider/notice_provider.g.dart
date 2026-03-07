@@ -34,7 +34,7 @@ final class NoticeFeedControllerProvider
 }
 
 String _$noticeFeedControllerHash() =>
-    r'f9d9195981f850c27444b5d1f780bc3ae28401e6';
+    r'4d19fc3f6db59bcc4de9d7030982758e51b84110';
 
 abstract class _$NoticeFeedController extends $AsyncNotifier<NoticeFeedState> {
   FutureOr<NoticeFeedState> build();
