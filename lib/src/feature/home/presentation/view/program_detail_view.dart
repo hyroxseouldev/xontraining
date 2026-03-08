@@ -451,29 +451,15 @@ class _ScheduledSessionMessage extends StatelessWidget {
             _formatPublishAt(context, publishAt),
           );
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.tertiaryContainer,
-        borderRadius: BorderRadius.circular(10),
-      ),
+    return Padding(
+      padding: const EdgeInsets.all(2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.lock_clock_outlined,
-            size: 18,
-            color: Theme.of(context).colorScheme.onTertiaryContainer,
-          ),
+          const Icon(Icons.lock_clock_outlined, size: 18),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              message,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onTertiaryContainer,
-              ),
-            ),
+            child: Text(message, style: Theme.of(context).textTheme.bodyMedium),
           ),
         ],
       ),
@@ -493,28 +479,17 @@ class _RestSessionMessage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondaryContainer,
-            borderRadius: BorderRadius.circular(10),
-          ),
+        Padding(
+          padding: const EdgeInsets.all(2),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.self_improvement_outlined,
-                size: 18,
-                color: Theme.of(context).colorScheme.onSecondaryContainer,
-              ),
+              const Icon(Icons.self_improvement_outlined, size: 18),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   l10n.homeProgramDetailRestDescription,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSecondaryContainer,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
             ],

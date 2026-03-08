@@ -135,30 +135,18 @@ class _DayCell extends StatelessWidget {
     final selectedBackground = colorScheme.primaryContainer;
     final selectedTextColor = colorScheme.onPrimaryContainer;
 
-    late final Color backgroundColor;
-    Color textColor = colorScheme.onSurface;
-
-    if (isSelected) {
-      backgroundColor = selectedBackground;
-      textColor = selectedTextColor;
-    } else if (!isEnabled) {
-      backgroundColor = colorScheme.surface;
-      textColor = colorScheme.onSurface;
-    } else if (isToday) {
-      backgroundColor = colorScheme.surfaceContainerHigh;
-      textColor = colorScheme.onSurface;
-    } else {
-      backgroundColor = colorScheme.surfaceContainerHighest;
-      textColor = colorScheme.onSurface;
+    final backgroundColor = isSelected
+        ? selectedBackground
+        : Colors.transparent;
+    var textColor = isSelected ? selectedTextColor : colorScheme.onSurface;
+    if (!isEnabled) {
+      textColor = textColor.withValues(alpha: 0.45);
+    } else if (isToday && !isSelected) {
+      textColor = colorScheme.primary;
     }
 
-    final hasSessionInfo = isRest || isScheduled;
-
-    final markerColor = isScheduled
-        ? colorScheme.tertiary
-        : isRest
-        ? colorScheme.secondary
-        : colorScheme.primary;
+    final hasSessionInfo = isEnabled;
+    final markerColor = colorScheme.primary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3),
