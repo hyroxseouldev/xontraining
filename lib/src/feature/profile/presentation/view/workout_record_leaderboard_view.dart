@@ -15,8 +15,25 @@ class WorkoutRecordLeaderboardView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     final presetsState = ref.watch(workoutExercisePresetsProvider);
     final selectedPresetKey = useState<String?>(null);
+    final minimalEnabledBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outlineVariant),
+    );
+    final minimalFocusedBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outline, width: 1.2),
+    );
+    final minimalErrorBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.error),
+    );
+    final minimalFocusedErrorBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.error, width: 1.2),
+    );
 
     final exercisePresets = _presetsForExercise(
       presetsState.asData?.value,
@@ -78,6 +95,11 @@ class WorkoutRecordLeaderboardView extends HookConsumerWidget {
                   initialValue: selectedPresetKey.value,
                   decoration: InputDecoration(
                     labelText: l10n.workoutRecordLeaderboardFilterPreset,
+                    filled: false,
+                    enabledBorder: minimalEnabledBorder,
+                    focusedBorder: minimalFocusedBorder,
+                    errorBorder: minimalErrorBorder,
+                    focusedErrorBorder: minimalFocusedErrorBorder,
                   ),
                   items: exercisePresets
                       .map(
@@ -131,6 +153,7 @@ class WorkoutRecordLeaderboardView extends HookConsumerWidget {
                             return _StaggeredFadeSlide(
                               index: index,
                               child: Card(
+                                color: Colors.transparent,
                                 child: ListTile(
                                   leading: _RankBadge(rank: entry.rank),
                                   title: Row(
@@ -273,8 +296,7 @@ class _RankBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final rankColors = _rankColors(colorScheme, rank);
+    final rankColors = _rankColors(context, rank);
     final isTopThree = rank <= 3;
     final badge = Container(
       width: 42,
@@ -327,7 +349,8 @@ class _RankBadge extends StatelessWidget {
     );
   }
 
-  _BadgeColors _rankColors(ColorScheme colorScheme, int value) {
+  _BadgeColors _rankColors(BuildContext context, int value) {
+    final colorScheme = Theme.of(context).colorScheme;
     switch (value) {
       case 1:
         return const _BadgeColors(
@@ -346,8 +369,8 @@ class _RankBadge extends StatelessWidget {
         );
       default:
         return _BadgeColors(
-          background: colorScheme.primaryContainer,
-          foreground: colorScheme.onPrimaryContainer,
+          background: colorScheme.surfaceContainerHighest,
+          foreground: colorScheme.onSurface,
         );
     }
   }
@@ -451,6 +474,7 @@ class _LeaderboardLoadingSkeleton extends StatelessWidget {
       separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         return Card(
+          color: Colors.transparent,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(

@@ -50,6 +50,15 @@ class _CommunityDetailViewState extends ConsumerState<CommunityDetailView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final minimalEnabledBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outlineVariant),
+    );
+    final minimalFocusedBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outline, width: 1.2),
+    );
     final accessState = ref.watch(communityAccessProvider);
     final hasCommunityAccess = accessState.asData?.value ?? false;
     final detailState = hasCommunityAccess
@@ -211,7 +220,9 @@ class _CommunityDetailViewState extends ConsumerState<CommunityDetailView> {
                               minLines: 1,
                               decoration: InputDecoration(
                                 hintText: l10n.communityCommentHint,
-                                border: const OutlineInputBorder(),
+                                filled: false,
+                                enabledBorder: minimalEnabledBorder,
+                                focusedBorder: minimalFocusedBorder,
                                 isDense: true,
                               ),
                             ),
@@ -887,6 +898,15 @@ Future<_CommunityReportDialogResult?> _showCommunityReportDialog(
   BuildContext context,
 ) async {
   final l10n = AppLocalizations.of(context)!;
+  final colorScheme = Theme.of(context).colorScheme;
+  final minimalEnabledBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(12),
+    borderSide: BorderSide(color: colorScheme.outlineVariant),
+  );
+  final minimalFocusedBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(12),
+    borderSide: BorderSide(color: colorScheme.outline, width: 1.2),
+  );
   final detailController = TextEditingController();
   var selectedReason = 'spam';
 
@@ -944,7 +964,9 @@ Future<_CommunityReportDialogResult?> _showCommunityReportDialog(
                   decoration: InputDecoration(
                     labelText: l10n.communityReportDetail,
                     hintText: l10n.communityReportDetailHint,
-                    border: const OutlineInputBorder(),
+                    filled: false,
+                    enabledBorder: minimalEnabledBorder,
+                    focusedBorder: minimalFocusedBorder,
                   ),
                 ),
               ],

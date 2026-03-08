@@ -132,30 +132,27 @@ class _DayCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final selectedBackground = colorScheme.primary;
-    final selectedTextColor = colorScheme.onPrimary;
+    final selectedBackground = colorScheme.primaryContainer;
+    final selectedTextColor = colorScheme.onPrimaryContainer;
 
     late final Color backgroundColor;
-    late final Color borderColor;
     Color textColor = colorScheme.onSurface;
 
     if (isSelected) {
       backgroundColor = selectedBackground;
-      borderColor = selectedBackground;
       textColor = selectedTextColor;
     } else if (!isEnabled) {
       backgroundColor = colorScheme.surface;
-      borderColor = colorScheme.outlineVariant;
-      textColor = colorScheme.onSurface.withValues(alpha: 0.4);
+      textColor = colorScheme.onSurface;
     } else if (isToday) {
       backgroundColor = colorScheme.surfaceContainerHigh;
-      borderColor = colorScheme.primary.withValues(alpha: 0.32);
-      textColor = colorScheme.primary;
+      textColor = colorScheme.onSurface;
     } else {
       backgroundColor = colorScheme.surfaceContainerHighest;
-      borderColor = colorScheme.surfaceContainerHighest;
       textColor = colorScheme.onSurface;
     }
+
+    final hasSessionInfo = isRest || isScheduled;
 
     final markerColor = isScheduled
         ? colorScheme.tertiary
@@ -173,7 +170,6 @@ class _DayCell extends StatelessWidget {
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: borderColor),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -193,16 +189,18 @@ class _DayCell extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Container(
-                width: 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: isEnabled
-                      ? markerColor
-                      : markerColor.withValues(alpha: 0.18),
-                  shape: BoxShape.circle,
-                ),
-              ),
+              hasSessionInfo
+                  ? Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: isEnabled
+                            ? markerColor
+                            : markerColor.withValues(alpha: 0.18),
+                        shape: BoxShape.circle,
+                      ),
+                    )
+                  : const SizedBox(width: 6, height: 6),
             ],
           ),
         ),

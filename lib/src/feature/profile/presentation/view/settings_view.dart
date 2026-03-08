@@ -10,6 +10,7 @@ class SettingsView extends ConsumerWidget {
   const SettingsView({super.key});
 
   static const String _communitySupportEmail = 'vividxxxxx@gmail.com';
+  static const Icon _trailingIcon = Icon(Icons.chevron_right);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,76 +61,83 @@ class SettingsView extends ConsumerWidget {
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           children: [
-            Card(
-              child: ListTile(
-                onTap: () => context.pushNamed(AppRoutes.appVersionName),
-                leading: const Icon(Icons.info_outline),
-                title: Text(l10n.settingsAppVersion),
-                subtitle: Text(
-                  versionLabel.maybeWhen(
-                    data: (value) => value,
-                    orElse: () => l10n.settingsVersionLoading,
-                  ),
-                ),
-                trailing: const Icon(Icons.chevron_right),
+            _buildMenuTile(
+              leading: Icons.info_outline,
+              title: l10n.settingsAppVersion,
+              subtitle: versionLabel.maybeWhen(
+                data: (value) => value,
+                orElse: () => l10n.settingsVersionLoading,
               ),
+              onTap: () => context.pushNamed(AppRoutes.appVersionName),
+              trailing: _trailingIcon,
             ),
-            const SizedBox(height: 12),
-            Card(
-              child: ListTile(
-                onTap: () => context.pushNamed(AppRoutes.termsOfServiceName),
-                leading: const Icon(Icons.description_outlined),
-                title: Text(l10n.settingsTermsOfService),
-                trailing: const Icon(Icons.chevron_right),
-              ),
+            const Divider(height: 1),
+            _buildMenuTile(
+              leading: Icons.description_outlined,
+              title: l10n.settingsTermsOfService,
+              onTap: () => context.pushNamed(AppRoutes.termsOfServiceName),
+              trailing: _trailingIcon,
             ),
-            const SizedBox(height: 12),
-            Card(
-              child: ListTile(
-                onTap: () => context.pushNamed(AppRoutes.privacyPolicyName),
-                leading: const Icon(Icons.privacy_tip_outlined),
-                title: Text(l10n.settingsPrivacyPolicy),
-                trailing: const Icon(Icons.chevron_right),
-              ),
+            const Divider(height: 1),
+            _buildMenuTile(
+              leading: Icons.privacy_tip_outlined,
+              title: l10n.settingsPrivacyPolicy,
+              onTap: () => context.pushNamed(AppRoutes.privacyPolicyName),
+              trailing: _trailingIcon,
             ),
-            const SizedBox(height: 12),
-            Card(
-              child: ListTile(
-                enabled: false,
-                onTap: null,
-                leading: const Icon(Icons.support_agent_outlined),
-                title: Text(l10n.settingsCommunitySupport),
-                subtitle: Text(_communitySupportEmail),
-              ),
+            const Divider(height: 1),
+            _buildMenuTile(
+              enabled: false,
+              leading: Icons.support_agent_outlined,
+              title: l10n.settingsCommunitySupport,
+              subtitle: _communitySupportEmail,
             ),
-            const SizedBox(height: 12),
-            Card(
-              child: ListTile(
-                enabled: canDeleteAccount && !isBusy,
-                onTap: !canDeleteAccount || isBusy
-                    ? null
-                    : () => _onDeleteAccountPressed(context, ref, l10n),
-                leading: const Icon(Icons.delete_forever_outlined),
-                title: Text(l10n.settingsDeleteAccount),
-                subtitle: Text(deleteAccountSubtitle),
-              ),
+            const Divider(height: 1),
+            _buildMenuTile(
+              enabled: canDeleteAccount && !isBusy,
+              leading: Icons.delete_forever_outlined,
+              title: l10n.settingsDeleteAccount,
+              subtitle: deleteAccountSubtitle,
+              onTap: !canDeleteAccount || isBusy
+                  ? null
+                  : () => _onDeleteAccountPressed(context, ref, l10n),
             ),
-            const SizedBox(height: 12),
-            Card(
-              child: ListTile(
-                enabled: !isBusy,
-                onTap: isBusy
-                    ? null
-                    : () => ref.read(authControllerProvider.notifier).signOut(),
-                leading: const Icon(Icons.logout),
-                title: Text(l10n.settingsSignOut),
-              ),
+            const Divider(height: 1),
+            _buildMenuTile(
+              enabled: !isBusy,
+              leading: Icons.logout,
+              title: l10n.settingsSignOut,
+              onTap: isBusy
+                  ? null
+                  : () => ref.read(authControllerProvider.notifier).signOut(),
             ),
+            const Divider(height: 1),
           ],
         ),
       ),
+    );
+  }
+
+  ListTile _buildMenuTile({
+    required IconData leading,
+    required String title,
+    String? subtitle,
+    Widget? trailing,
+    bool enabled = true,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      enabled: enabled,
+      onTap: onTap,
+      visualDensity: const VisualDensity(vertical: -1),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      minLeadingWidth: 28,
+      leading: Icon(leading, size: 20),
+      title: Text(title),
+      subtitle: subtitle == null ? null : Text(subtitle),
+      trailing: trailing,
     );
   }
 

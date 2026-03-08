@@ -10,6 +10,8 @@ import 'package:xontraining/src/feature/profile/presentation/provider/profile_pr
 class ProfileView extends ConsumerWidget {
   const ProfileView({super.key});
 
+  static const Icon _trailingIcon = Icon(Icons.chevron_right);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
@@ -52,7 +54,7 @@ class ProfileView extends ConsumerWidget {
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           children: [
             Center(
               child: _ProfileHeader(
@@ -71,20 +73,36 @@ class ProfileView extends ConsumerWidget {
               l10n.profileMenuTitle,
               style: Theme.of(
                 context,
-              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
-            Card(
-              child: ListTile(
-                onTap: () => context.pushNamed(AppRoutes.workoutRecordName),
-                leading: const Icon(Icons.fitness_center_outlined),
-                title: Text(l10n.profileWorkoutRecord),
-                trailing: const Icon(Icons.chevron_right),
-              ),
+            _buildMenuTile(
+              leading: Icons.fitness_center_outlined,
+              title: l10n.profileWorkoutRecord,
+              trailing: _trailingIcon,
+              onTap: () => context.pushNamed(AppRoutes.workoutRecordName),
             ),
+            const Divider(height: 1),
           ],
         ),
       ),
+    );
+  }
+
+  ListTile _buildMenuTile({
+    required IconData leading,
+    required String title,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      onTap: onTap,
+      visualDensity: const VisualDensity(vertical: -1),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      minLeadingWidth: 28,
+      leading: Icon(leading, size: 20),
+      title: Text(title),
+      trailing: trailing,
     );
   }
 }

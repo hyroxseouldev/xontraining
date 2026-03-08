@@ -157,6 +157,15 @@ class _ProfileEditViewState extends ConsumerState<ProfileEditView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final minimalEnabledBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outlineVariant),
+    );
+    final minimalFocusedBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outline, width: 1.2),
+    );
     final session = ref.watch(authSessionProvider);
     final profileState = ref.watch(profileControllerProvider);
     final fullNameState = ref.watch(profileFullNameProvider);
@@ -222,6 +231,9 @@ class _ProfileEditViewState extends ConsumerState<ProfileEditView> {
               decoration: InputDecoration(
                 labelText: l10n.profileNameLabel,
                 hintText: l10n.profileNameHint,
+                filled: false,
+                enabledBorder: minimalEnabledBorder,
+                focusedBorder: minimalFocusedBorder,
               ),
             ),
             const SizedBox(height: 10),

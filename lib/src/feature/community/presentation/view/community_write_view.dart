@@ -74,6 +74,15 @@ class _CommunityWriteViewState extends ConsumerState<CommunityWriteView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final minimalEnabledBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outlineVariant),
+    );
+    final minimalFocusedBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outline, width: 1.2),
+    );
     final accessState = ref.watch(communityAccessProvider);
     final actionState = ref.watch(communityActionControllerProvider);
     final isLoading = actionState.isLoading;
@@ -207,7 +216,9 @@ class _CommunityWriteViewState extends ConsumerState<CommunityWriteView> {
                       textAlignVertical: TextAlignVertical.top,
                       decoration: InputDecoration(
                         hintText: l10n.communityContentHint,
-                        border: const OutlineInputBorder(),
+                        filled: false,
+                        enabledBorder: minimalEnabledBorder,
+                        focusedBorder: minimalFocusedBorder,
                       ),
                     ),
                   ),

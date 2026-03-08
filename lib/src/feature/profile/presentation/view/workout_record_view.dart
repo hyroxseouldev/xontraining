@@ -12,7 +12,6 @@ class WorkoutRecordView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
     final isTablet = LayoutBreakpoints.isTablet(context);
     final exercisesState = ref.watch(workoutExercisesProvider);
 
@@ -46,22 +45,17 @@ class WorkoutRecordView extends ConsumerWidget {
           return GridView.builder(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: isTablet ? 4 : 2,
+              crossAxisCount: isTablet ? 6 : 3,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: isTablet ? 0.86 : 0.92,
+              childAspectRatio: isTablet ? 0.95 : 0.9,
             ),
             itemCount: activeExercises.length,
             itemBuilder: (context, index) {
               final exercise = activeExercises[index];
-              final iconColor = exercise.isCardio
-                  ? colorScheme.primary
-                  : colorScheme.secondary;
-              final iconBackground = exercise.isCardio
-                  ? colorScheme.primaryContainer
-                  : colorScheme.secondaryContainer;
 
               return Card(
+                color: Colors.transparent,
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
                   onTap: () => context.pushNamed(
@@ -69,58 +63,23 @@ class WorkoutRecordView extends ConsumerWidget {
                     pathParameters: {'exercise': exercise.exerciseKey},
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(14),
+                    padding: const EdgeInsets.all(10),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
-                          width: 46,
-                          height: 46,
-                          decoration: BoxDecoration(
-                            color: iconBackground,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          alignment: Alignment.center,
-                          child: Icon(
-                            _exerciseIcon(exercise.exerciseKey),
-                            color: iconColor,
-                          ),
+                        Icon(
+                          _exerciseIcon(exercise.exerciseKey),
+                          size: isTablet ? 34 : 30,
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 8),
                         Text(
                           _exerciseLabel(l10n, exercise.exerciseKey),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w800),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          exercise.isCardio
-                              ? l10n.workoutRecordTemplateCardioDescription
-                              : l10n.workoutRecordTemplateStrengthDescription,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        const Spacer(),
-                        Row(
-                          children: [
-                            Text(
-                              l10n.workoutRecordAdd,
-                              style: Theme.of(context).textTheme.labelLarge
-                                  ?.copyWith(
-                                    color: iconColor,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                            ),
-                            const Spacer(),
-                            Icon(
-                              Icons.arrow_forward,
-                              size: 18,
-                              color: iconColor,
-                            ),
-                          ],
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
                         ),
                       ],
                     ),

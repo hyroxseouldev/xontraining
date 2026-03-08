@@ -19,6 +19,7 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context);
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final firstValueController = useTextEditingController();
@@ -47,6 +48,23 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
     }, [presets]);
 
     final selectedPreset = _findPreset(presets, selectedPresetKey.value);
+    final minimalEnabledBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outlineVariant),
+    );
+    final minimalFocusedBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outline, width: 1.2),
+    );
+    final minimalErrorBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.error),
+    );
+    final minimalFocusedErrorBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.error, width: 1.2),
+    );
+
     if (isCardio) {
       final distance = selectedPreset?.distanceM;
       firstValueController.text = distance == null ? '' : distance.toString();
@@ -102,6 +120,11 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
                   initialValue: selectedPresetKey.value,
                   decoration: InputDecoration(
                     labelText: l10n.workoutRecordPreset,
+                    filled: false,
+                    enabledBorder: minimalEnabledBorder,
+                    focusedBorder: minimalFocusedBorder,
+                    errorBorder: minimalErrorBorder,
+                    focusedErrorBorder: minimalFocusedErrorBorder,
                   ),
                   items: presets
                       .map(
@@ -130,6 +153,11 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
                         ? l10n.workoutRecordDistance
                         : l10n.workoutRecordWeight,
                     suffixText: isCardio ? _distanceUnit : _weightUnit,
+                    filled: false,
+                    enabledBorder: minimalEnabledBorder,
+                    focusedBorder: minimalFocusedBorder,
+                    errorBorder: minimalErrorBorder,
+                    focusedErrorBorder: minimalFocusedErrorBorder,
                   ),
                   readOnly: isCardio,
                   onTap: isCardio
@@ -165,6 +193,11 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
                         ? l10n.workoutRecordDuration
                         : l10n.workoutRecordReps,
                     hintText: isCardio ? '18:55' : null,
+                    filled: false,
+                    enabledBorder: minimalEnabledBorder,
+                    focusedBorder: minimalFocusedBorder,
+                    errorBorder: minimalErrorBorder,
+                    focusedErrorBorder: minimalFocusedErrorBorder,
                   ),
                   validator: (value) {
                     if (isCardio) {

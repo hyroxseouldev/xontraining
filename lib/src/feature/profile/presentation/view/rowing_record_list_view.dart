@@ -50,23 +50,9 @@ class WorkoutRecordListView extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final record = rowingRecords[index];
                 return Card(
+                  color: Colors.transparent,
                   child: ListTile(
-                    leading: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.12),
-                        shape: BoxShape.circle,
-                      ),
-                      alignment: Alignment.center,
-                      child: Icon(
-                        _exerciseIcon(exerciseKey),
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 20,
-                      ),
-                    ),
+                    leading: Icon(_exerciseIcon(exerciseKey), size: 20),
                     title: Text(
                       record.isTimeRecord
                           ? l10n.workoutRecordDistanceAndDuration(
