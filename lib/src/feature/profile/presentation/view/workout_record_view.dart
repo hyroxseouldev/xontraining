@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/core/router/app_router.dart';
 import 'package:xontraining/src/feature/profile/presentation/provider/workout_record_provider.dart';
+import 'package:xontraining/src/feature/profile/presentation/widget/workout_record_loading_skeleton.dart';
 import 'package:xontraining/src/shared/layout_breakpoints.dart';
 
 class WorkoutRecordView extends ConsumerWidget {
@@ -89,7 +90,7 @@ class WorkoutRecordView extends ConsumerWidget {
             },
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const WorkoutRecordGridLoadingSkeleton(),
         error: (error, stackTrace) =>
             Center(child: Text(l10n.workoutRecordLoadFailed)),
       ),

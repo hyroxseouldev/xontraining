@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/feature/profile/infra/entity/workout_record_entity.dart';
 import 'package:xontraining/src/feature/profile/presentation/provider/workout_record_provider.dart';
+import 'package:xontraining/src/feature/profile/presentation/widget/workout_record_loading_skeleton.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
 
 class WorkoutRecordListView extends ConsumerWidget {
@@ -73,7 +74,7 @@ class WorkoutRecordListView extends ConsumerWidget {
             ),
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const WorkoutRecordListLoadingSkeleton(),
         error: (error, stackTrace) =>
             Center(child: Text(l10n.workoutRecordLoadFailed)),
       ),

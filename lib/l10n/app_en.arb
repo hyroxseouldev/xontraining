@@ -308,7 +308,7 @@
   "settingsCommunitySupport": "Community report support",
   "settingsDeleteAccount": "Delete account",
   "settingsDeleteAccountSubtitle": "Deactivate your account and block sign-in.",
-  "settingsDeleteAccountMemberOnly": "Coach and owner accounts cannot be deleted.",
+  "settingsDeleteAccountMemberOnly": "Coach and owner accounts cannot be deactivated.",
   "settingsDeleteAccountDialogTitle": "Deactivate this account?",
   "settingsDeleteAccountDialogBody": "Your account will be deactivated immediately and sign-in will be blocked. Account and service usage data will be retained according to policy and applicable laws.",
   "settingsDeleteAccountCancel": "Cancel",

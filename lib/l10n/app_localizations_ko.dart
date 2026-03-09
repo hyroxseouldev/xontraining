@@ -560,7 +560,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsDeleteAccountSubtitle => '계정을 비활성화하고 로그인을 차단합니다.';
 
   @override
-  String get settingsDeleteAccountMemberOnly => '코치/오너 권한 계정은 삭제할 수 없습니다.';
+  String get settingsDeleteAccountMemberOnly => '코치/오너 권한 계정은 탈퇴할 수 없습니다.';
 
   @override
   String get settingsDeleteAccountDialogTitle => '계정을 비활성화할까요?';

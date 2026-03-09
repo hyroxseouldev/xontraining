@@ -217,17 +217,16 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
   @override
   Future<void> deleteMyAccount({required String tenantId}) async {
-    final response = await supabase.functions.invoke(
-      'delete-account',
-      body: {'tenantId': tenantId},
-    );
-
-    final data = response.data;
-    if (response.status != 200) {
-      final errorMessage = data is Map<String, dynamic>
-          ? data['message'] as String?
-          : null;
-      throw AuthException(errorMessage ?? 'Failed to deactivate account.');
+    try {
+      await supabase.rpc(
+        'soft_delete_my_account',
+        params: {'p_tenant_id': tenantId},
+      );
+    } on PostgrestException catch (error) {
+      final message = error.message.trim();
+      throw AuthException(
+        message.isEmpty ? 'Failed to deactivate account.' : message,
+      );
     }
   }
 }

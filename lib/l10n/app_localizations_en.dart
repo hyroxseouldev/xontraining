@@ -578,7 +578,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountMemberOnly =>
-      'Coach and owner accounts cannot be deleted.';
+      'Coach and owner accounts cannot be deactivated.';
 
   @override
   String get settingsDeleteAccountDialogTitle => 'Deactivate this account?';

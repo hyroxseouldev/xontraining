@@ -19,11 +19,11 @@ class SettingsView extends ConsumerWidget {
     final versionLabel = ref.watch(appVersionLabelProvider);
     final tenantRole = ref.watch(profileTenantRoleProvider);
     final canDeleteAccount = tenantRole.maybeWhen(
-      data: (role) => role == null || role == 'member',
+      data: _canDeleteAccount,
       orElse: () => false,
     );
     final deleteAccountSubtitle = tenantRole.maybeWhen(
-      data: (role) => role == null || role == 'member'
+      data: (role) => _canDeleteAccount(role)
           ? l10n.settingsDeleteAccountSubtitle
           : l10n.settingsDeleteAccountMemberOnly,
       orElse: () => l10n.settingsDeleteAccountSubtitle,
@@ -118,6 +118,10 @@ class SettingsView extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  bool _canDeleteAccount(String? role) {
+    return role == null || (role != 'coach' && role != 'owner');
   }
 
   ListTile _buildMenuTile({

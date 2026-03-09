@@ -86,6 +86,7 @@ class _ProgramListItemState extends State<ProgramListItem> {
                             value: difficultyText,
                             isBadge: true,
                             isPlaceholder: !program.hasDifficulty,
+                            badgeTone: program.normalizedDifficulty,
                           ),
                           _InfoItem(
                             label: l10n.homeProgramInfoWorkoutTime,
@@ -124,12 +125,14 @@ class _InfoItem {
     required this.value,
     this.isBadge = false,
     this.isPlaceholder = false,
+    this.badgeTone,
   });
 
   final String label;
   final String value;
   final bool isBadge;
   final bool isPlaceholder;
+  final String? badgeTone;
 }
 
 class _InfoList extends StatelessWidget {
@@ -156,7 +159,7 @@ class _InfoList extends StatelessWidget {
                   Expanded(child: Text(item.label, style: labelStyle)),
                   const SizedBox(width: 12),
                   if (item.isBadge && !item.isPlaceholder)
-                    _DifficultyBadge(text: item.value)
+                    _DifficultyBadge(text: item.value, tone: item.badgeTone)
                   else
                     Text(item.value, style: valueStyle),
                 ],
@@ -274,27 +277,64 @@ class _ThumbnailSkeletonState extends State<_ThumbnailSkeleton>
 }
 
 class _DifficultyBadge extends StatelessWidget {
-  const _DifficultyBadge({required this.text});
+  const _DifficultyBadge({required this.text, this.tone});
 
   final String text;
+  final String? tone;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final badgeColors = _difficultyBadgeColors(colorScheme, tone);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
+        color: badgeColors.background,
         borderRadius: BorderRadius.circular(999),
       ),
-      child: Text(text, style: Theme.of(context).textTheme.labelMedium),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+          color: badgeColors.foreground,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.1,
+        ),
+      ),
     );
   }
 }
 
-String _localizedDifficulty(String raw, AppLocalizations l10n) {
-  final normalized = raw.trim().toLowerCase().replaceAll(
+({Color background, Color foreground}) _difficultyBadgeColors(
+  ColorScheme colorScheme,
+  String? raw,
+) {
+  switch (_difficultyTone(raw)) {
+    case 'beginner':
+      return (
+        background: const Color(0xFFD9FBE8),
+        foreground: const Color(0xFF0F6B46),
+      );
+    case 'intermediate':
+      return (
+        background: const Color(0xFFFFE7C2),
+        foreground: const Color(0xFF9A5800),
+      );
+    case 'advanced':
+      return (
+        background: const Color(0xFFFFD6D1),
+        foreground: const Color(0xFFB3261E),
+      );
+    default:
+      return (
+        background: colorScheme.surfaceContainerHigh,
+        foreground: colorScheme.onSurfaceVariant,
+      );
+  }
+}
+
+String _difficultyTone(String? raw) {
+  final normalized = raw?.trim().toLowerCase().replaceAll(
     RegExp(r'[-_\s]+'),
     '',
   );
@@ -304,16 +344,29 @@ String _localizedDifficulty(String raw, AppLocalizations l10n) {
     case 'starter':
     case 'novice':
     case '초급':
-      return l10n.homeProgramDifficultyBeginner;
+      return 'beginner';
     case 'intermediate':
     case 'medium':
     case 'mid':
     case '중급':
-      return l10n.homeProgramDifficultyIntermediate;
+      return 'intermediate';
     case 'advanced':
     case 'hard':
     case 'expert':
     case '고급':
+      return 'advanced';
+    default:
+      return '';
+  }
+}
+
+String _localizedDifficulty(String raw, AppLocalizations l10n) {
+  switch (_difficultyTone(raw)) {
+    case 'beginner':
+      return l10n.homeProgramDifficultyBeginner;
+    case 'intermediate':
+      return l10n.homeProgramDifficultyIntermediate;
+    case 'advanced':
       return l10n.homeProgramDifficultyAdvanced;
     default:
       return raw;

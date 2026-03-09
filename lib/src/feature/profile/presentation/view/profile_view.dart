@@ -5,7 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/core/router/app_router.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/auth_session_provider.dart';
-import 'package:xontraining/src/feature/profile/infra/entity/profile_entity.dart';
 import 'package:xontraining/src/feature/profile/presentation/provider/profile_provider.dart';
 
 class ProfileView extends ConsumerWidget {
@@ -57,8 +56,6 @@ class ProfileView extends ConsumerWidget {
                 name: profile?.displayName ?? '-',
                 email: userEmail,
                 avatarUrl: profile?.displayAvatarUrl ?? '',
-                genderLabel:
-                    '${l10n.profileGenderLabel}: ${_genderLabel(l10n, profile?.gender)}',
               ),
             ),
             const SizedBox(height: 20),
@@ -87,16 +84,6 @@ class ProfileView extends ConsumerWidget {
     );
   }
 
-  String _genderLabel(AppLocalizations l10n, ProfileGender? gender) {
-    return switch (gender) {
-      ProfileGender.male => l10n.genderMale,
-      ProfileGender.female => l10n.genderFemale,
-      ProfileGender.other => l10n.genderOther,
-      ProfileGender.preferNotToSay => l10n.genderPreferNotToSay,
-      null => '-',
-    };
-  }
-
   ListTile _buildMenuTile({
     required IconData leading,
     required String title,
@@ -120,13 +107,11 @@ class _ProfileHeader extends StatelessWidget {
     required this.name,
     required this.email,
     required this.avatarUrl,
-    required this.genderLabel,
   });
 
   final String name;
   final String email;
   final String avatarUrl;
-  final String genderLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -189,8 +174,6 @@ class _ProfileHeader extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(email, style: Theme.of(context).textTheme.bodyMedium),
-        const SizedBox(height: 4),
-        Text(genderLabel, style: Theme.of(context).textTheme.bodyMedium),
       ],
     );
   }

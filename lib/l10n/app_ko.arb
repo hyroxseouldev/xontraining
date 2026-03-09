@@ -308,7 +308,7 @@
   "settingsCommunitySupport": "커뮤니티 신고 문의",
   "settingsDeleteAccount": "계정삭제",
   "settingsDeleteAccountSubtitle": "계정을 비활성화하고 로그인을 차단합니다.",
-  "settingsDeleteAccountMemberOnly": "코치/오너 권한 계정은 삭제할 수 없습니다.",
+  "settingsDeleteAccountMemberOnly": "코치/오너 권한 계정은 탈퇴할 수 없습니다.",
   "settingsDeleteAccountDialogTitle": "계정을 비활성화할까요?",
   "settingsDeleteAccountDialogBody": "탈퇴 시 계정이 즉시 비활성화되며 로그인할 수 없습니다. 계정 및 서비스 이용 데이터는 운영 정책과 관련 법령에 따라 보관됩니다.",
   "settingsDeleteAccountCancel": "취소",

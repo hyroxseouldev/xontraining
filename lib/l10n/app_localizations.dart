@@ -1109,7 +1109,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDeleteAccountMemberOnly.
   ///
   /// In en, this message translates to:
-  /// **'Coach and owner accounts cannot be deleted.'**
+  /// **'Coach and owner accounts cannot be deactivated.'**
   String get settingsDeleteAccountMemberOnly;
 
   /// No description provided for @settingsDeleteAccountDialogTitle.
