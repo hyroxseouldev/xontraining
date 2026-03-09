@@ -914,6 +914,24 @@ abstract class AppLocalizations {
   /// **'Please enter your name.'**
   String get profileNameRequired;
 
+  /// No description provided for @profileGenderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get profileGenderLabel;
+
+  /// No description provided for @profileGenderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your gender'**
+  String get profileGenderHint;
+
+  /// No description provided for @profileGenderRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select your gender.'**
+  String get profileGenderRequired;
+
   /// No description provided for @profileSignedInAs.
   ///
   /// In en, this message translates to:
@@ -979,6 +997,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Image is too large. Please select up to {maxMb}MB.'**
   String profileEditImageTooLarge(int maxMb);
+
+  /// No description provided for @genderMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get genderMale;
+
+  /// No description provided for @genderFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get genderFemale;
+
+  /// No description provided for @genderOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get genderOther;
+
+  /// No description provided for @genderPreferNotToSay.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer not to say'**
+  String get genderPreferNotToSay;
 
   /// No description provided for @profileWorkoutRecordComingSoon.
   ///
@@ -1519,6 +1561,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter your name.'**
   String get onboardingNameRequired;
+
+  /// No description provided for @onboardingGenderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get onboardingGenderLabel;
+
+  /// No description provided for @onboardingGenderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your gender'**
+  String get onboardingGenderHint;
+
+  /// No description provided for @onboardingGenderRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select your gender.'**
+  String get onboardingGenderRequired;
 
   /// No description provided for @onboardingContinue.
   ///

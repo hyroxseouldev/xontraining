@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:xontraining/src/feature/auth/data/repository/auth_repository.dart';
+import 'package:xontraining/src/feature/profile/infra/entity/profile_entity.dart';
 
 part 'auth_usecases.g.dart';
 
@@ -48,48 +49,28 @@ class CompleteOnboardingUseCase {
 
   final AuthRepository repository;
 
-  Future<void> call({required String fullName}) {
-    return repository.completeOnboarding(fullName: fullName);
+  Future<void> call({required CompleteOnboardingParams params}) {
+    return repository.completeOnboarding(params: params);
   }
 }
 
-class GetMyFullNameUseCase {
-  GetMyFullNameUseCase({required this.repository});
+class GetMyProfileUseCase {
+  GetMyProfileUseCase({required this.repository});
 
   final AuthRepository repository;
 
-  Future<String?> call() {
-    return repository.getMyFullName();
+  Future<ProfileEntity> call() {
+    return repository.getMyProfile();
   }
 }
 
-class GetMyAvatarUrlUseCase {
-  GetMyAvatarUrlUseCase({required this.repository});
+class UpdateMyProfileUseCase {
+  UpdateMyProfileUseCase({required this.repository});
 
   final AuthRepository repository;
 
-  Future<String?> call() {
-    return repository.getMyAvatarUrl();
-  }
-}
-
-class UpdateMyFullNameUseCase {
-  UpdateMyFullNameUseCase({required this.repository});
-
-  final AuthRepository repository;
-
-  Future<void> call({required String fullName}) {
-    return repository.updateMyFullName(fullName: fullName);
-  }
-}
-
-class UpdateMyAvatarUrlUseCase {
-  UpdateMyAvatarUrlUseCase({required this.repository});
-
-  final AuthRepository repository;
-
-  Future<void> call({required String avatarUrl}) {
-    return repository.updateMyAvatarUrl(avatarUrl: avatarUrl);
+  Future<void> call({required UpdateProfileParams params}) {
+    return repository.updateMyProfile(params: params);
   }
 }
 
@@ -143,23 +124,13 @@ CompleteOnboardingUseCase completeOnboardingUseCase(Ref ref) {
 }
 
 @riverpod
-GetMyFullNameUseCase getMyFullNameUseCase(Ref ref) {
-  return GetMyFullNameUseCase(repository: ref.read(authRepositoryProvider));
+GetMyProfileUseCase getMyProfileUseCase(Ref ref) {
+  return GetMyProfileUseCase(repository: ref.read(authRepositoryProvider));
 }
 
 @riverpod
-GetMyAvatarUrlUseCase getMyAvatarUrlUseCase(Ref ref) {
-  return GetMyAvatarUrlUseCase(repository: ref.read(authRepositoryProvider));
-}
-
-@riverpod
-UpdateMyFullNameUseCase updateMyFullNameUseCase(Ref ref) {
-  return UpdateMyFullNameUseCase(repository: ref.read(authRepositoryProvider));
-}
-
-@riverpod
-UpdateMyAvatarUrlUseCase updateMyAvatarUrlUseCase(Ref ref) {
-  return UpdateMyAvatarUrlUseCase(repository: ref.read(authRepositoryProvider));
+UpdateMyProfileUseCase updateMyProfileUseCase(Ref ref) {
+  return UpdateMyProfileUseCase(repository: ref.read(authRepositoryProvider));
 }
 
 @riverpod

@@ -264,6 +264,9 @@
   "profileNameLabel": "이름",
   "profileNameHint": "이름을 입력해 주세요",
   "profileNameRequired": "이름을 입력해 주세요.",
+  "profileGenderLabel": "성별",
+  "profileGenderHint": "성별을 선택해 주세요",
+  "profileGenderRequired": "성별을 선택해 주세요.",
   "profileSignedInAs": "로그인 계정: {email}",
   "@profileSignedInAs": {
     "placeholders": {
@@ -287,6 +290,10 @@
       }
     }
   },
+  "genderMale": "남성",
+  "genderFemale": "여성",
+  "genderOther": "기타",
+  "genderPreferNotToSay": "응답하지 않음",
   "profileWorkoutRecordComingSoon": "내 운동 능력 기록 화면 뼈대가 준비되었습니다.",
   "settingsTitle": "설정",
   "settingsDescription": "설정 화면 뼈대가 준비되었습니다.",
@@ -409,6 +416,9 @@
   "onboardingNameLabel": "이름",
   "onboardingNameHint": "이름을 입력해 주세요",
   "onboardingNameRequired": "이름을 입력해 주세요.",
+  "onboardingGenderLabel": "성별",
+  "onboardingGenderHint": "성별을 선택해 주세요",
+  "onboardingGenderRequired": "성별을 선택해 주세요.",
   "onboardingContinue": "계속",
   "onboardingSaving": "저장 중...",
   "onboardingSaveFailed": "프로필 저장에 실패했습니다. 다시 시도해 주세요."

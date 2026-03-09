@@ -458,6 +458,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get profileNameRequired => '이름을 입력해 주세요.';
 
   @override
+  String get profileGenderLabel => '성별';
+
+  @override
+  String get profileGenderHint => '성별을 선택해 주세요';
+
+  @override
+  String get profileGenderRequired => '성별을 선택해 주세요.';
+
+  @override
   String profileSignedInAs(Object email) {
     return '로그인 계정: $email';
   }
@@ -494,6 +503,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String profileEditImageTooLarge(int maxMb) {
     return '이미지 용량이 큽니다. ${maxMb}MB 이하 파일을 선택해 주세요.';
   }
+
+  @override
+  String get genderMale => '남성';
+
+  @override
+  String get genderFemale => '여성';
+
+  @override
+  String get genderOther => '기타';
+
+  @override
+  String get genderPreferNotToSay => '응답하지 않음';
 
   @override
   String get profileWorkoutRecordComingSoon => '내 운동 능력 기록 화면 뼈대가 준비되었습니다.';
@@ -780,6 +801,15 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingNameRequired => '이름을 입력해 주세요.';
+
+  @override
+  String get onboardingGenderLabel => '성별';
+
+  @override
+  String get onboardingGenderHint => '성별을 선택해 주세요';
+
+  @override
+  String get onboardingGenderRequired => '성별을 선택해 주세요.';
 
   @override
   String get onboardingContinue => '계속';

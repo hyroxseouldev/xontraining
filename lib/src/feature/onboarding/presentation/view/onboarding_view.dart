@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/core/router/app_router.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/onboarding_provider.dart';
+import 'package:xontraining/src/feature/profile/infra/entity/profile_entity.dart';
 
 class OnboardingView extends ConsumerStatefulWidget {
   const OnboardingView({super.key});
@@ -14,6 +15,7 @@ class OnboardingView extends ConsumerStatefulWidget {
 
 class _OnboardingViewState extends ConsumerState<OnboardingView> {
   late final TextEditingController _nameController;
+  ProfileGender? _selectedGender;
 
   @override
   void initState() {
@@ -37,9 +39,17 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
       return;
     }
 
+    final gender = _selectedGender;
+    if (gender == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.onboardingGenderRequired)));
+      return;
+    }
+
     final success = await ref
         .read(onboardingControllerProvider.notifier)
-        .completeOnboarding(fullName: fullName);
+        .completeOnboarding(fullName: fullName, gender: gender);
 
     if (!mounted) {
       return;
@@ -59,6 +69,15 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final onboardingState = ref.watch(onboardingControllerProvider);
+    final colorScheme = Theme.of(context).colorScheme;
+    final enabledBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outlineVariant),
+    );
+    final focusedBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colorScheme.outline, width: 1.2),
+    );
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.onboardingTitle)),
@@ -79,7 +98,32 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                 decoration: InputDecoration(
                   labelText: l10n.onboardingNameLabel,
                   hintText: l10n.onboardingNameHint,
+                  enabledBorder: enabledBorder,
+                  focusedBorder: focusedBorder,
                 ),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<ProfileGender>(
+                initialValue: _selectedGender,
+                decoration: InputDecoration(
+                  labelText: l10n.onboardingGenderLabel,
+                  hintText: l10n.onboardingGenderHint,
+                  enabledBorder: enabledBorder,
+                  focusedBorder: focusedBorder,
+                ),
+                items: ProfileGender.values.map((gender) {
+                  return DropdownMenuItem<ProfileGender>(
+                    value: gender,
+                    child: Text(_genderLabel(l10n, gender)),
+                  );
+                }).toList(),
+                onChanged: onboardingState.isLoading
+                    ? null
+                    : (value) {
+                        setState(() {
+                          _selectedGender = value;
+                        });
+                      },
               ),
               const Spacer(),
               SizedBox(
@@ -100,5 +144,14 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
         ),
       ),
     );
+  }
+
+  String _genderLabel(AppLocalizations l10n, ProfileGender gender) {
+    return switch (gender) {
+      ProfileGender.male => l10n.genderMale,
+      ProfileGender.female => l10n.genderFemale,
+      ProfileGender.other => l10n.genderOther,
+      ProfileGender.preferNotToSay => l10n.genderPreferNotToSay,
+    };
   }
 }

@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:xontraining/src/core/exception/app_exception.dart';
 import 'package:xontraining/src/feature/auth/data/datasource/auth_data_source.dart';
+import 'package:xontraining/src/feature/profile/infra/entity/profile_entity.dart';
 
 part 'auth_repository.g.dart';
 
@@ -13,11 +14,9 @@ abstract interface class AuthRepository {
   Future<void> signInWithApple();
   Future<void> signOut();
   Future<bool> isOnboardingCompleted();
-  Future<void> completeOnboarding({required String fullName});
-  Future<String?> getMyFullName();
-  Future<String?> getMyAvatarUrl();
-  Future<void> updateMyFullName({required String fullName});
-  Future<void> updateMyAvatarUrl({required String avatarUrl});
+  Future<void> completeOnboarding({required CompleteOnboardingParams params});
+  Future<ProfileEntity> getMyProfile();
+  Future<void> updateMyProfile({required UpdateProfileParams params});
   Future<String?> getMyTenantRole({required String tenantId});
   Future<void> deleteMyAccount({required String tenantId});
 }
@@ -136,9 +135,14 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> completeOnboarding({required String fullName}) async {
+  Future<void> completeOnboarding({
+    required CompleteOnboardingParams params,
+  }) async {
     try {
-      await dataSource.completeOnboarding(fullName: fullName);
+      await dataSource.completeOnboarding(
+        fullName: params.fullName,
+        gender: params.gender.databaseValue,
+      );
     } on AuthException catch (error, stackTrace) {
       debugPrint('[AuthRepository] completeOnboarding auth failure: $error');
       debugPrint('[AuthRepository] StackTrace: $stackTrace');
@@ -156,15 +160,23 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<String?> getMyFullName() async {
+  Future<ProfileEntity> getMyProfile() async {
     try {
-      return await dataSource.getMyFullName();
+      final profile = await dataSource.getMyProfile();
+      return ProfileEntity(
+        fullName: profile['full_name'] as String?,
+        avatarUrl: profile['avatar_url'] as String?,
+        gender: ProfileGender.fromDatabaseValue(profile['gender'] as String?),
+        onboardingCompleted: profile['onboarding_completed'] as bool? ?? false,
+        fallbackFullName: profile['fallback_full_name'] as String?,
+        fallbackAvatarUrl: profile['fallback_avatar_url'] as String?,
+      );
     } on AuthException catch (error, stackTrace) {
-      debugPrint('[AuthRepository] getMyFullName auth failure: $error');
+      debugPrint('[AuthRepository] getMyProfile auth failure: $error');
       debugPrint('[AuthRepository] StackTrace: $stackTrace');
       throw AppException.auth(message: error.message, cause: error);
     } catch (error, stackTrace) {
-      debugPrint('[AuthRepository] getMyFullName unexpected failure: $error');
+      debugPrint('[AuthRepository] getMyProfile unexpected failure: $error');
       debugPrint('[AuthRepository] StackTrace: $stackTrace');
       throw AppException.unknown(
         message: 'Failed to load profile.',
@@ -174,58 +186,22 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<String?> getMyAvatarUrl() async {
+  Future<void> updateMyProfile({required UpdateProfileParams params}) async {
     try {
-      return await dataSource.getMyAvatarUrl();
+      await dataSource.updateMyProfile(
+        fullName: params.fullName,
+        gender: params.gender.databaseValue,
+        avatarUrl: params.avatarUrl,
+      );
     } on AuthException catch (error, stackTrace) {
-      debugPrint('[AuthRepository] getMyAvatarUrl auth failure: $error');
+      debugPrint('[AuthRepository] updateMyProfile auth failure: $error');
       debugPrint('[AuthRepository] StackTrace: $stackTrace');
       throw AppException.auth(message: error.message, cause: error);
     } catch (error, stackTrace) {
-      debugPrint('[AuthRepository] getMyAvatarUrl unexpected failure: $error');
-      debugPrint('[AuthRepository] StackTrace: $stackTrace');
-      throw AppException.unknown(
-        message: 'Failed to load profile image.',
-        cause: error,
-      );
-    }
-  }
-
-  @override
-  Future<void> updateMyFullName({required String fullName}) async {
-    try {
-      await dataSource.updateMyFullName(fullName: fullName);
-    } on AuthException catch (error, stackTrace) {
-      debugPrint('[AuthRepository] updateMyFullName auth failure: $error');
-      debugPrint('[AuthRepository] StackTrace: $stackTrace');
-      throw AppException.auth(message: error.message, cause: error);
-    } catch (error, stackTrace) {
-      debugPrint(
-        '[AuthRepository] updateMyFullName unexpected failure: $error',
-      );
+      debugPrint('[AuthRepository] updateMyProfile unexpected failure: $error');
       debugPrint('[AuthRepository] StackTrace: $stackTrace');
       throw AppException.unknown(
         message: 'Failed to update profile.',
-        cause: error,
-      );
-    }
-  }
-
-  @override
-  Future<void> updateMyAvatarUrl({required String avatarUrl}) async {
-    try {
-      await dataSource.updateMyAvatarUrl(avatarUrl: avatarUrl);
-    } on AuthException catch (error, stackTrace) {
-      debugPrint('[AuthRepository] updateMyAvatarUrl auth failure: $error');
-      debugPrint('[AuthRepository] StackTrace: $stackTrace');
-      throw AppException.auth(message: error.message, cause: error);
-    } catch (error, stackTrace) {
-      debugPrint(
-        '[AuthRepository] updateMyAvatarUrl unexpected failure: $error',
-      );
-      debugPrint('[AuthRepository] StackTrace: $stackTrace');
-      throw AppException.unknown(
-        message: 'Failed to update profile image.',
         cause: error,
       );
     }

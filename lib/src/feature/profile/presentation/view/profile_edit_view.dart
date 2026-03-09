@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/auth_session_provider.dart';
+import 'package:xontraining/src/feature/profile/infra/entity/profile_entity.dart';
 import 'package:xontraining/src/feature/profile/presentation/provider/profile_provider.dart';
 
 const int _maxAvatarBytes = 3 * 1024 * 1024;
@@ -29,7 +30,8 @@ class _ProfileEditViewState extends ConsumerState<ProfileEditView> {
 
   Uint8List? _selectedAvatarBytes;
   String? _selectedAvatarFileName;
-  bool _didHydrateName = false;
+  bool _didHydrateProfile = false;
+  ProfileGender? _selectedGender;
 
   @override
   void initState() {
@@ -120,10 +122,19 @@ class _ProfileEditViewState extends ConsumerState<ProfileEditView> {
       return;
     }
 
+    final gender = _selectedGender;
+    if (gender == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.profileGenderRequired)));
+      return;
+    }
+
     final success = await ref
         .read(profileControllerProvider.notifier)
         .saveProfile(
           fullName: fullName,
+          gender: gender,
           avatarBytes: _selectedAvatarBytes,
           avatarFileName: _selectedAvatarFileName,
         );
@@ -168,17 +179,14 @@ class _ProfileEditViewState extends ConsumerState<ProfileEditView> {
     );
     final session = ref.watch(authSessionProvider);
     final profileState = ref.watch(profileControllerProvider);
-    final fullNameState = ref.watch(profileFullNameProvider);
-    final avatarUrl = ref.watch(profileAvatarUrlProvider).asData?.value ?? '';
+    final profile = ref.watch(profileProvider).asData?.value;
+    final avatarUrl = profile?.displayAvatarUrl ?? '';
 
-    fullNameState.whenData((fullName) {
-      if (_didHydrateName) {
-        return;
-      }
-
-      _nameController.text = fullName;
-      _didHydrateName = true;
-    });
+    if (!_didHydrateProfile && profile != null) {
+      _nameController.text = profile.normalizedFullName;
+      _selectedGender = profile.gender;
+      _didHydrateProfile = true;
+    }
 
     final email = session.asData?.value?.email ?? '-';
 
@@ -236,6 +244,30 @@ class _ProfileEditViewState extends ConsumerState<ProfileEditView> {
                 focusedBorder: minimalFocusedBorder,
               ),
             ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<ProfileGender>(
+              initialValue: _selectedGender,
+              decoration: InputDecoration(
+                labelText: l10n.profileGenderLabel,
+                hintText: l10n.profileGenderHint,
+                filled: false,
+                enabledBorder: minimalEnabledBorder,
+                focusedBorder: minimalFocusedBorder,
+              ),
+              items: ProfileGender.values.map((gender) {
+                return DropdownMenuItem<ProfileGender>(
+                  value: gender,
+                  child: Text(_genderLabel(l10n, gender)),
+                );
+              }).toList(),
+              onChanged: profileState.isLoading
+                  ? null
+                  : (value) {
+                      setState(() {
+                        _selectedGender = value;
+                      });
+                    },
+            ),
             const SizedBox(height: 10),
             Text(
               l10n.profileSignedInAs(email),
@@ -252,6 +284,15 @@ class _ProfileEditViewState extends ConsumerState<ProfileEditView> {
         ),
       ),
     );
+  }
+
+  String _genderLabel(AppLocalizations l10n, ProfileGender gender) {
+    return switch (gender) {
+      ProfileGender.male => l10n.genderMale,
+      ProfileGender.female => l10n.genderFemale,
+      ProfileGender.other => l10n.genderOther,
+      ProfileGender.preferNotToSay => l10n.genderPreferNotToSay,
+    };
   }
 }
 

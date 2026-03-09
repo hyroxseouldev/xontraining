@@ -45,5 +45,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Continue'), findsOneWidget);
+    expect(find.text('Gender'), findsOneWidget);
   });
 }

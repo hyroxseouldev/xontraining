@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:xontraining/src/core/exception/app_exception.dart';
 import 'package:xontraining/src/feature/auth/infra/usecase/auth_usecases.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/auth_session_provider.dart';
+import 'package:xontraining/src/feature/profile/infra/entity/profile_entity.dart';
 
 part 'onboarding_provider.g.dart';
 
@@ -13,7 +14,8 @@ Future<bool> onboardingCompleted(Ref ref) async {
   }
 
   try {
-    return await ref.read(checkOnboardingStatusUseCaseProvider).call();
+    final profile = await ref.read(getMyProfileUseCaseProvider).call();
+    return profile.onboardingCompleted;
   } on AppException catch (error) {
     final shouldForceSignOut = error.maybeWhen(
       auth: (message, _) => message == 'Account has been deactivated.',
@@ -35,11 +37,20 @@ class OnboardingController extends _$OnboardingController {
     return const AsyncData(null);
   }
 
-  Future<bool> completeOnboarding({required String fullName}) async {
+  Future<bool> completeOnboarding({
+    required String fullName,
+    required ProfileGender gender,
+  }) async {
     state = const AsyncLoading();
     final nextState = await AsyncValue.guard(
-      () =>
-          ref.read(completeOnboardingUseCaseProvider).call(fullName: fullName),
+      () => ref
+          .read(completeOnboardingUseCaseProvider)
+          .call(
+            params: CompleteOnboardingParams(
+              fullName: fullName,
+              gender: gender,
+            ),
+          ),
     );
 
     if (!ref.mounted) {

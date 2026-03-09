@@ -264,6 +264,9 @@
   "profileNameLabel": "Name",
   "profileNameHint": "Enter your name",
   "profileNameRequired": "Please enter your name.",
+  "profileGenderLabel": "Gender",
+  "profileGenderHint": "Select your gender",
+  "profileGenderRequired": "Please select your gender.",
   "profileSignedInAs": "Signed in as {email}",
   "@profileSignedInAs": {
     "placeholders": {
@@ -287,6 +290,10 @@
       }
     }
   },
+  "genderMale": "Male",
+  "genderFemale": "Female",
+  "genderOther": "Other",
+  "genderPreferNotToSay": "Prefer not to say",
   "profileWorkoutRecordComingSoon": "Workout performance log page skeleton is ready.",
   "settingsTitle": "Settings",
   "settingsDescription": "Settings page skeleton is ready.",
@@ -409,6 +416,9 @@
   "onboardingNameLabel": "Name",
   "onboardingNameHint": "Enter your name",
   "onboardingNameRequired": "Please enter your name.",
+  "onboardingGenderLabel": "Gender",
+  "onboardingGenderHint": "Select your gender",
+  "onboardingGenderRequired": "Please select your gender.",
   "onboardingContinue": "Continue",
   "onboardingSaving": "Saving...",
   "onboardingSaveFailed": "Failed to save profile. Please try again."

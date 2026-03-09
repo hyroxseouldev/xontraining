@@ -5,51 +5,59 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/src/core/storage/storage_service.dart';
 import 'package:xontraining/src/feature/auth/data/repository/auth_repository.dart';
 import 'package:xontraining/src/feature/auth/infra/usecase/auth_usecases.dart';
+import 'package:xontraining/src/feature/profile/infra/entity/profile_entity.dart';
 import 'package:xontraining/src/feature/profile/presentation/provider/profile_provider.dart';
 
 void main() {
   group('ProfileController', () {
     test('saveProfile updates full name and returns true', () async {
-      final authRepository = _FakeAuthRepository(fullName: 'Before');
+      final authRepository = _FakeAuthRepository(
+        profile: const ProfileEntity(
+          fullName: 'Before',
+          gender: ProfileGender.male,
+        ),
+      );
       final storageService = _FakeStorageService();
 
       final container = ProviderContainer(
         overrides: [
-          getMyFullNameUseCaseProvider.overrideWithValue(
-            GetMyFullNameUseCase(repository: authRepository),
+          getMyProfileUseCaseProvider.overrideWithValue(
+            GetMyProfileUseCase(repository: authRepository),
           ),
-          getMyAvatarUrlUseCaseProvider.overrideWithValue(
-            GetMyAvatarUrlUseCase(repository: authRepository),
-          ),
-          updateMyFullNameUseCaseProvider.overrideWithValue(
-            UpdateMyFullNameUseCase(repository: authRepository),
-          ),
-          updateMyAvatarUrlUseCaseProvider.overrideWithValue(
-            UpdateMyAvatarUrlUseCase(repository: authRepository),
+          updateMyProfileUseCaseProvider.overrideWithValue(
+            UpdateMyProfileUseCase(repository: authRepository),
           ),
           storageServiceProvider.overrideWithValue(storageService),
         ],
       );
       addTearDown(container.dispose);
 
-      await container.read(profileFullNameProvider.future);
+      await container.read(profileProvider.future);
 
       final success = await container
           .read(profileControllerProvider.notifier)
-          .saveProfile(fullName: 'After');
+          .saveProfile(fullName: 'After', gender: ProfileGender.female);
 
-      final nextName = await container.read(profileFullNameProvider.future);
+      final nextProfile = await container.read(profileProvider.future);
 
       expect(success, isTrue);
-      expect(nextName, 'After');
-      expect(authRepository.updateFullNameCalls, 1);
-      expect(authRepository.lastUpdatedFullName, 'After');
+      expect(nextProfile.fullName, 'After');
+      expect(nextProfile.gender, ProfileGender.female);
+      expect(authRepository.updateProfileCalls, 1);
+      expect(authRepository.lastUpdatedProfileParams?.fullName, 'After');
+      expect(
+        authRepository.lastUpdatedProfileParams?.gender,
+        ProfileGender.female,
+      );
     });
 
     test('saveProfile uploads avatar and removes previous avatar', () async {
       final authRepository = _FakeAuthRepository(
-        fullName: 'Before',
-        avatarUrl: 'https://cdn.test/old-avatar.jpg',
+        profile: const ProfileEntity(
+          fullName: 'Before',
+          avatarUrl: 'https://cdn.test/old-avatar.jpg',
+          gender: ProfileGender.male,
+        ),
       );
       final storageService = _FakeStorageService(
         uploadedUrl: 'https://cdn.test/new-avatar.jpg',
@@ -57,17 +65,11 @@ void main() {
 
       final container = ProviderContainer(
         overrides: [
-          getMyFullNameUseCaseProvider.overrideWithValue(
-            GetMyFullNameUseCase(repository: authRepository),
+          getMyProfileUseCaseProvider.overrideWithValue(
+            GetMyProfileUseCase(repository: authRepository),
           ),
-          getMyAvatarUrlUseCaseProvider.overrideWithValue(
-            GetMyAvatarUrlUseCase(repository: authRepository),
-          ),
-          updateMyFullNameUseCaseProvider.overrideWithValue(
-            UpdateMyFullNameUseCase(repository: authRepository),
-          ),
-          updateMyAvatarUrlUseCaseProvider.overrideWithValue(
-            UpdateMyAvatarUrlUseCase(repository: authRepository),
+          updateMyProfileUseCaseProvider.overrideWithValue(
+            UpdateMyProfileUseCase(repository: authRepository),
           ),
           storageServiceProvider.overrideWithValue(storageService),
         ],
@@ -78,6 +80,7 @@ void main() {
           .read(profileControllerProvider.notifier)
           .saveProfile(
             fullName: 'After',
+            gender: ProfileGender.other,
             avatarBytes: Uint8List.fromList(const [1, 2, 3]),
             avatarFileName: 'avatar.png',
           );
@@ -86,8 +89,12 @@ void main() {
       expect(storageService.uploadAvatarCalls, 1);
       expect(storageService.lastUploadedFileName, 'avatar.png');
       expect(
-        authRepository.lastUpdatedAvatarUrl,
+        authRepository.lastUpdatedProfileParams?.avatarUrl,
         'https://cdn.test/new-avatar.jpg',
+      );
+      expect(
+        authRepository.lastUpdatedProfileParams?.gender,
+        ProfileGender.other,
       );
       expect(storageService.removedAvatarUrls, [
         'https://cdn.test/old-avatar.jpg',
@@ -96,24 +103,21 @@ void main() {
 
     test('saveProfile returns false when upload fails', () async {
       final authRepository = _FakeAuthRepository(
-        fullName: 'Before',
-        avatarUrl: 'https://cdn.test/old-avatar.jpg',
+        profile: const ProfileEntity(
+          fullName: 'Before',
+          avatarUrl: 'https://cdn.test/old-avatar.jpg',
+          gender: ProfileGender.male,
+        ),
       );
       final storageService = _FakeStorageService(throwOnUpload: true);
 
       final container = ProviderContainer(
         overrides: [
-          getMyFullNameUseCaseProvider.overrideWithValue(
-            GetMyFullNameUseCase(repository: authRepository),
+          getMyProfileUseCaseProvider.overrideWithValue(
+            GetMyProfileUseCase(repository: authRepository),
           ),
-          getMyAvatarUrlUseCaseProvider.overrideWithValue(
-            GetMyAvatarUrlUseCase(repository: authRepository),
-          ),
-          updateMyFullNameUseCaseProvider.overrideWithValue(
-            UpdateMyFullNameUseCase(repository: authRepository),
-          ),
-          updateMyAvatarUrlUseCaseProvider.overrideWithValue(
-            UpdateMyAvatarUrlUseCase(repository: authRepository),
+          updateMyProfileUseCaseProvider.overrideWithValue(
+            UpdateMyProfileUseCase(repository: authRepository),
           ),
           storageServiceProvider.overrideWithValue(storageService),
         ],
@@ -124,51 +128,46 @@ void main() {
           .read(profileControllerProvider.notifier)
           .saveProfile(
             fullName: 'After',
+            gender: ProfileGender.preferNotToSay,
             avatarBytes: Uint8List.fromList(const [1, 2, 3]),
             avatarFileName: 'avatar.png',
           );
 
       expect(success, isFalse);
       expect(container.read(profileControllerProvider).hasError, isTrue);
-      expect(authRepository.updateAvatarUrlCalls, 0);
+      expect(authRepository.updateProfileCalls, 0);
       expect(storageService.removedAvatarUrls, isEmpty);
     });
   });
 }
 
 class _FakeAuthRepository implements AuthRepository {
-  _FakeAuthRepository({required this.fullName, this.avatarUrl});
+  _FakeAuthRepository({required this.profile});
 
-  String? fullName;
-  String? avatarUrl;
+  ProfileEntity profile;
 
-  int updateFullNameCalls = 0;
-  int updateAvatarUrlCalls = 0;
-  String? lastUpdatedFullName;
-  String? lastUpdatedAvatarUrl;
+  int updateProfileCalls = 0;
+  UpdateProfileParams? lastUpdatedProfileParams;
 
   @override
-  Future<String?> getMyFullName() async => fullName;
+  Future<ProfileEntity> getMyProfile() async => profile;
 
   @override
-  Future<String?> getMyAvatarUrl() async => avatarUrl;
-
-  @override
-  Future<void> updateMyFullName({required String fullName}) async {
-    updateFullNameCalls += 1;
-    lastUpdatedFullName = fullName;
-    this.fullName = fullName;
+  Future<void> updateMyProfile({required UpdateProfileParams params}) async {
+    updateProfileCalls += 1;
+    lastUpdatedProfileParams = params;
+    profile = ProfileEntity(
+      fullName: params.fullName,
+      avatarUrl: params.avatarUrl,
+      gender: params.gender,
+      onboardingCompleted: profile.onboardingCompleted,
+      fallbackFullName: profile.fallbackFullName,
+      fallbackAvatarUrl: profile.fallbackAvatarUrl,
+    );
   }
 
   @override
-  Future<void> updateMyAvatarUrl({required String avatarUrl}) async {
-    updateAvatarUrlCalls += 1;
-    lastUpdatedAvatarUrl = avatarUrl;
-    this.avatarUrl = avatarUrl;
-  }
-
-  @override
-  Future<void> completeOnboarding({required String fullName}) {
+  Future<void> completeOnboarding({required CompleteOnboardingParams params}) {
     throw UnimplementedError();
   }
 

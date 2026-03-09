@@ -16,11 +16,16 @@ abstract interface class AuthDataSource {
   Future<void> signInWithApple();
   Future<void> signOut();
   Future<bool> isOnboardingCompleted();
-  Future<void> completeOnboarding({required String fullName});
-  Future<String?> getMyFullName();
-  Future<String?> getMyAvatarUrl();
-  Future<void> updateMyFullName({required String fullName});
-  Future<void> updateMyAvatarUrl({required String avatarUrl});
+  Future<void> completeOnboarding({
+    required String fullName,
+    required String gender,
+  });
+  Future<Map<String, dynamic>> getMyProfile();
+  Future<void> updateMyProfile({
+    String? fullName,
+    String? gender,
+    String? avatarUrl,
+  });
   Future<String?> getMyTenantRole({required String tenantId});
   Future<void> deleteMyAccount({required String tenantId});
 }
@@ -113,7 +118,10 @@ class SupabaseAuthDataSource implements AuthDataSource {
   }
 
   @override
-  Future<void> completeOnboarding({required String fullName}) async {
+  Future<void> completeOnboarding({
+    required String fullName,
+    required String gender,
+  }) async {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) {
       throw AuthException('No authenticated user found.');
@@ -121,76 +129,68 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
     await supabase
         .from('profiles')
-        .update({'full_name': fullName.trim(), 'onboarding_completed': true})
+        .update({
+          'full_name': fullName.trim(),
+          'gender': gender.trim(),
+          'onboarding_completed': true,
+        })
         .eq('id', userId);
   }
 
   @override
-  Future<String?> getMyFullName() async {
+  Future<Map<String, dynamic>> getMyProfile() async {
     final userId = supabase.auth.currentUser?.id;
+    final userMetadata = supabase.auth.currentUser?.userMetadata;
     if (userId == null) {
       throw AuthException('No authenticated user found.');
     }
 
     final profile = await supabase
         .from('profiles')
-        .select('full_name')
+        .select('full_name,avatar_url,gender,onboarding_completed,is_deleted')
         .eq('id', userId)
         .maybeSingle();
 
-    final fullName = profile?['full_name'];
-    if (fullName is String && fullName.trim().isNotEmpty) {
-      return fullName;
+    final isDeleted = profile?['is_deleted'];
+    if (isDeleted is bool && isDeleted) {
+      throw AuthException('Account has been deactivated.');
     }
 
-    return null;
+    return <String, dynamic>{
+      ...?profile,
+      'fallback_full_name': userMetadata?['full_name'],
+      'fallback_avatar_url':
+          userMetadata?['avatar_url'] ?? userMetadata?['picture'],
+    };
   }
 
   @override
-  Future<String?> getMyAvatarUrl() async {
+  Future<void> updateMyProfile({
+    String? fullName,
+    String? gender,
+    String? avatarUrl,
+  }) async {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) {
       throw AuthException('No authenticated user found.');
     }
 
-    final profile = await supabase
-        .from('profiles')
-        .select('avatar_url')
-        .eq('id', userId)
-        .maybeSingle();
-
-    final avatarUrl = profile?['avatar_url'];
-    if (avatarUrl is String && avatarUrl.trim().isNotEmpty) {
-      return avatarUrl;
+    final updatePayload = <String, dynamic>{};
+    if (fullName != null) {
+      updatePayload['full_name'] = fullName.trim();
+    }
+    if (gender != null) {
+      updatePayload['gender'] = gender.trim();
+    }
+    if (avatarUrl != null) {
+      updatePayload['avatar_url'] = avatarUrl.trim();
     }
 
-    return null;
-  }
-
-  @override
-  Future<void> updateMyFullName({required String fullName}) async {
-    final userId = supabase.auth.currentUser?.id;
-    if (userId == null) {
-      throw AuthException('No authenticated user found.');
+    if (updatePayload.isEmpty) {
+      return;
     }
 
-    await supabase
-        .from('profiles')
-        .update({'full_name': fullName.trim()})
-        .eq('id', userId);
-  }
-
-  @override
-  Future<void> updateMyAvatarUrl({required String avatarUrl}) async {
-    final userId = supabase.auth.currentUser?.id;
-    if (userId == null) {
-      throw AuthException('No authenticated user found.');
-    }
-
-    await supabase
-        .from('profiles')
-        .update({'avatar_url': avatarUrl.trim()})
-        .eq('id', userId);
+    await supabase.from('profiles').update(updatePayload).eq('id', userId);
   }
 
   @override

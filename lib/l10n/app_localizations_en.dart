@@ -471,6 +471,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileNameRequired => 'Please enter your name.';
 
   @override
+  String get profileGenderLabel => 'Gender';
+
+  @override
+  String get profileGenderHint => 'Select your gender';
+
+  @override
+  String get profileGenderRequired => 'Please select your gender.';
+
+  @override
   String profileSignedInAs(Object email) {
     return 'Signed in as $email';
   }
@@ -508,6 +517,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String profileEditImageTooLarge(int maxMb) {
     return 'Image is too large. Please select up to ${maxMb}MB.';
   }
+
+  @override
+  String get genderMale => 'Male';
+
+  @override
+  String get genderFemale => 'Female';
+
+  @override
+  String get genderOther => 'Other';
+
+  @override
+  String get genderPreferNotToSay => 'Prefer not to say';
 
   @override
   String get profileWorkoutRecordComingSoon =>
@@ -806,6 +827,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingNameRequired => 'Please enter your name.';
+
+  @override
+  String get onboardingGenderLabel => 'Gender';
+
+  @override
+  String get onboardingGenderHint => 'Select your gender';
+
+  @override
+  String get onboardingGenderRequired => 'Please select your gender.';
 
   @override
   String get onboardingContinue => 'Continue';

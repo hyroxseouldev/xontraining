@@ -9,71 +9,44 @@ part of 'profile_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(profileFullName)
-final profileFullNameProvider = ProfileFullNameProvider._();
+@ProviderFor(profile)
+final profileProvider = ProfileProvider._();
 
-final class ProfileFullNameProvider
-    extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
-    with $FutureModifier<String>, $FutureProvider<String> {
-  ProfileFullNameProvider._()
+final class ProfileProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ProfileEntity>,
+          ProfileEntity,
+          FutureOr<ProfileEntity>
+        >
+    with $FutureModifier<ProfileEntity>, $FutureProvider<ProfileEntity> {
+  ProfileProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'profileFullNameProvider',
+        name: r'profileProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$profileFullNameHash();
+  String debugGetCreateSourceHash() => _$profileHash();
 
   @$internal
   @override
-  $FutureProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+  $FutureProviderElement<ProfileEntity> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
-  FutureOr<String> create(Ref ref) {
-    return profileFullName(ref);
+  FutureOr<ProfileEntity> create(Ref ref) {
+    return profile(ref);
   }
 }
 
-String _$profileFullNameHash() => r'5f730405f576887e00dfd82e4d06b02027849a8a';
-
-@ProviderFor(profileAvatarUrl)
-final profileAvatarUrlProvider = ProfileAvatarUrlProvider._();
-
-final class ProfileAvatarUrlProvider
-    extends $FunctionalProvider<AsyncValue<String?>, String?, FutureOr<String?>>
-    with $FutureModifier<String?>, $FutureProvider<String?> {
-  ProfileAvatarUrlProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'profileAvatarUrlProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$profileAvatarUrlHash();
-
-  @$internal
-  @override
-  $FutureProviderElement<String?> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<String?> create(Ref ref) {
-    return profileAvatarUrl(ref);
-  }
-}
-
-String _$profileAvatarUrlHash() => r'6b8b65857c56d8ca585c41cb38bdf36c13a4e72e';
+String _$profileHash() => r'4f7d7446d963a65e537ed7eed2abd62ba184c080';
 
 @ProviderFor(profileTenantRole)
 final profileTenantRoleProvider = ProfileTenantRoleProvider._();
@@ -173,7 +146,7 @@ final class ProfileControllerProvider
   }
 }
 
-String _$profileControllerHash() => r'4e7e8a23ad34922e2f595d145625ded7584d5b45';
+String _$profileControllerHash() => r'72babe1523283fb40cde2144bcd3fdfbc716d88c';
 
 abstract class _$ProfileController extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();

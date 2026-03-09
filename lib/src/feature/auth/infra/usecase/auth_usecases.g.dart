@@ -243,197 +243,101 @@ final class CompleteOnboardingUseCaseProvider
 String _$completeOnboardingUseCaseHash() =>
     r'b6b5e4648edd3eb4859c647fb8f9dd118b3147f0';
 
-@ProviderFor(getMyFullNameUseCase)
-final getMyFullNameUseCaseProvider = GetMyFullNameUseCaseProvider._();
+@ProviderFor(getMyProfileUseCase)
+final getMyProfileUseCaseProvider = GetMyProfileUseCaseProvider._();
 
-final class GetMyFullNameUseCaseProvider
+final class GetMyProfileUseCaseProvider
     extends
         $FunctionalProvider<
-          GetMyFullNameUseCase,
-          GetMyFullNameUseCase,
-          GetMyFullNameUseCase
+          GetMyProfileUseCase,
+          GetMyProfileUseCase,
+          GetMyProfileUseCase
         >
-    with $Provider<GetMyFullNameUseCase> {
-  GetMyFullNameUseCaseProvider._()
+    with $Provider<GetMyProfileUseCase> {
+  GetMyProfileUseCaseProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'getMyFullNameUseCaseProvider',
+        name: r'getMyProfileUseCaseProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$getMyFullNameUseCaseHash();
+  String debugGetCreateSourceHash() => _$getMyProfileUseCaseHash();
 
   @$internal
   @override
-  $ProviderElement<GetMyFullNameUseCase> $createElement(
+  $ProviderElement<GetMyProfileUseCase> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  GetMyFullNameUseCase create(Ref ref) {
-    return getMyFullNameUseCase(ref);
+  GetMyProfileUseCase create(Ref ref) {
+    return getMyProfileUseCase(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GetMyFullNameUseCase value) {
+  Override overrideWithValue(GetMyProfileUseCase value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<GetMyFullNameUseCase>(value),
+      providerOverride: $SyncValueProvider<GetMyProfileUseCase>(value),
     );
   }
 }
 
-String _$getMyFullNameUseCaseHash() =>
-    r'd53b5f499f38a0348a7488cb41badccfa4fb726c';
+String _$getMyProfileUseCaseHash() =>
+    r'569ca892ae057ae2eff22a0cca7b633b1d5c3091';
 
-@ProviderFor(getMyAvatarUrlUseCase)
-final getMyAvatarUrlUseCaseProvider = GetMyAvatarUrlUseCaseProvider._();
+@ProviderFor(updateMyProfileUseCase)
+final updateMyProfileUseCaseProvider = UpdateMyProfileUseCaseProvider._();
 
-final class GetMyAvatarUrlUseCaseProvider
+final class UpdateMyProfileUseCaseProvider
     extends
         $FunctionalProvider<
-          GetMyAvatarUrlUseCase,
-          GetMyAvatarUrlUseCase,
-          GetMyAvatarUrlUseCase
+          UpdateMyProfileUseCase,
+          UpdateMyProfileUseCase,
+          UpdateMyProfileUseCase
         >
-    with $Provider<GetMyAvatarUrlUseCase> {
-  GetMyAvatarUrlUseCaseProvider._()
+    with $Provider<UpdateMyProfileUseCase> {
+  UpdateMyProfileUseCaseProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'getMyAvatarUrlUseCaseProvider',
+        name: r'updateMyProfileUseCaseProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$getMyAvatarUrlUseCaseHash();
+  String debugGetCreateSourceHash() => _$updateMyProfileUseCaseHash();
 
   @$internal
   @override
-  $ProviderElement<GetMyAvatarUrlUseCase> $createElement(
+  $ProviderElement<UpdateMyProfileUseCase> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  GetMyAvatarUrlUseCase create(Ref ref) {
-    return getMyAvatarUrlUseCase(ref);
+  UpdateMyProfileUseCase create(Ref ref) {
+    return updateMyProfileUseCase(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GetMyAvatarUrlUseCase value) {
+  Override overrideWithValue(UpdateMyProfileUseCase value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<GetMyAvatarUrlUseCase>(value),
+      providerOverride: $SyncValueProvider<UpdateMyProfileUseCase>(value),
     );
   }
 }
 
-String _$getMyAvatarUrlUseCaseHash() =>
-    r'c13f1eb213ff8f8652cdc6913fe57d76555db898';
-
-@ProviderFor(updateMyFullNameUseCase)
-final updateMyFullNameUseCaseProvider = UpdateMyFullNameUseCaseProvider._();
-
-final class UpdateMyFullNameUseCaseProvider
-    extends
-        $FunctionalProvider<
-          UpdateMyFullNameUseCase,
-          UpdateMyFullNameUseCase,
-          UpdateMyFullNameUseCase
-        >
-    with $Provider<UpdateMyFullNameUseCase> {
-  UpdateMyFullNameUseCaseProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'updateMyFullNameUseCaseProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$updateMyFullNameUseCaseHash();
-
-  @$internal
-  @override
-  $ProviderElement<UpdateMyFullNameUseCase> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  UpdateMyFullNameUseCase create(Ref ref) {
-    return updateMyFullNameUseCase(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(UpdateMyFullNameUseCase value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<UpdateMyFullNameUseCase>(value),
-    );
-  }
-}
-
-String _$updateMyFullNameUseCaseHash() =>
-    r'2cd3d59bed9d6228e3f290a3f81d5c848b93807f';
-
-@ProviderFor(updateMyAvatarUrlUseCase)
-final updateMyAvatarUrlUseCaseProvider = UpdateMyAvatarUrlUseCaseProvider._();
-
-final class UpdateMyAvatarUrlUseCaseProvider
-    extends
-        $FunctionalProvider<
-          UpdateMyAvatarUrlUseCase,
-          UpdateMyAvatarUrlUseCase,
-          UpdateMyAvatarUrlUseCase
-        >
-    with $Provider<UpdateMyAvatarUrlUseCase> {
-  UpdateMyAvatarUrlUseCaseProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'updateMyAvatarUrlUseCaseProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$updateMyAvatarUrlUseCaseHash();
-
-  @$internal
-  @override
-  $ProviderElement<UpdateMyAvatarUrlUseCase> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  UpdateMyAvatarUrlUseCase create(Ref ref) {
-    return updateMyAvatarUrlUseCase(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(UpdateMyAvatarUrlUseCase value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<UpdateMyAvatarUrlUseCase>(value),
-    );
-  }
-}
-
-String _$updateMyAvatarUrlUseCaseHash() =>
-    r'c330abe8941b4d7828885493c82719b44dca38ff';
+String _$updateMyProfileUseCaseHash() =>
+    r'5c1ad1ca16f66933d8c2b7a639128e4f667ee7dd';
 
 @ProviderFor(getMyTenantRoleUseCase)
 final getMyTenantRoleUseCaseProvider = GetMyTenantRoleUseCaseProvider._();
