@@ -125,6 +125,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get communityContentHint => '내용을 입력해 주세요.';
 
   @override
+  String get communityWriteGuidelineTitle => '커뮤니티 가이드라인';
+
+  @override
+  String get communityWriteGuidelineBody =>
+      '서로를 존중하는 표현으로 작성해 주세요. 욕설, 비방, 혐오 표현, 명예훼손성 내용은 허용되지 않으며 반복 위반 시 커뮤니티 이용이 제한될 수 있습니다.';
+
+  @override
   String get communityContentRequired => '게시글 내용을 입력해 주세요.';
 
   @override
@@ -150,6 +157,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get communityCommentHint => '댓글을 입력해 주세요';
+
+  @override
+  String get communityCommentGuideline => '욕설/비방 표현은 금지됩니다.';
 
   @override
   String get communityCommentSend => '등록';

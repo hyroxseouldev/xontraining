@@ -9,20 +9,20 @@ class CommunityFeedLoadingSkeleton extends StatelessWidget {
     final isTablet = LayoutBreakpoints.isTablet(context);
     if (!isTablet) {
       return ListView.separated(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
+        padding: const EdgeInsets.fromLTRB(12, 6, 12, 84),
         itemCount: 5,
-        separatorBuilder: (context, index) => const SizedBox(height: 10),
+        separatorBuilder: (context, index) => const SizedBox(height: 6),
         itemBuilder: (context, index) => const _FeedSkeletonCard(),
       );
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
+      padding: const EdgeInsets.fromLTRB(12, 6, 12, 84),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
-        childAspectRatio: 0.78,
+        childAspectRatio: 1.05,
       ),
       itemCount: 6,
       itemBuilder: (context, index) => const _FeedSkeletonCard(),
@@ -73,34 +73,40 @@ class _FeedSkeletonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.fromLTRB(14, 12, 14, 12),
+      padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              CommunityShimmerBox(height: 32, width: 32, isCircle: true),
-              SizedBox(width: 10),
+              CommunityShimmerBox(height: 26, width: 26, isCircle: true),
+              SizedBox(width: 8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CommunityShimmerBox(height: 14, width: 120),
-                    SizedBox(height: 6),
-                    CommunityShimmerBox(height: 12, width: 180),
+                    CommunityShimmerBox(height: 13, width: 100),
+                    SizedBox(height: 4),
+                    CommunityShimmerBox(height: 10, width: 140),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: 10),
-          CommunityShimmerBox(height: 14),
           SizedBox(height: 8),
-          CommunityShimmerBox(height: 14, width: 240),
-          SizedBox(height: 10),
-          CommunityShimmerBox(height: 160),
-          SizedBox(height: 10),
-          CommunityShimmerBox(height: 24, width: 150),
+          CommunityShimmerBox(height: 14),
+          SizedBox(height: 4),
+          CommunityShimmerBox(height: 14, width: 140),
+          SizedBox(height: 6),
+          Row(
+            children: [
+              CommunityShimmerBox(height: 64, width: 64),
+              SizedBox(width: 6),
+              CommunityShimmerBox(height: 64, width: 64),
+            ],
+          ),
+          SizedBox(height: 6),
+          CommunityShimmerBox(height: 20, width: 120),
         ],
       ),
     );

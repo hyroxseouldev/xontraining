@@ -151,14 +151,14 @@ class CommunityView extends HookConsumerWidget {
                         physics: const AlwaysScrollableScrollPhysics(),
                         slivers: [
                           SliverPadding(
-                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
+                            padding: const EdgeInsets.fromLTRB(12, 6, 12, 84),
                             sliver: SliverGrid(
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     crossAxisSpacing: 12,
                                     mainAxisSpacing: 12,
-                                    childAspectRatio: 0.78,
+                                    childAspectRatio: 1.05,
                                   ),
                               delegate: SliverChildBuilderDelegate((
                                 context,
@@ -330,14 +330,14 @@ class CommunityView extends HookConsumerWidget {
                     : ListView.separated(
                         controller: scrollController,
                         physics: const AlwaysScrollableScrollPhysics(),
-                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
+                        padding: const EdgeInsets.fromLTRB(12, 6, 12, 84),
                         itemCount:
                             feed.items.length +
                             ((feed.isLoadingMore || feed.hasLoadMoreError)
                                 ? 1
                                 : 0),
                         separatorBuilder: (context, index) =>
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 6),
                         itemBuilder: (context, index) {
                           if (index >= feed.items.length) {
                             return _CommunityLoadMoreSection(
@@ -563,7 +563,7 @@ class _CommunityPostCard extends StatelessWidget {
         child: Ink(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -571,9 +571,9 @@ class _CommunityPostCard extends StatelessWidget {
                   children: [
                     _CommunityAvatar(
                       imageUrl: post.normalizedAuthorAvatarUrl,
-                      radius: 16,
+                      radius: 13,
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -583,7 +583,7 @@ class _CommunityPostCard extends StatelessWidget {
                               Flexible(
                                 child: Text(
                                   post.normalizedAuthorName,
-                                  style: Theme.of(context).textTheme.labelLarge
+                                  style: Theme.of(context).textTheme.labelMedium
                                       ?.copyWith(fontWeight: FontWeight.w700),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -597,10 +597,10 @@ class _CommunityPostCard extends StatelessWidget {
                               ],
                             ],
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: 1),
                           Text(
                             dateTimeLabel,
-                            style: Theme.of(context).textTheme.bodySmall
+                            style: Theme.of(context).textTheme.labelSmall
                                 ?.copyWith(
                                   color: Theme.of(
                                     context,
@@ -642,21 +642,27 @@ class _CommunityPostCard extends StatelessWidget {
                             ),
                           ];
                         },
+                        iconSize: 18,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(
+                          minWidth: 28,
+                          minHeight: 28,
+                        ),
                       ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 6),
                 Text(
                   previewText,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  maxLines: 4,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 if (post.normalizedImageUrls.isNotEmpty) ...[
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 6),
                   _FeedImagePreview(imageUrls: post.normalizedImageUrls),
                 ],
-                const SizedBox(height: 12),
+                const SizedBox(height: 4),
                 Row(
                   children: [
                     IconButton(
@@ -665,14 +671,22 @@ class _CommunityPostCard extends StatelessWidget {
                         post.isLikedByMe
                             ? Icons.favorite_rounded
                             : Icons.favorite_border_rounded,
-                        size: 20,
+                        size: 18,
                       ),
-                      visualDensity: VisualDensity.compact,
+                      visualDensity: const VisualDensity(
+                        horizontal: -4,
+                        vertical: -4,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(
+                        minWidth: 28,
+                        minHeight: 28,
+                      ),
                     ),
                     Text('${post.likeCount}'),
-                    const SizedBox(width: 12),
-                    const Icon(Icons.chat_bubble_outline, size: 18),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.chat_bubble_outline, size: 16),
+                    const SizedBox(width: 4),
                     Text('${post.commentCount}'),
                   ],
                 ),
@@ -861,53 +875,63 @@ class _FeedImagePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firstImageUrl = imageUrls.first;
+    final visibleCount = imageUrls.length > 2 ? 2 : imageUrls.length;
+    final remainingCount = imageUrls.length - visibleCount;
+
     return InkWell(
       borderRadius: BorderRadius.circular(10),
       onTap: () => showCommunityImageViewer(context, imageUrls: imageUrls),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              CachedNetworkImage(
-                imageUrl: firstImageUrl,
-                fit: BoxFit.cover,
-                placeholder: (context, imageUrl) =>
-                    const ColoredBox(color: Colors.black12),
-                errorWidget: (context, imageUrl, error) => const ColoredBox(
-                  color: Colors.black12,
-                  child: Center(child: Icon(Icons.broken_image_outlined)),
-                ),
-              ),
-              if (imageUrls.length > 1)
-                Positioned(
-                  right: 8,
-                  bottom: 8,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+        height: 64,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: visibleCount,
+          separatorBuilder: (context, index) => const SizedBox(width: 6),
+          itemBuilder: (context, index) {
+            final imageUrl = imageUrls[index];
+            final showMoreBadge =
+                index == visibleCount - 1 && remainingCount > 0;
+
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: SizedBox(
+                width: 64,
+                height: 64,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (context, imageUrl) =>
+                          const ColoredBox(color: Colors.black12),
+                      errorWidget: (context, imageUrl, error) =>
+                          const ColoredBox(
+                            color: Colors.black12,
+                            child: Center(
+                              child: Icon(Icons.broken_image_outlined),
+                            ),
+                          ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      child: Text(
-                        '+${imageUrls.length - 1}',
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
+                    if (showMoreBadge)
+                      ColoredBox(
+                        color: Colors.black45,
+                        child: Center(
+                          child: Text(
+                            '+$remainingCount',
+                            style: Theme.of(context).textTheme.labelLarge
+                                ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                  ],
                 ),
-            ],
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -923,7 +947,7 @@ class _CommunityCoachBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
       decoration: BoxDecoration(
         color: colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(999),

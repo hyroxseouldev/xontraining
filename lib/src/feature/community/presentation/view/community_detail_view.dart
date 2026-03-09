@@ -210,29 +210,44 @@ class _CommunityDetailViewState extends ConsumerState<CommunityDetailView> {
                     top: false,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _commentController,
-                              enabled: !actionState.isLoading,
-                              maxLines: 3,
-                              minLines: 1,
-                              decoration: InputDecoration(
-                                hintText: l10n.communityCommentHint,
-                                filled: false,
-                                enabledBorder: minimalEnabledBorder,
-                                focusedBorder: minimalFocusedBorder,
-                                isDense: true,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _commentController,
+                                  enabled: !actionState.isLoading,
+                                  maxLines: 3,
+                                  minLines: 1,
+                                  decoration: InputDecoration(
+                                    hintText: l10n.communityCommentHint,
+                                    filled: false,
+                                    enabledBorder: minimalEnabledBorder,
+                                    focusedBorder: minimalFocusedBorder,
+                                    isDense: true,
+                                  ),
+                                ),
                               ),
-                            ),
+                              const SizedBox(width: 8),
+                              FilledButton(
+                                onPressed: actionState.isLoading
+                                    ? null
+                                    : () => _onCommentSubmitPressed(context),
+                                child: Text(l10n.communityCommentSend),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          FilledButton(
-                            onPressed: actionState.isLoading
-                                ? null
-                                : () => _onCommentSubmitPressed(context),
-                            child: Text(l10n.communityCommentSend),
+                          const SizedBox(height: 6),
+                          Text(
+                            l10n.communityCommentGuideline,
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
                           ),
                         ],
                       ),

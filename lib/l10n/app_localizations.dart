@@ -326,6 +326,18 @@ abstract class AppLocalizations {
   /// **'Share your thoughts.'**
   String get communityContentHint;
 
+  /// No description provided for @communityWriteGuidelineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Community Guidelines'**
+  String get communityWriteGuidelineTitle;
+
+  /// No description provided for @communityWriteGuidelineBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please communicate respectfully. Profanity, personal attacks, hate speech, and defamatory content are not allowed. Repeated violations may result in restricted community access.'**
+  String get communityWriteGuidelineBody;
+
   /// No description provided for @communityContentRequired.
   ///
   /// In en, this message translates to:
@@ -379,6 +391,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Write a comment'**
   String get communityCommentHint;
+
+  /// No description provided for @communityCommentGuideline.
+  ///
+  /// In en, this message translates to:
+  /// **'No profanity or personal attacks.'**
+  String get communityCommentGuideline;
 
   /// No description provided for @communityCommentSend.
   ///

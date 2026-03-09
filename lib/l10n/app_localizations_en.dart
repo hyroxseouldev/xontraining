@@ -128,6 +128,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get communityContentHint => 'Share your thoughts.';
 
   @override
+  String get communityWriteGuidelineTitle => 'Community Guidelines';
+
+  @override
+  String get communityWriteGuidelineBody =>
+      'Please communicate respectfully. Profanity, personal attacks, hate speech, and defamatory content are not allowed. Repeated violations may result in restricted community access.';
+
+  @override
   String get communityContentRequired => 'Please enter post content.';
 
   @override
@@ -155,6 +162,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get communityCommentHint => 'Write a comment';
+
+  @override
+  String get communityCommentGuideline => 'No profanity or personal attacks.';
 
   @override
   String get communityCommentSend => 'Send';
