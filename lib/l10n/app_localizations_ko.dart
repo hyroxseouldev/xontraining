@@ -481,6 +481,53 @@ class AppLocalizationsKo extends AppLocalizations {
   String get profileMenuTitle => '메뉴';
 
   @override
+  String get profileMyPrograms => '내 프로그램';
+
+  @override
+  String get profileMyProgramsActive => '활성';
+
+  @override
+  String get profileMyProgramsInactive => '비활성';
+
+  @override
+  String get profileMyProgramsLoadFailed => '내 프로그램을 불러오지 못했습니다.';
+
+  @override
+  String get profileMyProgramsLoadMoreFailed => '프로그램을 더 불러오지 못했습니다.';
+
+  @override
+  String get profileMyProgramsRetry => '다시 시도';
+
+  @override
+  String get profileMyProgramsActivationPeriod => '활성화 기간';
+
+  @override
+  String get profileMyProgramsNoStartDate => '시작일 정보 없음';
+
+  @override
+  String get profileMyProgramsIndefinite => '종료일 없음';
+
+  @override
+  String get profileMyProgramsOpenEnded => '상시 이용';
+
+  @override
+  String get profileMyProgramsExpired => '이용 종료';
+
+  @override
+  String get profileMyProgramsEndsToday => '오늘 종료';
+
+  @override
+  String profileMyProgramsDday(int days) {
+    return 'D-$days';
+  }
+
+  @override
+  String get profileMyProgramsEmptyActive => '현재 활성화된 프로그램이 없어요.';
+
+  @override
+  String get profileMyProgramsEmptyInactive => '비활성 프로그램이 없어요.';
+
+  @override
   String get profileWorkoutRecord => '내 운동 능력 기록';
 
   @override

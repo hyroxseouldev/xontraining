@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
@@ -8,8 +7,7 @@ import 'package:xontraining/src/core/router/app_router.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/auth_session_provider.dart';
 import 'package:xontraining/src/feature/community/infra/entity/community_entity.dart';
 import 'package:xontraining/src/feature/community/presentation/provider/community_provider.dart';
-import 'package:xontraining/src/feature/community/presentation/view/community_view_helper.dart';
-import 'package:xontraining/src/feature/community/presentation/widget/community_image_viewer.dart';
+import 'package:xontraining/src/feature/community/presentation/widget/community_post_card.dart';
 import 'package:xontraining/src/feature/community/presentation/widget/community_skeleton.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
 import 'package:xontraining/src/shared/layout_breakpoints.dart';
@@ -158,14 +156,14 @@ class CommunityView extends HookConsumerWidget {
                                     crossAxisCount: 2,
                                     crossAxisSpacing: 12,
                                     mainAxisSpacing: 12,
-                                    childAspectRatio: 1.05,
+                                    childAspectRatio: 0.84,
                                   ),
                               delegate: SliverChildBuilderDelegate((
                                 context,
                                 index,
                               ) {
                                 final post = feed.items[index];
-                                return _CommunityPostCard(
+                                return CommunityPostCard(
                                   post: post,
                                   isMine: currentUserId == post.authorId,
                                   onTap: () {
@@ -185,6 +183,50 @@ class CommunityView extends HookConsumerWidget {
                                           currentLike: post.isLikedByMe,
                                         );
                                   },
+                                  onEditPressed:
+                                      !actionState.isLoading &&
+                                          currentUserId == post.authorId
+                                      ? () {
+                                          context.pushNamed(
+                                            AppRoutes.communityEditName,
+                                            pathParameters: {'postId': post.id},
+                                            extra: {
+                                              'content': post.normalizedContent,
+                                              'images':
+                                                  post.normalizedImageUrls,
+                                            },
+                                          );
+                                        }
+                                      : null,
+                                  onDeletePressed:
+                                      !actionState.isLoading &&
+                                          currentUserId == post.authorId
+                                      ? () async {
+                                          final confirmed =
+                                              await _showConfirmDialog(
+                                                context,
+                                                title: l10n
+                                                    .communityDeletePostTitle,
+                                                body: l10n
+                                                    .communityDeletePostBody,
+                                                confirmText:
+                                                    l10n.communityDelete,
+                                              );
+                                          if (!context.mounted || !confirmed) {
+                                            return;
+                                          }
+                                          await ref
+                                              .read(
+                                                communityActionControllerProvider
+                                                    .notifier,
+                                              )
+                                              .deletePost(
+                                                postId: post.id,
+                                                imageUrls:
+                                                    post.normalizedImageUrls,
+                                              );
+                                        }
+                                      : null,
                                   onReportPressed: actionState.isLoading
                                       ? null
                                       : () async {
@@ -337,7 +379,7 @@ class CommunityView extends HookConsumerWidget {
                                 ? 1
                                 : 0),
                         separatorBuilder: (context, index) =>
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 2),
                         itemBuilder: (context, index) {
                           if (index >= feed.items.length) {
                             return _CommunityLoadMoreSection(
@@ -354,7 +396,7 @@ class CommunityView extends HookConsumerWidget {
                           }
 
                           final post = feed.items[index];
-                          return _CommunityPostCard(
+                          return CommunityPostCard(
                             post: post,
                             isMine: currentUserId == post.authorId,
                             onTap: () {
@@ -373,6 +415,44 @@ class CommunityView extends HookConsumerWidget {
                                     currentLike: post.isLikedByMe,
                                   );
                             },
+                            onEditPressed:
+                                !actionState.isLoading &&
+                                    currentUserId == post.authorId
+                                ? () {
+                                    context.pushNamed(
+                                      AppRoutes.communityEditName,
+                                      pathParameters: {'postId': post.id},
+                                      extra: {
+                                        'content': post.normalizedContent,
+                                        'images': post.normalizedImageUrls,
+                                      },
+                                    );
+                                  }
+                                : null,
+                            onDeletePressed:
+                                !actionState.isLoading &&
+                                    currentUserId == post.authorId
+                                ? () async {
+                                    final confirmed = await _showConfirmDialog(
+                                      context,
+                                      title: l10n.communityDeletePostTitle,
+                                      body: l10n.communityDeletePostBody,
+                                      confirmText: l10n.communityDelete,
+                                    );
+                                    if (!context.mounted || !confirmed) {
+                                      return;
+                                    }
+                                    await ref
+                                        .read(
+                                          communityActionControllerProvider
+                                              .notifier,
+                                        )
+                                        .deletePost(
+                                          postId: post.id,
+                                          imageUrls: post.normalizedImageUrls,
+                                        );
+                                  }
+                                : null,
                             onReportPressed: actionState.isLoading
                                 ? null
                                 : () async {
@@ -526,181 +606,6 @@ class _CommunityLoadMoreSection extends StatelessWidget {
   }
 }
 
-class _CommunityPostCard extends StatelessWidget {
-  const _CommunityPostCard({
-    required this.post,
-    required this.isMine,
-    required this.onTap,
-    required this.onLikePressed,
-    this.onReportPressed,
-    this.onHidePressed,
-    this.onBlockUserPressed,
-  });
-
-  final CommunityPostEntity post;
-  final bool isMine;
-  final VoidCallback onTap;
-  final VoidCallback onLikePressed;
-  final VoidCallback? onReportPressed;
-  final VoidCallback? onHidePressed;
-  final VoidCallback? onBlockUserPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final dateTimeLabel = buildCommunityPostDateTimeLabel(
-      post: post,
-      now: DateTime.now(),
-      l10n: l10n,
-    );
-    final previewText = communityHtmlToPlainText(post.normalizedContent);
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Ink(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    _CommunityAvatar(
-                      imageUrl: post.normalizedAuthorAvatarUrl,
-                      radius: 13,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  post.normalizedAuthorName,
-                                  style: Theme.of(context).textTheme.labelMedium
-                                      ?.copyWith(fontWeight: FontWeight.w700),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              if (post.hasCoachBadge) ...[
-                                const SizedBox(width: 6),
-                                _CommunityCoachBadge(
-                                  label: l10n.communityCoachBadge,
-                                ),
-                              ],
-                            ],
-                          ),
-                          const SizedBox(height: 1),
-                          Text(
-                            dateTimeLabel,
-                            style: Theme.of(context).textTheme.labelSmall
-                                ?.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (!isMine)
-                      PopupMenuButton<_CommunityPostMenuAction>(
-                        onSelected: (value) {
-                          switch (value) {
-                            case _CommunityPostMenuAction.report:
-                              onReportPressed?.call();
-                              return;
-                            case _CommunityPostMenuAction.hide:
-                              onHidePressed?.call();
-                              return;
-                            case _CommunityPostMenuAction.block:
-                              onBlockUserPressed?.call();
-                              return;
-                          }
-                        },
-                        itemBuilder: (context) {
-                          final l10n = AppLocalizations.of(context)!;
-                          return [
-                            PopupMenuItem<_CommunityPostMenuAction>(
-                              value: _CommunityPostMenuAction.report,
-                              child: Text(l10n.communityReport),
-                            ),
-                            PopupMenuItem<_CommunityPostMenuAction>(
-                              value: _CommunityPostMenuAction.hide,
-                              child: Text(l10n.communityHide),
-                            ),
-                            PopupMenuItem<_CommunityPostMenuAction>(
-                              value: _CommunityPostMenuAction.block,
-                              child: Text(l10n.communityBlockUser),
-                            ),
-                          ];
-                        },
-                        iconSize: 18,
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(
-                          minWidth: 28,
-                          minHeight: 28,
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  previewText,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (post.normalizedImageUrls.isNotEmpty) ...[
-                  const SizedBox(height: 6),
-                  _FeedImagePreview(imageUrls: post.normalizedImageUrls),
-                ],
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: onLikePressed,
-                      icon: Icon(
-                        post.isLikedByMe
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_border_rounded,
-                        size: 18,
-                      ),
-                      visualDensity: const VisualDensity(
-                        horizontal: -4,
-                        vertical: -4,
-                      ),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(
-                        minWidth: 28,
-                        minHeight: 28,
-                      ),
-                    ),
-                    Text('${post.likeCount}'),
-                    const SizedBox(width: 8),
-                    const Icon(Icons.chat_bubble_outline, size: 16),
-                    const SizedBox(width: 4),
-                    Text('${post.commentCount}'),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-enum _CommunityPostMenuAction { report, hide, block }
-
 class _CommunityReportDialogResult {
   const _CommunityReportDialogResult({
     required this.reason,
@@ -825,140 +730,4 @@ Future<bool> _showConfirmDialog(
     },
   );
   return result ?? false;
-}
-
-class _CommunityAvatar extends StatelessWidget {
-  const _CommunityAvatar({required this.imageUrl, required this.radius});
-
-  final String imageUrl;
-  final double radius;
-
-  @override
-  Widget build(BuildContext context) {
-    final isValidUrl =
-        imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
-    if (!isValidUrl) {
-      return CircleAvatar(
-        radius: radius,
-        backgroundColor: Colors.transparent,
-        child: Icon(Icons.person_outline, size: radius),
-      );
-    }
-
-    return ClipOval(
-      child: SizedBox(
-        width: radius * 2,
-        height: radius * 2,
-        child: CachedNetworkImage(
-          imageUrl: imageUrl,
-          fit: BoxFit.cover,
-          placeholder: (context, imageUrl) => CircleAvatar(
-            radius: radius,
-            backgroundColor: Colors.transparent,
-            child: Icon(Icons.person_outline, size: radius),
-          ),
-          errorWidget: (context, imageUrl, error) => CircleAvatar(
-            radius: radius,
-            backgroundColor: Colors.transparent,
-            child: Icon(Icons.person_outline, size: radius),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _FeedImagePreview extends StatelessWidget {
-  const _FeedImagePreview({required this.imageUrls});
-
-  final List<String> imageUrls;
-
-  @override
-  Widget build(BuildContext context) {
-    final visibleCount = imageUrls.length > 2 ? 2 : imageUrls.length;
-    final remainingCount = imageUrls.length - visibleCount;
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(10),
-      onTap: () => showCommunityImageViewer(context, imageUrls: imageUrls),
-      child: SizedBox(
-        height: 64,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: visibleCount,
-          separatorBuilder: (context, index) => const SizedBox(width: 6),
-          itemBuilder: (context, index) {
-            final imageUrl = imageUrls[index];
-            final showMoreBadge =
-                index == visibleCount - 1 && remainingCount > 0;
-
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                width: 64,
-                height: 64,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (context, imageUrl) =>
-                          const ColoredBox(color: Colors.black12),
-                      errorWidget: (context, imageUrl, error) =>
-                          const ColoredBox(
-                            color: Colors.black12,
-                            child: Center(
-                              child: Icon(Icons.broken_image_outlined),
-                            ),
-                          ),
-                    ),
-                    if (showMoreBadge)
-                      ColoredBox(
-                        color: Colors.black45,
-                        child: Center(
-                          child: Text(
-                            '+$remainingCount',
-                            style: Theme.of(context).textTheme.labelLarge
-                                ?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class _CommunityCoachBadge extends StatelessWidget {
-  const _CommunityCoachBadge({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-      decoration: BoxDecoration(
-        color: colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: colorScheme.onPrimaryContainer,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
-  }
 }

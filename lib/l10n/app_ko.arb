@@ -276,6 +276,28 @@
   "profileSettings": "설정",
   "profileEdit": "프로필 수정",
   "profileMenuTitle": "메뉴",
+  "profileMyPrograms": "내 프로그램",
+  "profileMyProgramsActive": "활성",
+  "profileMyProgramsInactive": "비활성",
+  "profileMyProgramsLoadFailed": "내 프로그램을 불러오지 못했습니다.",
+  "profileMyProgramsLoadMoreFailed": "프로그램을 더 불러오지 못했습니다.",
+  "profileMyProgramsRetry": "다시 시도",
+  "profileMyProgramsActivationPeriod": "활성화 기간",
+  "profileMyProgramsNoStartDate": "시작일 정보 없음",
+  "profileMyProgramsIndefinite": "종료일 없음",
+  "profileMyProgramsOpenEnded": "상시 이용",
+  "profileMyProgramsExpired": "이용 종료",
+  "profileMyProgramsEndsToday": "오늘 종료",
+  "profileMyProgramsDday": "D-{days}",
+  "@profileMyProgramsDday": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "profileMyProgramsEmptyActive": "현재 활성화된 프로그램이 없어요.",
+  "profileMyProgramsEmptyInactive": "비활성 프로그램이 없어요.",
   "profileWorkoutRecord": "내 운동 능력 기록",
   "profileEditTitle": "프로필 수정",
   "profileEditComingSoon": "프로필 수정 화면 뼈대가 준비되었습니다.",

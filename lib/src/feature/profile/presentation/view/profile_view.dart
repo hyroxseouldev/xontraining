@@ -72,6 +72,13 @@ class ProfileView extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             _buildMenuTile(
+              leading: Icons.view_list_outlined,
+              title: l10n.profileMyPrograms,
+              trailing: _trailingIcon,
+              onTap: () => context.pushNamed(AppRoutes.myProgramsName),
+            ),
+            const Divider(height: 1),
+            _buildMenuTile(
               leading: Icons.fitness_center_outlined,
               title: l10n.profileWorkoutRecord,
               trailing: _trailingIcon,

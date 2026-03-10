@@ -956,6 +956,96 @@ abstract class AppLocalizations {
   /// **'Menu'**
   String get profileMenuTitle;
 
+  /// No description provided for @profileMyPrograms.
+  ///
+  /// In en, this message translates to:
+  /// **'My Programs'**
+  String get profileMyPrograms;
+
+  /// No description provided for @profileMyProgramsActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get profileMyProgramsActive;
+
+  /// No description provided for @profileMyProgramsInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get profileMyProgramsInactive;
+
+  /// No description provided for @profileMyProgramsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load your programs.'**
+  String get profileMyProgramsLoadFailed;
+
+  /// No description provided for @profileMyProgramsLoadMoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load more programs.'**
+  String get profileMyProgramsLoadMoreFailed;
+
+  /// No description provided for @profileMyProgramsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get profileMyProgramsRetry;
+
+  /// No description provided for @profileMyProgramsActivationPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Activation period'**
+  String get profileMyProgramsActivationPeriod;
+
+  /// No description provided for @profileMyProgramsNoStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date unavailable'**
+  String get profileMyProgramsNoStartDate;
+
+  /// No description provided for @profileMyProgramsIndefinite.
+  ///
+  /// In en, this message translates to:
+  /// **'No end date'**
+  String get profileMyProgramsIndefinite;
+
+  /// No description provided for @profileMyProgramsOpenEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing'**
+  String get profileMyProgramsOpenEnded;
+
+  /// No description provided for @profileMyProgramsExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Ended'**
+  String get profileMyProgramsExpired;
+
+  /// No description provided for @profileMyProgramsEndsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends today'**
+  String get profileMyProgramsEndsToday;
+
+  /// No description provided for @profileMyProgramsDday.
+  ///
+  /// In en, this message translates to:
+  /// **'D-{days}'**
+  String profileMyProgramsDday(int days);
+
+  /// No description provided for @profileMyProgramsEmptyActive.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no active program right now.'**
+  String get profileMyProgramsEmptyActive;
+
+  /// No description provided for @profileMyProgramsEmptyInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no inactive programs.'**
+  String get profileMyProgramsEmptyInactive;
+
   /// No description provided for @profileWorkoutRecord.
   ///
   /// In en, this message translates to:

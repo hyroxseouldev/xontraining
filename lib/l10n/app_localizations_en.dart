@@ -494,6 +494,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileMenuTitle => 'Menu';
 
   @override
+  String get profileMyPrograms => 'My Programs';
+
+  @override
+  String get profileMyProgramsActive => 'Active';
+
+  @override
+  String get profileMyProgramsInactive => 'Inactive';
+
+  @override
+  String get profileMyProgramsLoadFailed => 'Failed to load your programs.';
+
+  @override
+  String get profileMyProgramsLoadMoreFailed => 'Failed to load more programs.';
+
+  @override
+  String get profileMyProgramsRetry => 'Retry';
+
+  @override
+  String get profileMyProgramsActivationPeriod => 'Activation period';
+
+  @override
+  String get profileMyProgramsNoStartDate => 'Start date unavailable';
+
+  @override
+  String get profileMyProgramsIndefinite => 'No end date';
+
+  @override
+  String get profileMyProgramsOpenEnded => 'Ongoing';
+
+  @override
+  String get profileMyProgramsExpired => 'Ended';
+
+  @override
+  String get profileMyProgramsEndsToday => 'Ends today';
+
+  @override
+  String profileMyProgramsDday(int days) {
+    return 'D-$days';
+  }
+
+  @override
+  String get profileMyProgramsEmptyActive =>
+      'There is no active program right now.';
+
+  @override
+  String get profileMyProgramsEmptyInactive =>
+      'There are no inactive programs.';
+
+  @override
   String get profileWorkoutRecord => 'My Workout Performance Log';
 
   @override

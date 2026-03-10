@@ -15,6 +15,7 @@ import 'package:xontraining/src/feature/notice/infra/entity/notice_entity.dart';
 import 'package:xontraining/src/feature/notice/presentation/view/notice_detail_view.dart';
 import 'package:xontraining/src/feature/notice/presentation/view/notice_view.dart';
 import 'package:xontraining/src/feature/onboarding/presentation/view/onboarding_view.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/my_program_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/profile_edit_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/profile_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/privacy_policy_view.dart';
@@ -195,6 +196,11 @@ GoRouter goRouter(Ref ref) {
         builder: (context, state) => const ProfileEditView(),
       ),
       GoRoute(
+        path: AppRoutes.myPrograms,
+        name: AppRoutes.myProgramsName,
+        builder: (context, state) => const MyProgramView(),
+      ),
+      GoRoute(
         path: AppRoutes.workoutRecord,
         name: AppRoutes.workoutRecordName,
         builder: (context, state) => const WorkoutRecordView(),
@@ -281,6 +287,7 @@ abstract final class AppRoutes {
   static const String noticeDetail = '/notices/:noticeId';
   static const String profile = '/profile';
   static const String profileEdit = '/profile/edit';
+  static const String myPrograms = '/profile/my-programs';
   static const String workoutRecord = '/profile/workout-record';
   static const String workoutRecordEntry =
       '/profile/workout-record/:exercise/new';
@@ -306,6 +313,7 @@ abstract final class AppRoutes {
   static const String noticeDetailName = 'noticeDetail';
   static const String profileName = 'profile';
   static const String profileEditName = 'profileEdit';
+  static const String myProgramsName = 'myPrograms';
   static const String workoutRecordName = 'workoutRecord';
   static const String workoutRecordEntryName = 'workoutRecordEntry';
   static const String workoutRecordListName = 'workoutRecordList';

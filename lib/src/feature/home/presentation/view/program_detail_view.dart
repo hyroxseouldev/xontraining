@@ -12,7 +12,7 @@ import 'package:xontraining/src/feature/home/presentation/provider/program_detai
 import 'package:xontraining/src/feature/home/presentation/widget/week_calendar_selector.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
 
-class ProgramDetailView extends HookConsumerWidget {
+class ProgramDetailView extends ConsumerStatefulWidget {
   const ProgramDetailView({
     required this.programId,
     this.program,
@@ -25,20 +25,80 @@ class ProgramDetailView extends HookConsumerWidget {
   final WeekStartDay firstDayOfWeek;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProgramDetailView> createState() => _ProgramDetailViewState();
+}
+
+class _ProgramDetailViewState extends ConsumerState<ProgramDetailView> {
+  late DateTime _selectedDate;
+  late DateTime _visibleWeekAnchorDate;
+
+  @override
+  void initState() {
+    super.initState();
+    final today = _dateOnly(DateTime.now());
+    _selectedDate = today;
+    _visibleWeekAnchorDate = today;
+  }
+
+  void _goToToday() {
+    final today = _dateOnly(DateTime.now());
+    setState(() {
+      _selectedDate = today;
+      _visibleWeekAnchorDate = today;
+    });
+  }
+
+  void _selectDate(DateTime date) {
+    setState(() {
+      _selectedDate = date;
+      _visibleWeekAnchorDate = date;
+    });
+  }
+
+  void _showPreviousWeek() {
+    setState(() {
+      _visibleWeekAnchorDate = _visibleWeekAnchorDate.subtract(
+        const Duration(days: 7),
+      );
+    });
+  }
+
+  void _showNextWeek() {
+    setState(() {
+      _visibleWeekAnchorDate = _visibleWeekAnchorDate.add(
+        const Duration(days: 7),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final title = program?.title ?? l10n.homeProgramDetailTitle;
-    final detailState = ref.watch(programDetailPayloadProvider(programId));
+    final title = widget.program?.title ?? l10n.homeProgramDetailTitle;
+    final detailState = ref.watch(
+      programDetailPayloadProvider(widget.programId),
+    );
+    final isTodaySelected = DateUtils.isSameDay(_selectedDate, DateTime.now());
+    final showGoTodayAction = detailState.maybeWhen(
+      data: (payload) => payload.canAccess && payload.sessions.isNotEmpty,
+      orElse: () => false,
+    );
 
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 56,
         actions: [
+          if (showGoTodayAction)
+            TextButton.icon(
+              onPressed: isTodaySelected ? null : _goToToday,
+              icon: const Icon(Icons.today_outlined, size: 18),
+              label: Text(l10n.homeProgramDetailToday),
+            ),
           TextButton.icon(
             onPressed: () {
               context.pushNamed(
                 AppRoutes.programCoachName,
-                pathParameters: {'programId': programId},
+                pathParameters: {'programId': widget.programId},
               );
             },
             icon: const Icon(Icons.person_outline, size: 18),
@@ -83,7 +143,12 @@ class ProgramDetailView extends HookConsumerWidget {
 
           return _ProgramSessionContent(
             sessions: payload.sessions,
-            firstDayOfWeek: firstDayOfWeek,
+            firstDayOfWeek: widget.firstDayOfWeek,
+            selectedDate: _selectedDate,
+            visibleWeekAnchorDate: _visibleWeekAnchorDate,
+            onDateSelected: _selectDate,
+            onPreviousWeek: _showPreviousWeek,
+            onNextWeek: _showNextWeek,
           );
         },
       ),
@@ -122,49 +187,43 @@ class _ProgramDetailLoadingSkeleton extends StatelessWidget {
   }
 }
 
-class _ProgramSessionContent extends StatefulWidget {
+class _ProgramSessionContent extends StatelessWidget {
   const _ProgramSessionContent({
     required this.sessions,
     required this.firstDayOfWeek,
+    required this.selectedDate,
+    required this.visibleWeekAnchorDate,
+    required this.onDateSelected,
+    required this.onPreviousWeek,
+    required this.onNextWeek,
   });
 
   final List<ProgramSessionEntity> sessions;
   final WeekStartDay firstDayOfWeek;
-
-  @override
-  State<_ProgramSessionContent> createState() => _ProgramSessionContentState();
-}
-
-class _ProgramSessionContentState extends State<_ProgramSessionContent> {
-  late DateTime _selectedDate;
-  late DateTime _visibleWeekAnchorDate;
-
-  @override
-  void initState() {
-    super.initState();
-    final today = _dateOnly(DateTime.now());
-    _selectedDate = today;
-    _visibleWeekAnchorDate = today;
-  }
+  final DateTime selectedDate;
+  final DateTime visibleWeekAnchorDate;
+  final ValueChanged<DateTime> onDateSelected;
+  final VoidCallback onPreviousWeek;
+  final VoidCallback onNextWeek;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final sessionDates = widget.sessions
+    final sessionDates = sessions
         .map((session) => _dateOnly(session.sessionDate))
         .toSet();
-    final restDates = widget.sessions
+    final restDates = sessions
         .where((session) => session.isRest)
         .map((session) => _dateOnly(session.sessionDate))
         .toSet();
-    final scheduledDates = widget.sessions
+    final scheduledDates = sessions
         .where((session) => session.isScheduled)
         .map((session) => _dateOnly(session.sessionDate))
         .toSet();
 
     final selectedSession = _sessionForSelectedDateOrNull(
-      widget.sessions,
-      _selectedDate,
+      sessions,
+      selectedDate,
     );
 
     return Column(
@@ -173,40 +232,15 @@ class _ProgramSessionContentState extends State<_ProgramSessionContent> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: WeekCalendarSelector(
-            visibleWeekAnchorDate: _visibleWeekAnchorDate,
-            selectedDate: _selectedDate,
+            visibleWeekAnchorDate: visibleWeekAnchorDate,
+            selectedDate: selectedDate,
             enabledDates: sessionDates,
             restDates: restDates,
             scheduledDates: scheduledDates,
-            firstDayOfWeek: widget.firstDayOfWeek,
-            todayButtonLabel: l10n.homeProgramDetailToday,
-            onDateSelected: (date) {
-              setState(() {
-                _selectedDate = date;
-                _visibleWeekAnchorDate = date;
-              });
-            },
-            onGoToday: () {
-              final today = _dateOnly(DateTime.now());
-              setState(() {
-                _selectedDate = today;
-                _visibleWeekAnchorDate = today;
-              });
-            },
-            onPreviousWeek: () {
-              setState(() {
-                _visibleWeekAnchorDate = _visibleWeekAnchorDate.subtract(
-                  const Duration(days: 7),
-                );
-              });
-            },
-            onNextWeek: () {
-              setState(() {
-                _visibleWeekAnchorDate = _visibleWeekAnchorDate.add(
-                  const Duration(days: 7),
-                );
-              });
-            },
+            firstDayOfWeek: firstDayOfWeek,
+            onDateSelected: onDateSelected,
+            onPreviousWeek: onPreviousWeek,
+            onNextWeek: onNextWeek,
           ),
         ),
         const SizedBox(height: 12),

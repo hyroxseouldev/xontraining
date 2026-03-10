@@ -10,6 +10,7 @@ import 'package:xontraining/src/feature/community/infra/entity/community_entity.
 import 'package:xontraining/src/feature/community/presentation/provider/community_provider.dart';
 import 'package:xontraining/src/feature/community/presentation/view/community_view_helper.dart';
 import 'package:xontraining/src/feature/community/presentation/widget/community_image_viewer.dart';
+import 'package:xontraining/src/feature/community/presentation/widget/community_post_card.dart';
 import 'package:xontraining/src/feature/community/presentation/widget/community_skeleton.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
 
@@ -496,150 +497,215 @@ class _PostHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final dateTimeLabel = buildCommunityPostDateTimeLabel(
-      post: post,
+    final timeAgoLabel = buildCommunityTimeAgo(
+      createdAt: post.createdAt,
       now: DateTime.now(),
       l10n: l10n,
     );
+    final colorScheme = Theme.of(context).colorScheme;
+    const avatarRadius = 18.0;
+    const headerGap = 10.0;
 
     return Material(
       color: Colors.transparent,
       child: Ink(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(18)),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          padding: const EdgeInsets.fromLTRB(6, 6, 6, 4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _CommunityAvatar(
+                  CommunityAvatar(
                     imageUrl: post.normalizedAuthorAvatarUrl,
-                    radius: 17,
+                    radius: avatarRadius,
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: headerGap),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Flexible(
-                              child: Text(
-                                post.normalizedAuthorName,
-                                style: Theme.of(context).textTheme.labelLarge
-                                    ?.copyWith(fontWeight: FontWeight.w700),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
                             if (post.hasCoachBadge) ...[
-                              const SizedBox(width: 6),
-                              _CommunityCoachBadge(
+                              CommunityCoachBadge(
                                 label: l10n.communityCoachBadge,
                               ),
+                              const SizedBox(width: 6),
                             ],
+                            Expanded(
+                              child: RichText(
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: post.normalizedAuthorName,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w800,
+                                            color: colorScheme.onSurface,
+                                            height: 1.2,
+                                          ),
+                                    ),
+                                    TextSpan(
+                                      text: ' · $timeAgoLabel',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
+                                            height: 1.2,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            PopupMenuButton<String>(
+                              onSelected: (value) {
+                                if (value == 'edit') {
+                                  onEditPressed();
+                                  return;
+                                }
+                                if (value == 'delete') {
+                                  onDeletePressed();
+                                  return;
+                                }
+                                if (value == 'report') {
+                                  onReportPressed();
+                                  return;
+                                }
+                                if (value == 'hide') {
+                                  onHidePressed();
+                                  return;
+                                }
+                                onBlockAuthorPressed();
+                              },
+                              itemBuilder: (context) {
+                                final l10n = AppLocalizations.of(context)!;
+                                if (isMyPost) {
+                                  return [
+                                    PopupMenuItem<String>(
+                                      value: 'edit',
+                                      child: Text(l10n.communityEdit),
+                                    ),
+                                    PopupMenuItem<String>(
+                                      value: 'delete',
+                                      child: Text(l10n.communityDelete),
+                                    ),
+                                  ];
+                                }
+                                return [
+                                  PopupMenuItem<String>(
+                                    value: 'report',
+                                    child: Text(l10n.communityReport),
+                                  ),
+                                  PopupMenuItem<String>(
+                                    value: 'hide',
+                                    child: Text(l10n.communityHide),
+                                  ),
+                                  PopupMenuItem<String>(
+                                    value: 'block',
+                                    child: Text(l10n.communityBlockUser),
+                                  ),
+                                ];
+                              },
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(
+                                minWidth: 20,
+                                minHeight: 20,
+                              ),
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.more_horiz_rounded,
+                                    size: 18,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          dateTimeLabel,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
+                        const SizedBox(height: 4),
+                        DefaultTextStyle.merge(
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          child: Html(
+                            data: post.normalizedContent,
+                            style: {
+                              'body': Style(
+                                margin: Margins.zero,
+                                padding: HtmlPaddings.zero,
+                                color: colorScheme.onSurface,
+                                fontSize: FontSize(16),
+                                lineHeight: const LineHeight(1.45),
                               ),
+                              'p': Style(margin: Margins.only(bottom: 10)),
+                            },
+                          ),
+                        ),
+                        if (post.normalizedImageUrls.isNotEmpty) ...[
+                          const SizedBox(height: 12),
+                          _DetailImageGallery(
+                            imageUrls: post.normalizedImageUrls,
+                          ),
+                        ],
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            InkWell(
+                              borderRadius: BorderRadius.circular(999),
+                              onTap: onLikePressed,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 2,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      post.isLikedByMe
+                                          ? Icons.favorite_rounded
+                                          : Icons.favorite_border_rounded,
+                                      size: 18,
+                                      color: post.isLikedByMe
+                                          ? colorScheme.error
+                                          : colorScheme.onSurfaceVariant,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '${post.likeCount}',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.labelLarge,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Icon(
+                              Icons.chat_bubble_outline_rounded,
+                              size: 17,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${post.commentCount}',
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
-                  PopupMenuButton<String>(
-                    onSelected: (value) {
-                      if (value == 'edit') {
-                        onEditPressed();
-                        return;
-                      }
-                      if (value == 'delete') {
-                        onDeletePressed();
-                        return;
-                      }
-                      if (value == 'report') {
-                        onReportPressed();
-                        return;
-                      }
-                      if (value == 'hide') {
-                        onHidePressed();
-                        return;
-                      }
-                      onBlockAuthorPressed();
-                    },
-                    itemBuilder: (context) {
-                      final l10n = AppLocalizations.of(context)!;
-                      if (isMyPost) {
-                        return [
-                          PopupMenuItem<String>(
-                            value: 'edit',
-                            child: Text(l10n.communityEdit),
-                          ),
-                          PopupMenuItem<String>(
-                            value: 'delete',
-                            child: Text(l10n.communityDelete),
-                          ),
-                        ];
-                      }
-
-                      return [
-                        PopupMenuItem<String>(
-                          value: 'report',
-                          child: Text(l10n.communityReport),
-                        ),
-                        PopupMenuItem<String>(
-                          value: 'hide',
-                          child: Text(l10n.communityHide),
-                        ),
-                        PopupMenuItem<String>(
-                          value: 'block',
-                          child: Text(l10n.communityBlockUser),
-                        ),
-                      ];
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Html(
-                data: post.normalizedContent,
-                style: {
-                  'body': Style(
-                    margin: Margins.zero,
-                    padding: HtmlPaddings.zero,
-                  ),
-                  'p': Style(margin: Margins.only(bottom: 8)),
-                },
-              ),
-              if (post.normalizedImageUrls.isNotEmpty) ...[
-                const SizedBox(height: 10),
-                _DetailImageGallery(imageUrls: post.normalizedImageUrls),
-              ],
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: onLikePressed,
-                    icon: Icon(
-                      post.isLikedByMe
-                          ? Icons.favorite_rounded
-                          : Icons.favorite_border_rounded,
-                      size: 20,
-                    ),
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  Text('${post.likeCount}'),
-                  const SizedBox(width: 12),
-                  const Icon(Icons.chat_bubble_outline, size: 18),
-                  const SizedBox(width: 6),
-                  Text('${post.commentCount}'),
                 ],
               ),
             ],
@@ -657,80 +723,63 @@ class _DetailImageGallery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
-      height: 220,
+      height: 240,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: imageUrls.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 8),
+        separatorBuilder: (context, index) => const SizedBox(width: 10),
         itemBuilder: (context, index) {
           final imageUrl = imageUrls[index];
           return InkWell(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(18),
             onTap: () => showCommunityImageViewer(
               context,
               imageUrls: imageUrls,
               initialIndex: index,
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(18),
               child: AspectRatio(
-                aspectRatio: 4 / 3,
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  fit: BoxFit.cover,
-                  placeholder: (context, imageUrl) =>
-                      const ColoredBox(color: Colors.black12),
-                  errorWidget: (context, imageUrl, error) => const ColoredBox(
-                    color: Colors.black12,
-                    child: Center(child: Icon(Icons.broken_image_outlined)),
-                  ),
+                aspectRatio: 16 / 9,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (context, imageUrl) => ColoredBox(
+                        color: colorScheme.surfaceContainerHighest,
+                      ),
+                      errorWidget: (context, imageUrl, error) => ColoredBox(
+                        color: colorScheme.surfaceContainerHighest,
+                        child: Center(
+                          child: Icon(
+                            Icons.broken_image_outlined,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                    ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withValues(alpha: 0.03),
+                            Colors.black.withValues(alpha: 0.2),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _CommunityAvatar extends StatelessWidget {
-  const _CommunityAvatar({required this.imageUrl, required this.radius});
-
-  final String imageUrl;
-  final double radius;
-
-  @override
-  Widget build(BuildContext context) {
-    final isValidUrl =
-        imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
-    if (!isValidUrl) {
-      return CircleAvatar(
-        radius: radius,
-        backgroundColor: Colors.transparent,
-        child: Icon(Icons.person_outline, size: radius),
-      );
-    }
-
-    return ClipOval(
-      child: SizedBox(
-        width: radius * 2,
-        height: radius * 2,
-        child: CachedNetworkImage(
-          imageUrl: imageUrl,
-          fit: BoxFit.cover,
-          placeholder: (context, imageUrl) => CircleAvatar(
-            radius: radius,
-            backgroundColor: Colors.transparent,
-            child: Icon(Icons.person_outline, size: radius),
-          ),
-          errorWidget: (context, imageUrl, error) => CircleAvatar(
-            radius: radius,
-            backgroundColor: Colors.transparent,
-            child: Icon(Icons.person_outline, size: radius),
-          ),
-        ),
       ),
     );
   }
@@ -792,8 +841,9 @@ class _CommentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final dateTimeLabel = buildCommunityCommentDateTimeLabel(
-      comment: comment,
+    final colorScheme = Theme.of(context).colorScheme;
+    final timeAgoLabel = buildCommunityTimeAgo(
+      createdAt: comment.createdAt,
       now: DateTime.now(),
       l10n: l10n,
     );
@@ -808,91 +858,107 @@ class _CommentItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _CommentAvatar(imageUrl: comment.normalizedAuthorAvatarUrl),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Flexible(
-                          child: Text(
-                            comment.normalizedAuthorName,
-                            style: Theme.of(context).textTheme.labelMedium
-                                ?.copyWith(fontWeight: FontWeight.w700),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (comment.hasCoachBadge) ...[
+                              CommunityCoachBadge(
+                                label: l10n.communityCoachBadge,
+                              ),
+                              const SizedBox(width: 6),
+                            ],
+                            Expanded(
+                              child: RichText(
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: comment.normalizedAuthorName,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                            color: colorScheme.onSurface,
+                                            height: 1.2,
+                                          ),
+                                    ),
+                                    TextSpan(
+                                      text: ' · $timeAgoLabel',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
+                                            height: 1.2,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            PopupMenuButton<String>(
+                              onSelected: (value) {
+                                if (value == 'delete') {
+                                  onDeletePressed();
+                                  return;
+                                }
+                                onReportPressed();
+                              },
+                              itemBuilder: (context) {
+                                final l10n = AppLocalizations.of(context)!;
+                                if (isMine) {
+                                  return [
+                                    PopupMenuItem<String>(
+                                      value: 'delete',
+                                      child: Text(l10n.communityDelete),
+                                    ),
+                                  ];
+                                }
+                                return [
+                                  PopupMenuItem<String>(
+                                    value: 'report',
+                                    child: Text(l10n.communityReport),
+                                  ),
+                                ];
+                              },
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(
+                                minWidth: 20,
+                                minHeight: 20,
+                              ),
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.more_horiz_rounded,
+                                    size: 18,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        if (comment.hasCoachBadge) ...[
-                          const SizedBox(width: 6),
-                          _CommunityCoachBadge(label: l10n.communityCoachBadge),
-                        ],
+                        const SizedBox(height: 4),
+                        Text(comment.normalizedContent),
                       ],
                     ),
                   ),
-                  Text(
-                    dateTimeLabel,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  PopupMenuButton<String>(
-                    onSelected: (value) {
-                      if (value == 'delete') {
-                        onDeletePressed();
-                        return;
-                      }
-                      onReportPressed();
-                    },
-                    itemBuilder: (context) {
-                      final l10n = AppLocalizations.of(context)!;
-                      if (isMine) {
-                        return [
-                          PopupMenuItem<String>(
-                            value: 'delete',
-                            child: Text(l10n.communityDelete),
-                          ),
-                        ];
-                      }
-                      return [
-                        PopupMenuItem<String>(
-                          value: 'report',
-                          child: Text(l10n.communityReport),
-                        ),
-                      ];
-                    },
-                  ),
                 ],
               ),
-              const SizedBox(height: 6),
-              Text(comment.normalizedContent),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CommunityCoachBadge extends StatelessWidget {
-  const _CommunityCoachBadge({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: colorScheme.onPrimaryContainer,
-          fontWeight: FontWeight.w700,
         ),
       ),
     );

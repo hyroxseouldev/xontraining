@@ -13,8 +13,6 @@ class WeekCalendarSelector extends StatelessWidget {
     required this.onDateSelected,
     required this.onPreviousWeek,
     required this.onNextWeek,
-    required this.onGoToday,
-    required this.todayButtonLabel,
     super.key,
   });
 
@@ -27,8 +25,6 @@ class WeekCalendarSelector extends StatelessWidget {
   final ValueChanged<DateTime> onDateSelected;
   final VoidCallback onPreviousWeek;
   final VoidCallback onNextWeek;
-  final VoidCallback onGoToday;
-  final String todayButtonLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +38,6 @@ class WeekCalendarSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(onPressed: onGoToday, child: Text(todayButtonLabel)),
-          ],
-        ),
         Row(
           children: [
             IconButton(

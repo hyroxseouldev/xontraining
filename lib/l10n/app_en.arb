@@ -276,6 +276,28 @@
   "profileSettings": "Settings",
   "profileEdit": "Edit Profile",
   "profileMenuTitle": "Menu",
+  "profileMyPrograms": "My Programs",
+  "profileMyProgramsActive": "Active",
+  "profileMyProgramsInactive": "Inactive",
+  "profileMyProgramsLoadFailed": "Failed to load your programs.",
+  "profileMyProgramsLoadMoreFailed": "Failed to load more programs.",
+  "profileMyProgramsRetry": "Retry",
+  "profileMyProgramsActivationPeriod": "Activation period",
+  "profileMyProgramsNoStartDate": "Start date unavailable",
+  "profileMyProgramsIndefinite": "No end date",
+  "profileMyProgramsOpenEnded": "Ongoing",
+  "profileMyProgramsExpired": "Ended",
+  "profileMyProgramsEndsToday": "Ends today",
+  "profileMyProgramsDday": "D-{days}",
+  "@profileMyProgramsDday": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "profileMyProgramsEmptyActive": "There is no active program right now.",
+  "profileMyProgramsEmptyInactive": "There are no inactive programs.",
   "profileWorkoutRecord": "My Workout Performance Log",
   "profileEditTitle": "Edit Profile",
   "profileEditComingSoon": "Profile edit page skeleton is ready.",

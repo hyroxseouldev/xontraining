@@ -22,7 +22,7 @@ class CommunityFeedLoadingSkeleton extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
-        childAspectRatio: 1.05,
+        childAspectRatio: 0.84,
       ),
       itemCount: 6,
       itemBuilder: (context, index) => const _FeedSkeletonCard(),
@@ -73,41 +73,53 @@ class _FeedSkeletonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      padding: EdgeInsets.symmetric(vertical: 4),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CommunityShimmerBox(height: 26, width: 26, isCircle: true),
-              SizedBox(width: 8),
+              CommunityShimmerBox(height: 36, width: 36, isCircle: true),
+              SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CommunityShimmerBox(height: 13, width: 100),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: CommunityShimmerBox(height: 16, width: 156),
+                        ),
+                        SizedBox(width: 8),
+                        CommunityShimmerBox(
+                          height: 20,
+                          width: 20,
+                          isCircle: true,
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 4),
-                    CommunityShimmerBox(height: 10, width: 140),
+                    CommunityShimmerBox(height: 14),
+                    SizedBox(height: 8),
+                    CommunityShimmerBox(height: 14, width: 176),
+                    SizedBox(height: 10),
+                    AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: CommunityShimmerBox(),
+                    ),
+                    SizedBox(height: 8),
+                    CommunityShimmerBox(height: 20, width: 96),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: 8),
-          CommunityShimmerBox(height: 14),
-          SizedBox(height: 4),
-          CommunityShimmerBox(height: 14, width: 140),
-          SizedBox(height: 6),
-          Row(
-            children: [
-              CommunityShimmerBox(height: 64, width: 64),
-              SizedBox(width: 6),
-              CommunityShimmerBox(height: 64, width: 64),
-            ],
-          ),
-          SizedBox(height: 6),
-          CommunityShimmerBox(height: 20, width: 120),
-        ],
+        ),
       ),
     );
   }
@@ -120,21 +132,30 @@ class _CommentSkeletonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              CommunityShimmerBox(height: 28, width: 28, isCircle: true),
-              SizedBox(width: 8),
-              CommunityShimmerBox(height: 13, width: 110),
-              SizedBox(width: 8),
-              Expanded(child: SizedBox()),
-              CommunityShimmerBox(height: 12, width: 96),
-            ],
+          CommunityShimmerBox(height: 28, width: 28, isCircle: true),
+          SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: CommunityShimmerBox(height: 13, width: 140),
+                    ),
+                    SizedBox(width: 8),
+                    CommunityShimmerBox(height: 20, width: 20, isCircle: true),
+                  ],
+                ),
+                SizedBox(height: 4),
+                CommunityShimmerBox(height: 14),
+              ],
+            ),
           ),
-          SizedBox(height: 8),
-          CommunityShimmerBox(height: 14),
         ],
       ),
     );
