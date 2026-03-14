@@ -139,10 +139,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required CompleteOnboardingParams params,
   }) async {
     try {
-      await dataSource.completeOnboarding(
-        fullName: params.fullName,
-        gender: params.gender.databaseValue,
-      );
+      await dataSource.completeOnboarding(gender: params.gender.databaseValue);
     } on AuthException catch (error, stackTrace) {
       debugPrint('[AuthRepository] completeOnboarding auth failure: $error');
       debugPrint('[AuthRepository] StackTrace: $stackTrace');

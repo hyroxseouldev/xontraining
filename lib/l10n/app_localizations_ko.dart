@@ -331,7 +331,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get homeProgramDetailPurchaseRequired =>
-      '이 페이지는 구매 후 활성화된 사용자만 이용할 수 있습니다.';
+      '이 페이지는 활성화된 사용자만 이용할 수 있습니다.';
 
   @override
   String get homeProgramDetailNoSessions => '아직 이 프로그램에 등록된 세션이 없습니다.';

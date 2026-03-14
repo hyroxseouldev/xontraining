@@ -169,7 +169,7 @@
   "homeProgramDetailTitle": "Program Detail",
   "homeProgramDetailDescription": "Detail view skeleton is ready.",
   "homeProgramDetailComingSoon": "Detailed sections, progress, and actions will be added next.",
-  "homeProgramDetailPurchaseRequired": "This page is available after purchase and activation.",
+  "homeProgramDetailPurchaseRequired": "This page is available only to activated users.",
   "homeProgramDetailNoSessions": "No sessions are available for this program yet.",
   "homeProgramDetailNoSessionForSelectedDate": "No session for the selected date.",
   "homeProgramDetailSessionTypeRest": "Rest",

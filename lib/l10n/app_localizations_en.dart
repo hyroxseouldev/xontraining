@@ -341,7 +341,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeProgramDetailPurchaseRequired =>
-      'This page is available after purchase and activation.';
+      'This page is available only to activated users.';
 
   @override
   String get homeProgramDetailNoSessions =>

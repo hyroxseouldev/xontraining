@@ -66,12 +66,8 @@ class ProfileEntity {
 }
 
 class CompleteOnboardingParams {
-  const CompleteOnboardingParams({
-    required this.fullName,
-    required this.gender,
-  });
+  const CompleteOnboardingParams({required this.gender});
 
-  final String fullName;
   final ProfileGender gender;
 }
 

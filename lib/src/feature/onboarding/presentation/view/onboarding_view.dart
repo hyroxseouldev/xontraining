@@ -14,31 +14,10 @@ class OnboardingView extends ConsumerStatefulWidget {
 }
 
 class _OnboardingViewState extends ConsumerState<OnboardingView> {
-  late final TextEditingController _nameController;
   ProfileGender? _selectedGender;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
 
   Future<void> _onContinuePressed() async {
     final l10n = AppLocalizations.of(context)!;
-    final fullName = _nameController.text.trim();
-    if (fullName.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.onboardingNameRequired)));
-      return;
-    }
-
     final gender = _selectedGender;
     if (gender == null) {
       ScaffoldMessenger.of(
@@ -49,7 +28,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
 
     final success = await ref
         .read(onboardingControllerProvider.notifier)
-        .completeOnboarding(fullName: fullName, gender: gender);
+        .completeOnboarding(gender: gender);
 
     if (!mounted) {
       return;
@@ -92,17 +71,6 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 24),
-              TextField(
-                controller: _nameController,
-                textInputAction: TextInputAction.done,
-                decoration: InputDecoration(
-                  labelText: l10n.onboardingNameLabel,
-                  hintText: l10n.onboardingNameHint,
-                  enabledBorder: enabledBorder,
-                  focusedBorder: focusedBorder,
-                ),
-              ),
-              const SizedBox(height: 16),
               DropdownButtonFormField<ProfileGender>(
                 initialValue: _selectedGender,
                 decoration: InputDecoration(

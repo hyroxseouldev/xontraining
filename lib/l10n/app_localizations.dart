@@ -701,7 +701,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeProgramDetailPurchaseRequired.
   ///
   /// In en, this message translates to:
-  /// **'This page is available after purchase and activation.'**
+  /// **'This page is available only to activated users.'**
   String get homeProgramDetailPurchaseRequired;
 
   /// No description provided for @homeProgramDetailNoSessions.

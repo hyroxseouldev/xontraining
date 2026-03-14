@@ -16,10 +16,7 @@ abstract interface class AuthDataSource {
   Future<void> signInWithApple();
   Future<void> signOut();
   Future<bool> isOnboardingCompleted();
-  Future<void> completeOnboarding({
-    required String fullName,
-    required String gender,
-  });
+  Future<void> completeOnboarding({required String gender});
   Future<Map<String, dynamic>> getMyProfile();
   Future<void> updateMyProfile({
     String? fullName,
@@ -118,10 +115,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
   }
 
   @override
-  Future<void> completeOnboarding({
-    required String fullName,
-    required String gender,
-  }) async {
+  Future<void> completeOnboarding({required String gender}) async {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) {
       throw AuthException('No authenticated user found.');
@@ -129,11 +123,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
     await supabase
         .from('profiles')
-        .update({
-          'full_name': fullName.trim(),
-          'gender': gender.trim(),
-          'onboarding_completed': true,
-        })
+        .update({'gender': gender.trim(), 'onboarding_completed': true})
         .eq('id', userId);
   }
 

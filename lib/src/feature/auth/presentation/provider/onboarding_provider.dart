@@ -37,20 +37,12 @@ class OnboardingController extends _$OnboardingController {
     return const AsyncData(null);
   }
 
-  Future<bool> completeOnboarding({
-    required String fullName,
-    required ProfileGender gender,
-  }) async {
+  Future<bool> completeOnboarding({required ProfileGender gender}) async {
     state = const AsyncLoading();
     final nextState = await AsyncValue.guard(
       () => ref
           .read(completeOnboardingUseCaseProvider)
-          .call(
-            params: CompleteOnboardingParams(
-              fullName: fullName,
-              gender: gender,
-            ),
-          ),
+          .call(params: CompleteOnboardingParams(gender: gender)),
     );
 
     if (!ref.mounted) {
