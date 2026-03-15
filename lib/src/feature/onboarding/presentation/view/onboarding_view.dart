@@ -76,6 +76,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                 decoration: InputDecoration(
                   labelText: l10n.onboardingGenderLabel,
                   hintText: l10n.onboardingGenderHint,
+                  filled: false,
                   enabledBorder: enabledBorder,
                   focusedBorder: focusedBorder,
                 ),
