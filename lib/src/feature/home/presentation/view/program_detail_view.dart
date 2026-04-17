@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -470,23 +471,45 @@ class _ProgramSessionReviewSection extends ConsumerWidget {
             ),
             if (review!.isReviewed && review!.hasCoachFeedback) ...[
               const SizedBox(height: 14),
-              Text(
-                l10n.programSessionReviewCoachFeedbackLabel,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 6),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: theme.colorScheme.secondaryContainer,
                 ),
-                child: Text(
-                  review!.normalizedCoachFeedback,
-                  style: theme.textTheme.bodyMedium,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        _CoachFeedbackAvatar(review: review!),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                review!.normalizedReviewerName,
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                l10n.programSessionReviewCoachFeedbackLabel,
+                                style: theme.textTheme.bodySmall?.copyWith(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      review!.normalizedCoachFeedback,
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -506,6 +529,43 @@ class _ProgramSessionReviewSection extends ConsumerWidget {
               ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _CoachFeedbackAvatar extends StatelessWidget {
+  const _CoachFeedbackAvatar({required this.review});
+
+  final ProgramSessionReviewEntity review;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final fallback = CircleAvatar(
+      radius: 20,
+      backgroundColor: theme.colorScheme.surfaceContainerHighest,
+      child: Icon(
+        Icons.person,
+        size: 20,
+        color: theme.colorScheme.onSurfaceVariant,
+      ),
+    );
+
+    if (!review.hasReviewerAvatarUrl) {
+      return fallback;
+    }
+
+    return ClipOval(
+      child: SizedBox(
+        width: 40,
+        height: 40,
+        child: CachedNetworkImage(
+          imageUrl: review.normalizedReviewerAvatarUrl,
+          fit: BoxFit.cover,
+          placeholder: (context, imageUrl) => fallback,
+          errorWidget: (context, imageUrl, error) => fallback,
+        ),
       ),
     );
   }

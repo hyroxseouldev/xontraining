@@ -658,6 +658,30 @@ class AppLocalizationsEn extends AppLocalizations {
       'Unable to open contact app. Please check your email app.';
 
   @override
+  String get forceUpdateTitle => 'Update required';
+
+  @override
+  String get forceUpdateDescription =>
+      'This version is no longer supported. Please update the app to continue.';
+
+  @override
+  String get forceUpdateAction => 'Update now';
+
+  @override
+  String get forceUpdateOpenStoreFailed =>
+      'Unable to open the App Store. Please try again.';
+
+  @override
+  String forceUpdateCurrentVersion(Object version) {
+    return 'Current version $version';
+  }
+
+  @override
+  String forceUpdateMinimumVersion(Object version) {
+    return 'Minimum version $version';
+  }
+
+  @override
   String get legalDocumentLoading => 'Loading document...';
 
   @override

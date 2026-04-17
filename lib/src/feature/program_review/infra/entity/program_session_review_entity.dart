@@ -11,6 +11,8 @@ class ProgramSessionReviewEntity {
     required this.coachFeedback,
     required this.createdAt,
     required this.updatedAt,
+    required this.reviewerName,
+    required this.reviewerAvatarUrl,
     this.reviewedBy,
     this.reviewedAt,
   });
@@ -22,6 +24,8 @@ class ProgramSessionReviewEntity {
   final String completionNote;
   final ProgramSessionReviewStatus status;
   final String coachFeedback;
+  final String reviewerName;
+  final String reviewerAvatarUrl;
   final String? reviewedBy;
   final DateTime? reviewedAt;
   final DateTime createdAt;
@@ -30,6 +34,18 @@ class ProgramSessionReviewEntity {
   String get normalizedCompletionNote => completionNote.trim();
 
   String get normalizedCoachFeedback => coachFeedback.trim();
+
+  String get normalizedReviewerName {
+    final value = reviewerName.trim();
+    if (value.isNotEmpty) {
+      return value;
+    }
+    return 'Coach';
+  }
+
+  String get normalizedReviewerAvatarUrl => reviewerAvatarUrl.trim();
+
+  bool get hasReviewerAvatarUrl => normalizedReviewerAvatarUrl.isNotEmpty;
 
   bool get isReviewed => status == ProgramSessionReviewStatus.reviewed;
 

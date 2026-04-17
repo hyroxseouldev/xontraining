@@ -339,6 +339,22 @@
   "settingsDeleteAccountFailed": "계정삭제에 실패했습니다. 다시 시도해 주세요.",
   "settingsDeleteAccountSuccess": "계정이 비활성화되었습니다.",
   "settingsContactOpenFailed": "연락 창을 열 수 없습니다. 이메일 앱을 확인해 주세요.",
+  "forceUpdateTitle": "업데이트가 필요합니다",
+  "forceUpdateDescription": "현재 버전은 더 이상 지원되지 않습니다. 계속 이용하려면 앱을 업데이트해 주세요.",
+  "forceUpdateAction": "업데이트하기",
+  "forceUpdateOpenStoreFailed": "App Store를 열 수 없습니다. 다시 시도해 주세요.",
+  "forceUpdateCurrentVersion": "현재 버전 {version}",
+  "@forceUpdateCurrentVersion": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "forceUpdateMinimumVersion": "최소 지원 버전 {version}",
+  "@forceUpdateMinimumVersion": {
+    "placeholders": {
+      "version": {}
+    }
+  },
   "legalDocumentLoading": "문서를 불러오는 중입니다...",
   "legalDocumentLoadFailed": "문서를 불러오지 못했습니다.",
   "legalDocumentVersionLabel": "버전:",

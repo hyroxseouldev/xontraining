@@ -1250,6 +1250,42 @@ abstract class AppLocalizations {
   /// **'Unable to open contact app. Please check your email app.'**
   String get settingsContactOpenFailed;
 
+  /// No description provided for @forceUpdateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update required'**
+  String get forceUpdateTitle;
+
+  /// No description provided for @forceUpdateDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This version is no longer supported. Please update the app to continue.'**
+  String get forceUpdateDescription;
+
+  /// No description provided for @forceUpdateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get forceUpdateAction;
+
+  /// No description provided for @forceUpdateOpenStoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open the App Store. Please try again.'**
+  String get forceUpdateOpenStoreFailed;
+
+  /// No description provided for @forceUpdateCurrentVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Current version {version}'**
+  String forceUpdateCurrentVersion(Object version);
+
+  /// No description provided for @forceUpdateMinimumVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum version {version}'**
+  String forceUpdateMinimumVersion(Object version);
+
   /// No description provided for @legalDocumentLoading.
   ///
   /// In en, this message translates to:

@@ -635,6 +635,29 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsContactOpenFailed => '연락 창을 열 수 없습니다. 이메일 앱을 확인해 주세요.';
 
   @override
+  String get forceUpdateTitle => '업데이트가 필요합니다';
+
+  @override
+  String get forceUpdateDescription =>
+      '현재 버전은 더 이상 지원되지 않습니다. 계속 이용하려면 앱을 업데이트해 주세요.';
+
+  @override
+  String get forceUpdateAction => '업데이트하기';
+
+  @override
+  String get forceUpdateOpenStoreFailed => 'App Store를 열 수 없습니다. 다시 시도해 주세요.';
+
+  @override
+  String forceUpdateCurrentVersion(Object version) {
+    return '현재 버전 $version';
+  }
+
+  @override
+  String forceUpdateMinimumVersion(Object version) {
+    return '최소 지원 버전 $version';
+  }
+
+  @override
   String get legalDocumentLoading => '문서를 불러오는 중입니다...';
 
   @override

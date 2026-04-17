@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
 import 'package:xontraining/src/app/theme/app_theme.dart';
+import 'package:xontraining/src/core/app_update/presentation/widget/app_update_gate.dart';
 import 'package:xontraining/src/core/router/app_router.dart';
 
 class XonTrainingApp extends ConsumerWidget {
@@ -25,6 +26,13 @@ class XonTrainingApp extends ConsumerWidget {
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.light,
       routerConfig: router,
+      builder: (context, child) {
+        if (child == null) {
+          return const SizedBox.shrink();
+        }
+
+        return AppUpdateGate(child: child);
+      },
       debugShowCheckedModeBanner: false,
     );
   }

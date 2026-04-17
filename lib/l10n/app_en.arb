@@ -339,6 +339,22 @@
   "settingsDeleteAccountFailed": "Failed to delete account. Please try again.",
   "settingsDeleteAccountSuccess": "Your account has been deactivated.",
   "settingsContactOpenFailed": "Unable to open contact app. Please check your email app.",
+  "forceUpdateTitle": "Update required",
+  "forceUpdateDescription": "This version is no longer supported. Please update the app to continue.",
+  "forceUpdateAction": "Update now",
+  "forceUpdateOpenStoreFailed": "Unable to open the App Store. Please try again.",
+  "forceUpdateCurrentVersion": "Current version {version}",
+  "@forceUpdateCurrentVersion": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "forceUpdateMinimumVersion": "Minimum version {version}",
+  "@forceUpdateMinimumVersion": {
+    "placeholders": {
+      "version": {}
+    }
+  },
   "legalDocumentLoading": "Loading document...",
   "legalDocumentLoadFailed": "Failed to load document.",
   "legalDocumentVersionLabel": "Version:",

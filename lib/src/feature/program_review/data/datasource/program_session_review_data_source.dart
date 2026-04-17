@@ -61,7 +61,22 @@ class SupabaseProgramSessionReviewDataSource
         .eq('user_id', userId)
         .order('created_at', ascending: false);
 
-    return List<Map<String, dynamic>>.from(rows);
+    final mappedRows = List<Map<String, dynamic>>.from(rows);
+    final reviewerIds = mappedRows
+        .map((row) => row['reviewed_by'])
+        .whereType<String>()
+        .toSet()
+        .toList(growable: false);
+    final profilesById = await _getProfilesByIds(userIds: reviewerIds);
+
+    for (final row in mappedRows) {
+      final reviewedBy = row['reviewed_by'];
+      if (reviewedBy is String) {
+        row['reviewer_profile'] = profilesById[reviewedBy];
+      }
+    }
+
+    return mappedRows;
   }
 
   @override

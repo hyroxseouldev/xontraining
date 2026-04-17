@@ -255,6 +255,7 @@ class ProgramSessionReviewRepositoryImpl
     final statusValue = row['status'];
     final createdAt = _asDateTime(row['created_at']);
     final updatedAt = _asDateTime(row['updated_at']);
+    final reviewerProfile = row['reviewer_profile'];
     if (id is! String ||
         programId is! String ||
         sessionId is! String ||
@@ -281,6 +282,12 @@ class ProgramSessionReviewRepositoryImpl
       completionNote: completionNote,
       status: status,
       coachFeedback: (row['coach_feedback'] as String?) ?? '',
+      reviewerName: reviewerProfile is Map<String, dynamic>
+          ? (reviewerProfile['full_name'] as String?) ?? ''
+          : '',
+      reviewerAvatarUrl: reviewerProfile is Map<String, dynamic>
+          ? (reviewerProfile['avatar_url'] as String?) ?? ''
+          : '',
       reviewedBy: reviewedBy is String ? reviewedBy : null,
       reviewedAt: _asDateTime(row['reviewed_at']),
       createdAt: createdAt,
