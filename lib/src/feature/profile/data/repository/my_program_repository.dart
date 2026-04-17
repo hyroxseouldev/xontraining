@@ -30,10 +30,6 @@ class MyProgramRepositoryImpl implements MyProgramRepository {
     required int offset,
   }) async {
     try {
-      final activeProgramId = await dataSource.getActiveProgramId(
-        tenantId: tenantId,
-        userId: userId,
-      );
       final rows = await dataSource.getAccessibleProgramEntitlements(
         tenantId: tenantId,
         userId: userId,
@@ -49,17 +45,16 @@ class MyProgramRepositoryImpl implements MyProgramRepository {
       }
 
       final items = itemsByProgramId.values.toList(growable: false);
+      final now = DateTime.now().toUtc();
 
       final filtered = switch (status) {
         MyProgramStatus.active =>
-          activeProgramId == null
-              ? const <MyProgramItemEntity>[]
-              : items
-                    .where((item) => item.program.id == activeProgramId)
-                    .toList(growable: false),
+          items
+              .where((item) => _isCurrentlyValid(item, now))
+              .toList(growable: false),
         MyProgramStatus.inactive =>
           items
-              .where((item) => item.program.id != activeProgramId)
+              .where((item) => !_isCurrentlyValid(item, now))
               .toList(growable: false),
       };
 
@@ -111,9 +106,28 @@ class MyProgramRepositoryImpl implements MyProgramRepository {
         startDate: _asDate(programRaw['start_date']),
         endDate: _asDate(programRaw['end_date']),
       ),
+      isEntitlementActive: raw['is_active'] as bool? ?? false,
       activationStartAt: _asDate(raw['starts_at']),
       activationEndAt: _asDate(raw['ends_at']),
     );
+  }
+
+  bool _isCurrentlyValid(MyProgramItemEntity item, DateTime now) {
+    if (!item.isEntitlementActive) {
+      return false;
+    }
+
+    final start = item.activationStartAt;
+    if (start != null && start.toUtc().isAfter(now)) {
+      return false;
+    }
+
+    final end = item.activationEndAt;
+    if (end != null && end.toUtc().isBefore(now)) {
+      return false;
+    }
+
+    return true;
   }
 
   int? _asInt(Object? value) {

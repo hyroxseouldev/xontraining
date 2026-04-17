@@ -43,17 +43,13 @@ class SupabaseMyProgramDataSource implements MyProgramDataSource {
     required String tenantId,
     required String userId,
   }) async {
-    final nowIso = DateTime.now().toUtc().toIso8601String();
     final rows = await supabase
         .from('program_entitlements')
         .select(
-          'program_id,starts_at,ends_at,programs!inner(id,title,description,thumbnail_url,difficulty,daily_workout_minutes,days_per_week,start_date,end_date,created_at)',
+          'program_id,is_active,starts_at,ends_at,programs!inner(id,title,description,thumbnail_url,difficulty,daily_workout_minutes,days_per_week,start_date,end_date,created_at)',
         )
         .eq('tenant_id', tenantId)
         .eq('user_id', userId)
-        .eq('is_active', true)
-        .lte('starts_at', nowIso)
-        .or('ends_at.is.null,ends_at.gte.$nowIso')
         .order('starts_at', ascending: false);
 
     return List<Map<String, dynamic>>.from(rows);

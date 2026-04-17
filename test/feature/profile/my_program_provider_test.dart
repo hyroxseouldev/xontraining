@@ -12,10 +12,7 @@ void main() {
     test('active feed loads count and single active item', () async {
       final repository = _FakeMyProgramRepository(
         activeItems: [_item(id: 'active-1')],
-        inactiveItems: List<MyProgramItemEntity>.generate(
-          3,
-          (index) => _item(id: 'inactive-$index'),
-        ),
+        inactiveItems: [_item(id: 'expired-1', isEntitlementActive: false)],
       );
 
       final container = ProviderContainer(
@@ -46,7 +43,7 @@ void main() {
         activeItems: [_item(id: 'active-1')],
         inactiveItems: List<MyProgramItemEntity>.generate(
           12,
-          (index) => _item(id: 'inactive-$index'),
+          (index) => _item(id: 'inactive-$index', isEntitlementActive: false),
         ),
       );
 
@@ -87,7 +84,7 @@ void main() {
         activeItems: const [],
         inactiveItems: List<MyProgramItemEntity>.generate(
           11,
-          (index) => _item(id: 'inactive-$index'),
+          (index) => _item(id: 'inactive-$index', isEntitlementActive: false),
         ),
         failOffsets: {10},
       );
@@ -130,7 +127,12 @@ void main() {
   });
 }
 
-MyProgramItemEntity _item({required String id}) {
+MyProgramItemEntity _item({
+  required String id,
+  bool isEntitlementActive = true,
+  DateTime? activationStartAt,
+  DateTime? activationEndAt,
+}) {
   return MyProgramItemEntity(
     program: ProgramEntity(
       id: id,
@@ -143,8 +145,9 @@ MyProgramItemEntity _item({required String id}) {
       startDate: DateTime(2026, 3, 1),
       endDate: DateTime(2026, 3, 28),
     ),
-    activationStartAt: DateTime(2026, 3, 1),
-    activationEndAt: DateTime(2026, 3, 31),
+    isEntitlementActive: isEntitlementActive,
+    activationStartAt: activationStartAt ?? DateTime(2026, 3, 1),
+    activationEndAt: activationEndAt ?? DateTime(2026, 3, 31),
   );
 }
 

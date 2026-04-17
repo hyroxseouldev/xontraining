@@ -347,15 +347,6 @@ class _MyProgramCard extends StatelessWidget {
                       const SizedBox(height: 6),
                       Text(status.label, style: mutedStyle),
                     ],
-                    if (program.hasDescription) ...[
-                      const SizedBox(height: 10),
-                      Text(
-                        program.normalizedDescription,
-                        style: mutedStyle,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
                   ],
                 ),
               ),

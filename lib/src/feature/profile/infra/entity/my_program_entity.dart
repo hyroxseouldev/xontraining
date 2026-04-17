@@ -5,11 +5,13 @@ enum MyProgramStatus { active, inactive }
 class MyProgramItemEntity {
   const MyProgramItemEntity({
     required this.program,
+    required this.isEntitlementActive,
     required this.activationStartAt,
     required this.activationEndAt,
   });
 
   final ProgramEntity program;
+  final bool isEntitlementActive;
   final DateTime? activationStartAt;
   final DateTime? activationEndAt;
 }
