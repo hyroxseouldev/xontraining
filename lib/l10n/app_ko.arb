@@ -450,7 +450,7 @@
   "programSessionReviewEditTitle": "운동 후기 수정",
   "programSessionReviewEditorHint": "오늘 운동 느낌, 힘들었던 점, 잘 된 점, 코치에게 전하고 싶은 내용을 남겨주세요.",
   "programSessionReviewEditorPlaceholder": "예: 전체 세트는 마쳤는데 마지막 구간에서 페이스가 많이 떨어졌어요. 호흡 조절 팁을 알고 싶어요.",
-  "programSessionReviewValidationMin": "30자 이상 작성해 주세요.",
+  "programSessionReviewValidationMin": "10자 이상 작성해 주세요.",
   "programSessionReviewValidationMax": "300자 이내로 작성해 주세요.",
   "programSessionReviewCancel": "취소",
   "programSessionReviewSubmit": "제출",

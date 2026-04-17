@@ -124,7 +124,7 @@ class SessionReviewEditorSheet extends HookConsumerWidget {
               ),
               validator: (value) {
                 final text = (value ?? '').trim();
-                if (text.length < 30) {
+                if (text.length < 10) {
                   return l10n.programSessionReviewValidationMin;
                 }
                 if (text.length > 300) {

@@ -918,7 +918,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get programSessionReviewValidationMin =>
-      'Please write at least 30 characters.';
+      'Please write at least 10 characters.';
 
   @override
   String get programSessionReviewValidationMax =>

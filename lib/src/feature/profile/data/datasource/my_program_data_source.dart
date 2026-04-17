@@ -46,7 +46,7 @@ class SupabaseMyProgramDataSource implements MyProgramDataSource {
     final rows = await supabase
         .from('program_entitlements')
         .select(
-          'program_id,is_active,starts_at,ends_at,programs!inner(id,title,description,thumbnail_url,difficulty,daily_workout_minutes,days_per_week,start_date,end_date,created_at)',
+          'program_id,is_active,starts_at,ends_at,programs!inner(id,title,description,thumbnail_url,difficulty,daily_workout_minutes,days_per_week,start_date,end_date,created_at,display_order)',
         )
         .eq('tenant_id', tenantId)
         .eq('user_id', userId)

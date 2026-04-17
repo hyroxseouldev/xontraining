@@ -450,7 +450,7 @@
   "programSessionReviewEditTitle": "Edit your workout review",
   "programSessionReviewEditorHint": "Share how the workout felt, what was challenging, and anything you want your coach to know.",
   "programSessionReviewEditorPlaceholder": "Example: I finished all rounds, but I lost pace in the final set and want tips on breathing.",
-  "programSessionReviewValidationMin": "Please write at least 30 characters.",
+  "programSessionReviewValidationMin": "Please write at least 10 characters.",
   "programSessionReviewValidationMax": "Please keep it within 300 characters.",
   "programSessionReviewCancel": "Cancel",
   "programSessionReviewSubmit": "Submit",

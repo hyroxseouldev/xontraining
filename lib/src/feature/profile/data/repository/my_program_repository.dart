@@ -34,6 +34,7 @@ class MyProgramRepositoryImpl implements MyProgramRepository {
         tenantId: tenantId,
         userId: userId,
       );
+      rows.sort(_compareProgramRows);
       final itemsByProgramId = <String, MyProgramItemEntity>{};
 
       for (final row in rows) {
@@ -145,6 +146,59 @@ class MyProgramRepositoryImpl implements MyProgramRepository {
       return DateTime.tryParse(value);
     }
     return null;
+  }
+
+  int _compareProgramRows(
+    Map<String, dynamic> left,
+    Map<String, dynamic> right,
+  ) {
+    final leftOrder = _programDisplayOrder(left);
+    final rightOrder = _programDisplayOrder(right);
+
+    if (leftOrder == null && rightOrder != null) {
+      return 1;
+    }
+    if (leftOrder != null && rightOrder == null) {
+      return -1;
+    }
+    if (leftOrder != null && rightOrder != null) {
+      final orderComparison = leftOrder.compareTo(rightOrder);
+      if (orderComparison != 0) {
+        return orderComparison;
+      }
+    }
+
+    final leftCreatedAt = _programCreatedAt(left);
+    final rightCreatedAt = _programCreatedAt(right);
+    if (leftCreatedAt == null && rightCreatedAt != null) {
+      return 1;
+    }
+    if (leftCreatedAt != null && rightCreatedAt == null) {
+      return -1;
+    }
+    if (leftCreatedAt != null && rightCreatedAt != null) {
+      return rightCreatedAt.compareTo(leftCreatedAt);
+    }
+
+    return 0;
+  }
+
+  int? _programDisplayOrder(Map<String, dynamic> row) {
+    final programRaw = row['programs'];
+    if (programRaw is! Map<String, dynamic>) {
+      return null;
+    }
+
+    return _asInt(programRaw['display_order']);
+  }
+
+  DateTime? _programCreatedAt(Map<String, dynamic> row) {
+    final programRaw = row['programs'];
+    if (programRaw is! Map<String, dynamic>) {
+      return null;
+    }
+
+    return _asDate(programRaw['created_at']);
   }
 }
 

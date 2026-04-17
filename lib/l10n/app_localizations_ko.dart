@@ -888,7 +888,7 @@ class AppLocalizationsKo extends AppLocalizations {
       '예: 전체 세트는 마쳤는데 마지막 구간에서 페이스가 많이 떨어졌어요. 호흡 조절 팁을 알고 싶어요.';
 
   @override
-  String get programSessionReviewValidationMin => '30자 이상 작성해 주세요.';
+  String get programSessionReviewValidationMin => '10자 이상 작성해 주세요.';
 
   @override
   String get programSessionReviewValidationMax => '300자 이내로 작성해 주세요.';

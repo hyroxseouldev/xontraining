@@ -1727,7 +1727,7 @@ abstract class AppLocalizations {
   /// No description provided for @programSessionReviewValidationMin.
   ///
   /// In en, this message translates to:
-  /// **'Please write at least 30 characters.'**
+  /// **'Please write at least 10 characters.'**
   String get programSessionReviewValidationMin;
 
   /// No description provided for @programSessionReviewValidationMax.

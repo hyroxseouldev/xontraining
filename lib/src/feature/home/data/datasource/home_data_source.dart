@@ -38,9 +38,10 @@ class SupabaseHomeDataSource implements HomeDataSource {
     final rows = await supabase
         .from('programs')
         .select(
-          'id,title,description,thumbnail_url,difficulty,daily_workout_minutes,days_per_week,start_date,end_date,created_at',
+          'id,title,description,thumbnail_url,difficulty,daily_workout_minutes,days_per_week,start_date,end_date,created_at,display_order',
         )
         .eq('tenant_id', tenantId)
+        .order('display_order', ascending: true)
         .order('created_at', ascending: false);
 
     return rows;
