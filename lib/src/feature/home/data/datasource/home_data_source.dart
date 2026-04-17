@@ -20,8 +20,9 @@ abstract interface class HomeDataSource {
     required String programId,
   });
 
-  Future<Map<String, dynamic>?> getCoachInfoByTenant({
+  Future<List<Map<String, dynamic>>> getCoachInfoByProgram({
     required String tenantId,
+    required String programId,
   });
 }
 
@@ -98,14 +99,22 @@ class SupabaseHomeDataSource implements HomeDataSource {
   }
 
   @override
-  Future<Map<String, dynamic>?> getCoachInfoByTenant({
+  Future<List<Map<String, dynamic>>> getCoachInfoByProgram({
     required String tenantId,
-  }) {
-    return supabase
-        .from('tenant_branding')
-        .select('coach_image_url,coach_name,coach_career,coach_instagram')
-        .eq('tenant_id', tenantId)
-        .maybeSingle();
+    required String programId,
+  }) async {
+    final rows = await supabase
+        .from('program_coaches')
+        .select(
+          'is_primary,sort_order,coach_profiles!inner(display_name,instagram,career,image_url,is_active,tenant_id)',
+        )
+        .eq('program_id', programId)
+        .eq('coach_profiles.tenant_id', tenantId)
+        .eq('coach_profiles.is_active', true)
+        .order('is_primary', ascending: false)
+        .order('sort_order', ascending: true);
+
+    return rows;
   }
 }
 

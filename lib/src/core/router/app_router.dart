@@ -183,7 +183,9 @@ GoRouter goRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.programCoach,
         name: AppRoutes.programCoachName,
-        builder: (context, state) => const ProgramCoachView(),
+        builder: (context, state) => ProgramCoachView(
+          programId: state.pathParameters['programId'] ?? '',
+        ),
       ),
       GoRoute(
         path: AppRoutes.profile,

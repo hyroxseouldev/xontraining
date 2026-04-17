@@ -376,6 +376,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeCoachInfoInstagram => '인스타그램';
 
   @override
+  String get homeCoachInfoPrimaryBadge => '대표 코치';
+
+  @override
   String get homeCoachInfoInstagramOpenFailed => '인스타그램을 열 수 없습니다.';
 
   @override

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
@@ -8,12 +9,14 @@ import 'package:xontraining/src/feature/home/presentation/provider/program_detai
 import 'package:xontraining/src/shared/empty_state.dart';
 
 class ProgramCoachView extends HookConsumerWidget {
-  const ProgramCoachView({super.key});
+  const ProgramCoachView({required this.programId, super.key});
+
+  final String programId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final coachInfoState = ref.watch(coachInfoProvider);
+    final coachInfoState = ref.watch(coachInfoProvider(programId));
 
     return Scaffold(
       appBar: AppBar(
@@ -39,15 +42,15 @@ class ProgramCoachView extends HookConsumerWidget {
       body: coachInfoState.when(
         loading: () => const _ProgramCoachLoadingSkeleton(),
         error: (error, stackTrace) => EmptyState(message: l10n.homeLoadFailed),
-        data: (coachInfo) {
-          if (coachInfo == null) {
+        data: (coachInfos) {
+          if (coachInfos.isEmpty) {
             return EmptyState(
               message: l10n.homeCoachInfoEmpty,
               icon: Icons.person_off_outlined,
             );
           }
 
-          return _CoachInfoContent(coachInfo: coachInfo);
+          return _CoachInfoContent(coachInfos: coachInfos);
         },
       ),
     );
@@ -59,20 +62,61 @@ class _ProgramCoachLoadingSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.only(top: 12, bottom: 20),
+    return Column(
+      children: const [
+        SizedBox(height: 12),
+        _CoachSkeletonIndicator(),
+        SizedBox(height: 12),
+        Expanded(child: SingleChildScrollView(child: _CoachCardSkeleton())),
+      ],
+    );
+  }
+}
+
+class _CoachSkeletonIndicator extends StatelessWidget {
+  const _CoachSkeletonIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        _ShimmerBox(height: 8, width: 20),
+        SizedBox(width: 8),
+        _ShimmerBox(height: 8, width: 8),
+        SizedBox(width: 8),
+        _ShimmerBox(height: 8, width: 8),
+      ],
+    );
+  }
+}
+
+class _CoachCardSkeleton extends StatelessWidget {
+  const _CoachCardSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: const [
         AspectRatio(aspectRatio: 1, child: _ShimmerBox()),
         SizedBox(height: 16),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              _SkeletonTableRow(),
-              _SkeletonTableRow(),
-              _SkeletonTableRow(hasTrailingIcon: true),
-            ],
-          ),
+          child: _ShimmerBox(height: 24, width: 112),
+        ),
+        SizedBox(height: 12),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: _SkeletonTableRow(),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: _SkeletonTableRow(),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: _SkeletonTableRow(hasTrailingIcon: true),
         ),
       ],
     );
@@ -184,8 +228,80 @@ class _ShimmerBoxState extends State<_ShimmerBox>
   }
 }
 
-class _CoachInfoContent extends StatelessWidget {
-  const _CoachInfoContent({required this.coachInfo});
+class _CoachInfoContent extends HookWidget {
+  const _CoachInfoContent({required this.coachInfos});
+
+  final List<CoachInfoEntity> coachInfos;
+
+  @override
+  Widget build(BuildContext context) {
+    final pageController = usePageController();
+    final currentPage = useState(0);
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: coachInfos.length > 1
+              ? _CoachPageIndicator(
+                  count: coachInfos.length,
+                  currentIndex: currentPage.value,
+                )
+              : const SizedBox.shrink(),
+        ),
+        Expanded(
+          child: PageView.builder(
+            controller: pageController,
+            itemCount: coachInfos.length,
+            onPageChanged: (index) => currentPage.value = index,
+            itemBuilder: (context, index) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: _CoachInfoCard(coachInfo: coachInfos[index]),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CoachPageIndicator extends StatelessWidget {
+  const _CoachPageIndicator({required this.count, required this.currentIndex});
+
+  final int count;
+  final int currentIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(count, (index) {
+        final isActive = index == currentIndex;
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          width: 8,
+          height: 8,
+          margin: EdgeInsets.only(right: index == count - 1 ? 0 : 8),
+          decoration: BoxDecoration(
+            color: isActive
+                ? colorScheme.primary
+                : colorScheme.surfaceContainerHighest,
+            shape: BoxShape.circle,
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class _CoachInfoCard extends StatelessWidget {
+  const _CoachInfoCard({required this.coachInfo});
 
   final CoachInfoEntity coachInfo;
 
@@ -193,8 +309,8 @@ class _CoachInfoContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return ListView(
-      padding: const EdgeInsets.only(top: 12, bottom: 20),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (coachInfo.hasImageUrl)
           AspectRatio(
@@ -218,31 +334,59 @@ class _CoachInfoContent extends StatelessWidget {
         if (coachInfo.hasImageUrl) const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Table(
-            columnWidths: const {0: FixedColumnWidth(84), 1: FlexColumnWidth()},
-            defaultVerticalAlignment: TableCellVerticalAlignment.top,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _tableRow(
-                context: context,
-                label: l10n.homeCoachInfoName,
-                child: Text(
-                  coachInfo.name.isEmpty
-                      ? l10n.homeProgramValueNotAvailable
-                      : coachInfo.name,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+              if (coachInfo.isPrimary) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    l10n.homeCoachInfoPrimaryBadge,
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
-              ),
-              _tableRow(
-                context: context,
-                label: l10n.homeCoachInfoCareer,
-                child: _careerWidget(context, coachInfo.career),
-              ),
-              _tableRow(
-                context: context,
-                label: l10n.homeCoachInfoInstagram,
-                child: _instagramWidget(context, coachInfo.instagram),
+                const SizedBox(height: 12),
+              ],
+              Table(
+                columnWidths: const {
+                  0: FixedColumnWidth(84),
+                  1: FlexColumnWidth(),
+                },
+                defaultVerticalAlignment: TableCellVerticalAlignment.top,
+                children: [
+                  _tableRow(
+                    context: context,
+                    label: l10n.homeCoachInfoName,
+                    child: Text(
+                      coachInfo.name.isEmpty
+                          ? l10n.homeProgramValueNotAvailable
+                          : coachInfo.name,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  _tableRow(
+                    context: context,
+                    label: l10n.homeCoachInfoCareer,
+                    child: _careerWidget(context, coachInfo.career),
+                  ),
+                  _tableRow(
+                    context: context,
+                    label: l10n.homeCoachInfoInstagram,
+                    child: _instagramWidget(context, coachInfo.instagram),
+                  ),
+                ],
               ),
             ],
           ),
@@ -284,7 +428,7 @@ class _CoachInfoContent extends StatelessWidget {
           .map(
             (item) => Padding(
               padding: const EdgeInsets.only(bottom: 6),
-              child: Text('• $item'),
+              child: Text('- $item'),
             ),
           )
           .toList(growable: false),

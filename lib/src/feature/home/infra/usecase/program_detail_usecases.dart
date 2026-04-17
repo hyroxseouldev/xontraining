@@ -42,8 +42,14 @@ class GetCoachInfoUseCase {
 
   final HomeRepository repository;
 
-  Future<CoachInfoEntity?> call({required String tenantId}) {
-    return repository.getCoachInfoByTenant(tenantId: tenantId);
+  Future<List<CoachInfoEntity>> call({
+    required String tenantId,
+    required String programId,
+  }) {
+    return repository.getCoachInfoByProgram(
+      tenantId: tenantId,
+      programId: programId,
+    );
   }
 }
 

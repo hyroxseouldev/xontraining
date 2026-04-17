@@ -389,6 +389,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeCoachInfoInstagram => 'Instagram';
 
   @override
+  String get homeCoachInfoPrimaryBadge => 'Primary Coach';
+
+  @override
   String get homeCoachInfoInstagramOpenFailed => 'Could not open Instagram.';
 
   @override

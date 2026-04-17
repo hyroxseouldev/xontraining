@@ -33,7 +33,12 @@ final programDetailPayloadProvider =
       return ProgramDetailPayload(canAccess: true, sessions: sessions);
     });
 
-final coachInfoProvider = FutureProvider<CoachInfoEntity?>((ref) async {
+final coachInfoProvider = FutureProvider.family<List<CoachInfoEntity>, String>((
+  ref,
+  programId,
+) async {
   final tenantId = ref.read(tenantIdProvider);
-  return ref.read(getCoachInfoUseCaseProvider).call(tenantId: tenantId);
+  return ref
+      .read(getCoachInfoUseCaseProvider)
+      .call(tenantId: tenantId, programId: programId);
 });

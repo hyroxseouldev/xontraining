@@ -782,6 +782,12 @@ abstract class AppLocalizations {
   /// **'Instagram'**
   String get homeCoachInfoInstagram;
 
+  /// No description provided for @homeCoachInfoPrimaryBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary Coach'**
+  String get homeCoachInfoPrimaryBadge;
+
   /// No description provided for @homeCoachInfoInstagramOpenFailed.
   ///
   /// In en, this message translates to:

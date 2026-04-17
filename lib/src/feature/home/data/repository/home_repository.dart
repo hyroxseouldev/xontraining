@@ -23,7 +23,10 @@ abstract interface class HomeRepository {
     required String programId,
   });
 
-  Future<CoachInfoEntity?> getCoachInfoByTenant({required String tenantId});
+  Future<List<CoachInfoEntity>> getCoachInfoByProgram({
+    required String tenantId,
+    required String programId,
+  });
 }
 
 class HomeRepositoryImpl implements HomeRepository {
@@ -224,44 +227,58 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<CoachInfoEntity?> getCoachInfoByTenant({
+  Future<List<CoachInfoEntity>> getCoachInfoByProgram({
     required String tenantId,
+    required String programId,
   }) async {
     try {
-      final raw = await dataSource.getCoachInfoByTenant(tenantId: tenantId);
-      if (raw == null) {
-        return null;
-      }
-
-      final name = (raw['coach_name'] as String?)?.trim() ?? '';
-      final instagram = (raw['coach_instagram'] as String?)?.trim() ?? '';
-      final imageUrl = (raw['coach_image_url'] as String?)?.trim() ?? '';
-      final career = _toStringList(raw['coach_career']);
-
-      if (name.isEmpty &&
-          instagram.isEmpty &&
-          imageUrl.isEmpty &&
-          career.isEmpty) {
-        return null;
-      }
-
-      return CoachInfoEntity(
-        imageUrl: imageUrl,
-        name: name,
-        career: career,
-        instagram: instagram,
+      final rawItems = await dataSource.getCoachInfoByProgram(
+        tenantId: tenantId,
+        programId: programId,
       );
+
+      final coaches = <CoachInfoEntity>[];
+      for (final raw in rawItems) {
+        final coachProfile = raw['coach_profiles'];
+        if (coachProfile is! Map<String, dynamic>) {
+          continue;
+        }
+
+        final name = (coachProfile['display_name'] as String?)?.trim() ?? '';
+        final instagram = (coachProfile['instagram'] as String?)?.trim() ?? '';
+        final imageUrl = (coachProfile['image_url'] as String?)?.trim() ?? '';
+        final career = _toStringList(coachProfile['career']);
+
+        if (name.isEmpty &&
+            instagram.isEmpty &&
+            imageUrl.isEmpty &&
+            career.isEmpty) {
+          continue;
+        }
+
+        coaches.add(
+          CoachInfoEntity(
+            isPrimary: raw['is_primary'] as bool? ?? false,
+            imageUrl: imageUrl,
+            name: name,
+            career: career,
+            instagram: instagram,
+          ),
+        );
+      }
+
+      return coaches;
     } on AuthException catch (error, stackTrace) {
-      debugPrint('[HomeRepository] getCoachInfoByTenant auth failure: $error');
+      debugPrint('[HomeRepository] getCoachInfoByProgram auth failure: $error');
       debugPrint('[HomeRepository] StackTrace: $stackTrace');
       throw AppException.auth(message: error.message, cause: error);
     } catch (error, stackTrace) {
       debugPrint(
-        '[HomeRepository] getCoachInfoByTenant unexpected failure: $error',
+        '[HomeRepository] getCoachInfoByProgram unexpected failure: $error',
       );
       debugPrint('[HomeRepository] StackTrace: $stackTrace');
       throw AppException.unknown(
-        message: 'Failed to load coach info.',
+        message: 'Failed to load coaches.',
         cause: error,
       );
     }

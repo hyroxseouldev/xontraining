@@ -188,6 +188,7 @@
   "homeCoachInfoName": "Name",
   "homeCoachInfoCareer": "Career",
   "homeCoachInfoInstagram": "Instagram",
+  "homeCoachInfoPrimaryBadge": "Primary Coach",
   "homeCoachInfoInstagramOpenFailed": "Could not open Instagram.",
   "homeProgramDetailSelectDate": "Select date",
   "homeProgramDetailToday": "Today",

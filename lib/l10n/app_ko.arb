@@ -188,6 +188,7 @@
   "homeCoachInfoName": "이름",
   "homeCoachInfoCareer": "경력",
   "homeCoachInfoInstagram": "인스타그램",
+  "homeCoachInfoPrimaryBadge": "대표 코치",
   "homeCoachInfoInstagramOpenFailed": "인스타그램을 열 수 없습니다.",
   "homeProgramDetailSelectDate": "날짜 선택",
   "homeProgramDetailToday": "오늘",
