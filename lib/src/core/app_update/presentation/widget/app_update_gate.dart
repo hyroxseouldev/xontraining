@@ -30,17 +30,8 @@ class AppUpdateGate extends ConsumerWidget {
           storeUrl: storeUrl,
         );
       },
-      loading: () => const _AppStartupLoadingView(),
+      loading: () => child,
       error: (error, stackTrace) => child,
     );
-  }
-}
-
-class _AppStartupLoadingView extends StatelessWidget {
-  const _AppStartupLoadingView();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
