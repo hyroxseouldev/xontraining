@@ -27,6 +27,9 @@ import 'package:xontraining/src/feature/profile/presentation/view/workout_record
 import 'package:xontraining/src/feature/profile/presentation/view/settings_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/terms_of_service_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/workout_record_view.dart';
+import 'package:xontraining/src/feature/program_review/infra/entity/program_session_review_entity.dart';
+import 'package:xontraining/src/feature/program_review/presentation/view/coach_session_review_detail_view.dart';
+import 'package:xontraining/src/feature/program_review/presentation/view/coach_session_review_queue_view.dart';
 
 part 'app_router.g.dart';
 
@@ -257,6 +260,24 @@ GoRouter goRouter(Ref ref) {
         ),
       ),
       GoRoute(
+        path: AppRoutes.coachSessionReviews,
+        name: AppRoutes.coachSessionReviewsName,
+        builder: (context, state) => const CoachSessionReviewQueueView(),
+      ),
+      GoRoute(
+        path: AppRoutes.coachSessionReviewDetail,
+        name: AppRoutes.coachSessionReviewDetailName,
+        builder: (context, state) {
+          final review = state.extra is CoachProgramSessionReviewEntity
+              ? state.extra! as CoachProgramSessionReviewEntity
+              : null;
+          if (review == null) {
+            return const CoachSessionReviewQueueView();
+          }
+          return CoachSessionReviewDetailView(review: review);
+        },
+      ),
+      GoRoute(
         path: AppRoutes.settings,
         name: AppRoutes.settingsName,
         builder: (context, state) => const SettingsView(),
@@ -304,6 +325,9 @@ abstract final class AppRoutes {
       '/profile/workout-record/:exercise/list';
   static const String workoutRecordLeaderboard =
       '/profile/workout-record/:exercise/leaderboard';
+  static const String coachSessionReviews = '/coach/session-reviews';
+  static const String coachSessionReviewDetail =
+      '/coach/session-reviews/:reviewId';
   static const String settings = '/settings';
   static const String appVersion = '/settings/app-version';
   static const String termsOfService = '/settings/terms';
@@ -327,6 +351,8 @@ abstract final class AppRoutes {
   static const String workoutRecordEntryName = 'workoutRecordEntry';
   static const String workoutRecordListName = 'workoutRecordList';
   static const String workoutRecordLeaderboardName = 'workoutRecordLeaderboard';
+  static const String coachSessionReviewsName = 'coachSessionReviews';
+  static const String coachSessionReviewDetailName = 'coachSessionReviewDetail';
   static const String settingsName = 'settings';
   static const String appVersionName = 'appVersion';
   static const String termsOfServiceName = 'termsOfService';

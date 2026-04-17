@@ -18,6 +18,9 @@ class ProfileView extends ConsumerWidget {
     final session = ref.watch(authSessionProvider);
     final userEmail = session.asData?.value?.email ?? '-';
     final profile = ref.watch(profileProvider).asData?.value;
+    final tenantRole = ref.watch(profileTenantRoleProvider).asData?.value;
+    final canReviewMemberSessions =
+        tenantRole == 'coach' || tenantRole == 'owner';
 
     return Scaffold(
       appBar: AppBar(
@@ -85,6 +88,16 @@ class ProfileView extends ConsumerWidget {
               onTap: () => context.pushNamed(AppRoutes.workoutRecordName),
             ),
             const Divider(height: 1),
+            if (canReviewMemberSessions) ...[
+              _buildMenuTile(
+                leading: Icons.fact_check_outlined,
+                title: l10n.programSessionReviewCoachQueueTitle,
+                trailing: _trailingIcon,
+                onTap: () =>
+                    context.pushNamed(AppRoutes.coachSessionReviewsName),
+              ),
+              const Divider(height: 1),
+            ],
           ],
         ),
       ),

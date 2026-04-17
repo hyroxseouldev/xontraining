@@ -898,4 +898,123 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingSaveFailed =>
       'Failed to save profile. Please try again.';
+
+  @override
+  String get programSessionReviewSectionTitle => 'Workout review';
+
+  @override
+  String get programSessionReviewCreateTitle => 'Leave today\'s workout review';
+
+  @override
+  String get programSessionReviewEditTitle => 'Edit your workout review';
+
+  @override
+  String get programSessionReviewEditorHint =>
+      'Share how the workout felt, what was challenging, and anything you want your coach to know.';
+
+  @override
+  String get programSessionReviewEditorPlaceholder =>
+      'Example: I finished all rounds, but I lost pace in the final set and want tips on breathing.';
+
+  @override
+  String get programSessionReviewValidationMin =>
+      'Please write at least 30 characters.';
+
+  @override
+  String get programSessionReviewValidationMax =>
+      'Please keep it within 300 characters.';
+
+  @override
+  String get programSessionReviewCancel => 'Cancel';
+
+  @override
+  String get programSessionReviewSubmit => 'Submit';
+
+  @override
+  String get programSessionReviewUpdate => 'Update';
+
+  @override
+  String get programSessionReviewSubmitted => 'Workout review submitted.';
+
+  @override
+  String get programSessionReviewUpdated => 'Workout review updated.';
+
+  @override
+  String get programSessionReviewSubmitFailed =>
+      'Failed to save the workout review.';
+
+  @override
+  String get programSessionReviewLoading => 'Loading your review...';
+
+  @override
+  String get programSessionReviewLoadFailed =>
+      'Failed to load the workout review.';
+
+  @override
+  String get programSessionReviewRetry => 'Try again';
+
+  @override
+  String get programSessionReviewEmptyDescription =>
+      'After you finish this session, leave a short review so your coach can check in and respond.';
+
+  @override
+  String get programSessionReviewCreateAction => 'Mark workout complete';
+
+  @override
+  String get programSessionReviewEditAction => 'Edit review';
+
+  @override
+  String get programSessionReviewLockedDescription =>
+      'Your coach has already left feedback, so this review is now locked.';
+
+  @override
+  String get programSessionReviewStatusSubmitted => 'Waiting for coach';
+
+  @override
+  String get programSessionReviewStatusReviewed => 'Feedback received';
+
+  @override
+  String get programSessionReviewCoachFeedbackLabel => 'Coach feedback';
+
+  @override
+  String get programSessionReviewCoachQueueTitle => 'Session review queue';
+
+  @override
+  String get programSessionReviewCoachQueueLoadFailed =>
+      'Failed to load member reviews.';
+
+  @override
+  String get programSessionReviewCoachQueueEmptySubmitted =>
+      'No reviews are waiting for feedback right now.';
+
+  @override
+  String get programSessionReviewCoachQueueEmptyReviewed =>
+      'No reviewed session notes yet.';
+
+  @override
+  String get programSessionReviewCoachDetailTitle => 'Coach feedback';
+
+  @override
+  String get programSessionReviewMemberNoteLabel => 'Member review';
+
+  @override
+  String get programSessionReviewCoachFeedbackPlaceholder =>
+      'Leave clear and encouraging feedback for the member.';
+
+  @override
+  String get programSessionReviewCoachFeedbackValidation =>
+      'Please enter coach feedback.';
+
+  @override
+  String get programSessionReviewCoachSubmit => 'Save feedback';
+
+  @override
+  String get programSessionReviewCoachUpdate => 'Update feedback';
+
+  @override
+  String get programSessionReviewCoachSaveFailed =>
+      'Failed to save coach feedback.';
+
+  @override
+  String get programSessionReviewCoachSaved => 'Coach feedback saved.';
 }

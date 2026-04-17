@@ -1693,6 +1693,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to save profile. Please try again.'**
   String get onboardingSaveFailed;
+
+  /// No description provided for @programSessionReviewSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout review'**
+  String get programSessionReviewSectionTitle;
+
+  /// No description provided for @programSessionReviewCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave today\'s workout review'**
+  String get programSessionReviewCreateTitle;
+
+  /// No description provided for @programSessionReviewEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit your workout review'**
+  String get programSessionReviewEditTitle;
+
+  /// No description provided for @programSessionReviewEditorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Share how the workout felt, what was challenging, and anything you want your coach to know.'**
+  String get programSessionReviewEditorHint;
+
+  /// No description provided for @programSessionReviewEditorPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: I finished all rounds, but I lost pace in the final set and want tips on breathing.'**
+  String get programSessionReviewEditorPlaceholder;
+
+  /// No description provided for @programSessionReviewValidationMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Please write at least 30 characters.'**
+  String get programSessionReviewValidationMin;
+
+  /// No description provided for @programSessionReviewValidationMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Please keep it within 300 characters.'**
+  String get programSessionReviewValidationMax;
+
+  /// No description provided for @programSessionReviewCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get programSessionReviewCancel;
+
+  /// No description provided for @programSessionReviewSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get programSessionReviewSubmit;
+
+  /// No description provided for @programSessionReviewUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get programSessionReviewUpdate;
+
+  /// No description provided for @programSessionReviewSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout review submitted.'**
+  String get programSessionReviewSubmitted;
+
+  /// No description provided for @programSessionReviewUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout review updated.'**
+  String get programSessionReviewUpdated;
+
+  /// No description provided for @programSessionReviewSubmitFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save the workout review.'**
+  String get programSessionReviewSubmitFailed;
+
+  /// No description provided for @programSessionReviewLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading your review...'**
+  String get programSessionReviewLoading;
+
+  /// No description provided for @programSessionReviewLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the workout review.'**
+  String get programSessionReviewLoadFailed;
+
+  /// No description provided for @programSessionReviewRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get programSessionReviewRetry;
+
+  /// No description provided for @programSessionReviewEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'After you finish this session, leave a short review so your coach can check in and respond.'**
+  String get programSessionReviewEmptyDescription;
+
+  /// No description provided for @programSessionReviewCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark workout complete'**
+  String get programSessionReviewCreateAction;
+
+  /// No description provided for @programSessionReviewEditAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit review'**
+  String get programSessionReviewEditAction;
+
+  /// No description provided for @programSessionReviewLockedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your coach has already left feedback, so this review is now locked.'**
+  String get programSessionReviewLockedDescription;
+
+  /// No description provided for @programSessionReviewStatusSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for coach'**
+  String get programSessionReviewStatusSubmitted;
+
+  /// No description provided for @programSessionReviewStatusReviewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback received'**
+  String get programSessionReviewStatusReviewed;
+
+  /// No description provided for @programSessionReviewCoachFeedbackLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach feedback'**
+  String get programSessionReviewCoachFeedbackLabel;
+
+  /// No description provided for @programSessionReviewCoachQueueTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session review queue'**
+  String get programSessionReviewCoachQueueTitle;
+
+  /// No description provided for @programSessionReviewCoachQueueLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load member reviews.'**
+  String get programSessionReviewCoachQueueLoadFailed;
+
+  /// No description provided for @programSessionReviewCoachQueueEmptySubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews are waiting for feedback right now.'**
+  String get programSessionReviewCoachQueueEmptySubmitted;
+
+  /// No description provided for @programSessionReviewCoachQueueEmptyReviewed.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviewed session notes yet.'**
+  String get programSessionReviewCoachQueueEmptyReviewed;
+
+  /// No description provided for @programSessionReviewCoachDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach feedback'**
+  String get programSessionReviewCoachDetailTitle;
+
+  /// No description provided for @programSessionReviewMemberNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Member review'**
+  String get programSessionReviewMemberNoteLabel;
+
+  /// No description provided for @programSessionReviewCoachFeedbackPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave clear and encouraging feedback for the member.'**
+  String get programSessionReviewCoachFeedbackPlaceholder;
+
+  /// No description provided for @programSessionReviewCoachFeedbackValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter coach feedback.'**
+  String get programSessionReviewCoachFeedbackValidation;
+
+  /// No description provided for @programSessionReviewCoachSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Save feedback'**
+  String get programSessionReviewCoachSubmit;
+
+  /// No description provided for @programSessionReviewCoachUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update feedback'**
+  String get programSessionReviewCoachUpdate;
+
+  /// No description provided for @programSessionReviewCoachSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save coach feedback.'**
+  String get programSessionReviewCoachSaveFailed;
+
+  /// No description provided for @programSessionReviewCoachSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach feedback saved.'**
+  String get programSessionReviewCoachSaved;
 }
 
 class _AppLocalizationsDelegate

@@ -869,4 +869,116 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingSaveFailed => '프로필 저장에 실패했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get programSessionReviewSectionTitle => '운동 후기';
+
+  @override
+  String get programSessionReviewCreateTitle => '오늘 운동 후기를 남겨주세요';
+
+  @override
+  String get programSessionReviewEditTitle => '운동 후기 수정';
+
+  @override
+  String get programSessionReviewEditorHint =>
+      '오늘 운동 느낌, 힘들었던 점, 잘 된 점, 코치에게 전하고 싶은 내용을 남겨주세요.';
+
+  @override
+  String get programSessionReviewEditorPlaceholder =>
+      '예: 전체 세트는 마쳤는데 마지막 구간에서 페이스가 많이 떨어졌어요. 호흡 조절 팁을 알고 싶어요.';
+
+  @override
+  String get programSessionReviewValidationMin => '30자 이상 작성해 주세요.';
+
+  @override
+  String get programSessionReviewValidationMax => '300자 이내로 작성해 주세요.';
+
+  @override
+  String get programSessionReviewCancel => '취소';
+
+  @override
+  String get programSessionReviewSubmit => '제출';
+
+  @override
+  String get programSessionReviewUpdate => '수정';
+
+  @override
+  String get programSessionReviewSubmitted => '운동 후기가 제출되었습니다.';
+
+  @override
+  String get programSessionReviewUpdated => '운동 후기가 수정되었습니다.';
+
+  @override
+  String get programSessionReviewSubmitFailed => '운동 후기 저장에 실패했습니다.';
+
+  @override
+  String get programSessionReviewLoading => '운동 후기를 불러오는 중입니다...';
+
+  @override
+  String get programSessionReviewLoadFailed => '운동 후기를 불러오지 못했습니다.';
+
+  @override
+  String get programSessionReviewRetry => '다시 시도';
+
+  @override
+  String get programSessionReviewEmptyDescription =>
+      '이 세션을 마친 뒤 짧은 후기를 남기면 코치가 확인하고 피드백을 남길 수 있어요.';
+
+  @override
+  String get programSessionReviewCreateAction => '운동 완료하기';
+
+  @override
+  String get programSessionReviewEditAction => '후기 수정';
+
+  @override
+  String get programSessionReviewLockedDescription =>
+      '코치 피드백이 완료되어 더 이상 수정할 수 없습니다.';
+
+  @override
+  String get programSessionReviewStatusSubmitted => '코치 확인 대기';
+
+  @override
+  String get programSessionReviewStatusReviewed => '피드백 도착';
+
+  @override
+  String get programSessionReviewCoachFeedbackLabel => '코치 피드백';
+
+  @override
+  String get programSessionReviewCoachQueueTitle => '세션 후기 확인';
+
+  @override
+  String get programSessionReviewCoachQueueLoadFailed => '회원 후기를 불러오지 못했습니다.';
+
+  @override
+  String get programSessionReviewCoachQueueEmptySubmitted =>
+      '현재 확인 대기 중인 후기가 없습니다.';
+
+  @override
+  String get programSessionReviewCoachQueueEmptyReviewed =>
+      '아직 피드백 완료된 후기가 없습니다.';
+
+  @override
+  String get programSessionReviewCoachDetailTitle => '코치 피드백';
+
+  @override
+  String get programSessionReviewMemberNoteLabel => '회원 후기';
+
+  @override
+  String get programSessionReviewCoachFeedbackPlaceholder =>
+      '회원에게 전달할 코치 피드백을 남겨주세요.';
+
+  @override
+  String get programSessionReviewCoachFeedbackValidation => '코치 피드백을 입력해 주세요.';
+
+  @override
+  String get programSessionReviewCoachSubmit => '피드백 저장';
+
+  @override
+  String get programSessionReviewCoachUpdate => '피드백 수정';
+
+  @override
+  String get programSessionReviewCoachSaveFailed => '코치 피드백 저장에 실패했습니다.';
+
+  @override
+  String get programSessionReviewCoachSaved => '코치 피드백이 저장되었습니다.';
 }

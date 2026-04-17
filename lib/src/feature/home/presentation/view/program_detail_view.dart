@@ -10,6 +10,9 @@ import 'package:xontraining/src/feature/home/infra/entity/home_entity.dart';
 import 'package:xontraining/src/feature/home/infra/entity/program_detail_entity.dart';
 import 'package:xontraining/src/feature/home/presentation/provider/program_detail_provider.dart';
 import 'package:xontraining/src/feature/home/presentation/widget/week_calendar_selector.dart';
+import 'package:xontraining/src/feature/program_review/infra/entity/program_session_review_entity.dart';
+import 'package:xontraining/src/feature/program_review/presentation/provider/program_session_review_provider.dart';
+import 'package:xontraining/src/feature/program_review/presentation/widget/session_review_editor_sheet.dart';
 import 'package:xontraining/src/shared/empty_state.dart';
 
 class ProgramDetailView extends ConsumerStatefulWidget {
@@ -78,6 +81,9 @@ class _ProgramDetailViewState extends ConsumerState<ProgramDetailView> {
     final detailState = ref.watch(
       programDetailPayloadProvider(widget.programId),
     );
+    final reviewState = ref.watch(
+      myProgramSessionReviewsProvider(programId: widget.programId),
+    );
     final isTodaySelected = DateUtils.isSameDay(_selectedDate, DateTime.now());
     final showGoTodayAction = detailState.maybeWhen(
       data: (payload) => payload.canAccess && payload.sessions.isNotEmpty,
@@ -142,7 +148,11 @@ class _ProgramDetailViewState extends ConsumerState<ProgramDetailView> {
           }
 
           return _ProgramSessionContent(
+            programId: widget.programId,
             sessions: payload.sessions,
+            sessionReviewsBySessionId: reviewState.asData?.value ?? const {},
+            isReviewLoading: reviewState.isLoading,
+            hasReviewLoadError: reviewState.hasError,
             firstDayOfWeek: widget.firstDayOfWeek,
             selectedDate: _selectedDate,
             visibleWeekAnchorDate: _visibleWeekAnchorDate,
@@ -187,9 +197,13 @@ class _ProgramDetailLoadingSkeleton extends StatelessWidget {
   }
 }
 
-class _ProgramSessionContent extends StatelessWidget {
+class _ProgramSessionContent extends ConsumerWidget {
   const _ProgramSessionContent({
+    required this.programId,
     required this.sessions,
+    required this.sessionReviewsBySessionId,
+    required this.isReviewLoading,
+    required this.hasReviewLoadError,
     required this.firstDayOfWeek,
     required this.selectedDate,
     required this.visibleWeekAnchorDate,
@@ -198,7 +212,11 @@ class _ProgramSessionContent extends StatelessWidget {
     required this.onNextWeek,
   });
 
+  final String programId;
   final List<ProgramSessionEntity> sessions;
+  final Map<String, ProgramSessionReviewEntity> sessionReviewsBySessionId;
+  final bool isReviewLoading;
+  final bool hasReviewLoadError;
   final WeekStartDay firstDayOfWeek;
   final DateTime selectedDate;
   final DateTime visibleWeekAnchorDate;
@@ -207,7 +225,7 @@ class _ProgramSessionContent extends StatelessWidget {
   final VoidCallback onNextWeek;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final sessionDates = sessions
         .map((session) => _dateOnly(session.sessionDate))
@@ -225,6 +243,9 @@ class _ProgramSessionContent extends StatelessWidget {
       sessions,
       selectedDate,
     );
+    final selectedReview = selectedSession == null
+        ? null
+        : sessionReviewsBySessionId[selectedSession.id];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,16 +332,212 @@ class _ProgramSessionContent extends StatelessWidget {
                           _ScheduledSessionMessage(session: selectedSession)
                         else if (selectedSession.isRest)
                           _RestSessionMessage(session: selectedSession)
-                        else
+                        else ...[
                           _SessionHtmlRenderer(
                             html: selectedSession.normalizedContentHtml,
                           ),
+                          const SizedBox(height: 16),
+                          _ProgramSessionReviewSection(
+                            programId: programId,
+                            session: selectedSession,
+                            review: selectedReview,
+                            isLoading: isReviewLoading,
+                            hasLoadError: hasReviewLoadError,
+                          ),
+                        ],
                       ],
                     ),
                   ),
                 ),
         ),
       ],
+    );
+  }
+}
+
+class _ProgramSessionReviewSection extends ConsumerWidget {
+  const _ProgramSessionReviewSection({
+    required this.programId,
+    required this.session,
+    required this.review,
+    required this.isLoading,
+    required this.hasLoadError,
+  });
+
+  final String programId;
+  final ProgramSessionEntity session;
+  final ProgramSessionReviewEntity? review;
+  final bool isLoading;
+  final bool hasLoadError;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
+    Future<void> openEditor() async {
+      final result = await showModalBottomSheet<bool>(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        builder: (context) {
+          return SessionReviewEditorSheet(
+            programId: programId,
+            session: session,
+            review: review,
+          );
+        },
+      );
+
+      if (result != true || !context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            review == null
+                ? l10n.programSessionReviewSubmitted
+                : l10n.programSessionReviewUpdated,
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.programSessionReviewSectionTitle,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              if (review != null) _ReviewStatusBadge(review: review!),
+            ],
+          ),
+          const SizedBox(height: 8),
+          if (isLoading && review == null)
+            Row(
+              children: [
+                const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                const SizedBox(width: 8),
+                Expanded(child: Text(l10n.programSessionReviewLoading)),
+              ],
+            )
+          else if (hasLoadError && review == null) ...[
+            Text(l10n.programSessionReviewLoadFailed),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () {
+                ref.invalidate(
+                  myProgramSessionReviewsProvider(programId: programId),
+                );
+              },
+              child: Text(l10n.programSessionReviewRetry),
+            ),
+          ] else if (review == null) ...[
+            Text(
+              l10n.programSessionReviewEmptyDescription,
+              style: theme.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: openEditor,
+              icon: const Icon(Icons.rate_review_outlined),
+              label: Text(l10n.programSessionReviewCreateAction),
+            ),
+          ] else ...[
+            Text(
+              review!.normalizedCompletionNote,
+              style: theme.textTheme.bodyMedium,
+            ),
+            if (review!.isReviewed && review!.hasCoachFeedback) ...[
+              const SizedBox(height: 14),
+              Text(
+                l10n.programSessionReviewCoachFeedbackLabel,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: theme.colorScheme.secondaryContainer,
+                ),
+                child: Text(
+                  review!.normalizedCoachFeedback,
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+            ],
+            const SizedBox(height: 12),
+            if (review!.canEditByMember)
+              OutlinedButton.icon(
+                onPressed: openEditor,
+                icon: const Icon(Icons.edit_outlined),
+                label: Text(l10n.programSessionReviewEditAction),
+              )
+            else
+              Text(
+                l10n.programSessionReviewLockedDescription,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ReviewStatusBadge extends StatelessWidget {
+  const _ReviewStatusBadge({required this.review});
+
+  final ProgramSessionReviewEntity review;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final isReviewed = review.isReviewed;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: isReviewed
+            ? theme.colorScheme.secondaryContainer
+            : theme.colorScheme.tertiaryContainer,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        isReviewed
+            ? l10n.programSessionReviewStatusReviewed
+            : l10n.programSessionReviewStatusSubmitted,
+        style: theme.textTheme.labelMedium?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 }
