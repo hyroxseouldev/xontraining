@@ -20,9 +20,10 @@ import 'package:xontraining/src/feature/profile/presentation/view/profile_edit_v
 import 'package:xontraining/src/feature/profile/presentation/view/profile_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/privacy_policy_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/app_version_view.dart';
-import 'package:xontraining/src/feature/profile/presentation/view/rowing_record_entry_view.dart';
+import 'package:xontraining/src/feature/profile/infra/entity/workout_record_entity.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/workout_record_entry_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/workout_record_leaderboard_view.dart';
-import 'package:xontraining/src/feature/profile/presentation/view/rowing_record_list_view.dart';
+import 'package:xontraining/src/feature/profile/presentation/view/workout_record_list_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/settings_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/terms_of_service_view.dart';
 import 'package:xontraining/src/feature/profile/presentation/view/workout_record_view.dart';
@@ -217,9 +218,15 @@ GoRouter goRouter(Ref ref) {
           }
           return null;
         },
-        builder: (context, state) => WorkoutRecordEntryView(
-          exerciseKey: state.pathParameters['exercise'] ?? '',
-        ),
+        builder: (context, state) {
+          final initialRecord = state.extra;
+          return WorkoutRecordEntryView(
+            exerciseKey: state.pathParameters['exercise'] ?? '',
+            initialRecord: initialRecord is WorkoutRecordEntity
+                ? initialRecord
+                : null,
+          );
+        },
       ),
       GoRoute(
         path: AppRoutes.workoutRecordList,

@@ -63,7 +63,7 @@ void main() {
 
     test('updateRecord forwards values to repository', () async {
       final repository = _FakeWorkoutRecordRepository(
-        recordsResponse: const [],
+        recordsResponse: [_record(id: 'record-id')],
       );
 
       final container = ProviderContainer(
@@ -84,6 +84,8 @@ void main() {
         ],
       );
       addTearDown(container.dispose);
+
+      await container.read(workoutRecordsProvider.future);
 
       await container
           .read(workoutRecordControllerProvider.notifier)
@@ -100,7 +102,10 @@ void main() {
             presetKey: '5rm',
           );
 
+      await container.read(workoutRecordsProvider.future);
+
       expect(repository.updateCalls, 1);
+      expect(repository.getMyRecordsCalls, 2);
       expect(repository.lastUpdatedId, 'record-id');
       expect(repository.lastUpdatedExerciseName, 'squat');
       expect(repository.lastUpdatedRecordType, WorkoutRecordType.weight);
@@ -110,7 +115,7 @@ void main() {
 
     test('deleteRecord forwards id to repository', () async {
       final repository = _FakeWorkoutRecordRepository(
-        recordsResponse: const [],
+        recordsResponse: [_record(id: 'record-id')],
       );
 
       final container = ProviderContainer(
@@ -132,11 +137,16 @@ void main() {
       );
       addTearDown(container.dispose);
 
+      await container.read(workoutRecordsProvider.future);
+
       await container
           .read(workoutRecordControllerProvider.notifier)
           .deleteRecord(id: 'record-id');
 
+      await container.read(workoutRecordsProvider.future);
+
       expect(repository.deleteCalls, 1);
+      expect(repository.getMyRecordsCalls, 2);
       expect(repository.lastDeletedId, 'record-id');
     });
 

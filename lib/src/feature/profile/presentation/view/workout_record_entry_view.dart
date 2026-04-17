@@ -9,12 +9,17 @@ import 'package:xontraining/src/feature/profile/infra/entity/workout_record_enti
 import 'package:xontraining/src/feature/profile/presentation/provider/workout_record_provider.dart';
 
 class WorkoutRecordEntryView extends HookConsumerWidget {
-  const WorkoutRecordEntryView({super.key, required this.exerciseKey});
+  const WorkoutRecordEntryView({
+    super.key,
+    required this.exerciseKey,
+    this.initialRecord,
+  });
 
   static const String _distanceUnit = 'm';
   static const String _weightUnit = 'kg';
 
   final String exerciseKey;
+  final WorkoutRecordEntity? initialRecord;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,8 +29,10 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final firstValueController = useTextEditingController();
     final secondValueController = useTextEditingController();
-    final selectedDate = useState(DateTime.now());
-    final selectedPresetKey = useState<String?>(null);
+    final selectedDate = useState(initialRecord?.recordedAt ?? DateTime.now());
+    final selectedPresetKey = useState<String?>(initialRecord?.presetKey);
+    final didInitializeForm = useState(false);
+    final isEditing = initialRecord != null;
 
     final exercisesState = ref.watch(workoutExercisesProvider);
     final presetsState = ref.watch(workoutExercisePresetsProvider);
@@ -40,12 +47,38 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
       exerciseKey,
     );
 
-    useEffect(() {
-      if (presets.isNotEmpty && selectedPresetKey.value == null) {
-        selectedPresetKey.value = presets.first.presetKey;
-      }
-      return null;
-    }, [presets]);
+    useEffect(
+      () {
+        if (presets.isEmpty || didInitializeForm.value) {
+          return null;
+        }
+
+        if (!_hasPreset(presets, selectedPresetKey.value)) {
+          selectedPresetKey.value = presets.first.presetKey;
+        }
+
+        if (initialRecord != null) {
+          if (initialRecord!.isTimeRecord) {
+            secondValueController.text = _formatDurationMmSs(
+              initialRecord!.recordSeconds,
+            );
+          } else {
+            firstValueController.text = _formatWeight(
+              initialRecord!.recordWeightKg,
+            );
+          }
+        }
+
+        didInitializeForm.value = true;
+        return null;
+      },
+      [
+        didInitializeForm.value,
+        initialRecord,
+        presets,
+        selectedPresetKey.value,
+      ],
+    );
 
     final selectedPreset = _findPreset(presets, selectedPresetKey.value);
     final minimalEnabledBorder = OutlineInputBorder(
@@ -65,13 +98,32 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
       borderSide: BorderSide(color: colorScheme.error, width: 1.2),
     );
 
-    if (isCardio) {
-      final distance = selectedPreset?.distanceM;
-      firstValueController.text = distance == null ? '' : distance.toString();
-    }
-    if (!isCardio && selectedPreset?.targetReps != null) {
-      secondValueController.text = selectedPreset!.targetReps.toString();
-    }
+    useEffect(
+      () {
+        if (!didInitializeForm.value) {
+          return null;
+        }
+
+        if (isCardio) {
+          final distance = selectedPreset?.distanceM;
+          firstValueController.text = distance == null
+              ? ''
+              : distance.toString();
+        } else {
+          secondValueController.text =
+              selectedPreset?.targetReps?.toString() ?? '';
+        }
+
+        return null;
+      },
+      [
+        didInitializeForm.value,
+        isCardio,
+        selectedPreset?.distanceM,
+        selectedPreset?.presetKey,
+        selectedPreset?.targetReps,
+      ],
+    );
 
     ref.listen<AsyncValue<void>>(workoutRecordControllerProvider, (
       previous,
@@ -87,7 +139,9 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          l10n.workoutRecordEntryTitle(_exerciseLabel(l10n, exerciseKey)),
+          isEditing
+              ? l10n.workoutRecordEditDialogTitle
+              : l10n.workoutRecordEntryTitle(_exerciseLabel(l10n, exerciseKey)),
         ),
         actions: [
           IconButton(
@@ -255,6 +309,7 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
                           secondValueController: secondValueController,
                           recordedAt: selectedDate.value,
                           exerciseKey: exerciseKey,
+                          initialRecord: initialRecord,
                           recordType:
                               exercise?.recordType ??
                               (isCardio
@@ -286,6 +341,7 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
     required TextEditingController secondValueController,
     required DateTime recordedAt,
     required String exerciseKey,
+    required WorkoutRecordEntity? initialRecord,
     required WorkoutRecordType recordType,
     required WorkoutExercisePresetEntity? selectedPreset,
   }) async {
@@ -321,19 +377,33 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
       return;
     }
 
-    await ref
-        .read(workoutRecordControllerProvider.notifier)
-        .createRecord(
-          exerciseName: exerciseKey,
-          recordType: recordType,
-          distance: distance,
-          recordSeconds: isCardio ? secondValue : null,
-          recordWeightKg: weight,
-          recordReps: isCardio ? null : secondValue,
-          recordedAt: recordedAt,
-          memo: '',
-          presetKey: selectedPreset.presetKey,
-        );
+    final controller = ref.read(workoutRecordControllerProvider.notifier);
+    if (initialRecord == null) {
+      await controller.createRecord(
+        exerciseName: exerciseKey,
+        recordType: recordType,
+        distance: distance,
+        recordSeconds: isCardio ? secondValue : null,
+        recordWeightKg: weight,
+        recordReps: isCardio ? null : secondValue,
+        recordedAt: recordedAt,
+        memo: '',
+        presetKey: selectedPreset.presetKey,
+      );
+    } else {
+      await controller.updateRecord(
+        id: initialRecord.id,
+        exerciseName: exerciseKey,
+        recordType: recordType,
+        distance: distance,
+        recordSeconds: isCardio ? secondValue : null,
+        recordWeightKg: weight,
+        recordReps: isCardio ? null : secondValue,
+        recordedAt: recordedAt,
+        memo: initialRecord.memo,
+        presetKey: selectedPreset.presetKey,
+      );
+    }
 
     if (!context.mounted) {
       return;
@@ -369,6 +439,28 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
     }
 
     return totalSeconds;
+  }
+
+  static String _formatDurationMmSs(int? valueSeconds) {
+    if (valueSeconds == null || valueSeconds <= 0) {
+      return '';
+    }
+
+    final minutes = valueSeconds ~/ 60;
+    final seconds = valueSeconds % 60;
+    return '$minutes:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  static String _formatWeight(double? value) {
+    if (value == null || value <= 0) {
+      return '';
+    }
+
+    if (value % 1 == 0) {
+      return value.toInt().toString();
+    }
+
+    return value.toStringAsFixed(2);
   }
 
   WorkoutExerciseEntity? _findExercise(
@@ -412,6 +504,23 @@ class WorkoutRecordEntryView extends HookConsumerWidget {
       }
     }
     return null;
+  }
+
+  bool _hasPreset(
+    List<WorkoutExercisePresetEntity> presets,
+    String? presetKey,
+  ) {
+    if (presetKey == null) {
+      return false;
+    }
+
+    for (final preset in presets) {
+      if (preset.presetKey == presetKey) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   bool _isCardioExerciseFallback(String key) {
