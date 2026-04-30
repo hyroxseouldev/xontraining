@@ -195,6 +195,55 @@ final class CheckOnboardingStatusUseCaseProvider
 String _$checkOnboardingStatusUseCaseHash() =>
     r'4fbec9e68d9e69546726d4a2c1399a1a332856f4';
 
+@ProviderFor(ensureMyTenantProfileUseCase)
+final ensureMyTenantProfileUseCaseProvider =
+    EnsureMyTenantProfileUseCaseProvider._();
+
+final class EnsureMyTenantProfileUseCaseProvider
+    extends
+        $FunctionalProvider<
+          EnsureMyTenantProfileUseCase,
+          EnsureMyTenantProfileUseCase,
+          EnsureMyTenantProfileUseCase
+        >
+    with $Provider<EnsureMyTenantProfileUseCase> {
+  EnsureMyTenantProfileUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'ensureMyTenantProfileUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$ensureMyTenantProfileUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<EnsureMyTenantProfileUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  EnsureMyTenantProfileUseCase create(Ref ref) {
+    return ensureMyTenantProfileUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(EnsureMyTenantProfileUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<EnsureMyTenantProfileUseCase>(value),
+    );
+  }
+}
+
+String _$ensureMyTenantProfileUseCaseHash() =>
+    r'3d25c604ca1b1bd0b6341141aead6878faf921eb';
+
 @ProviderFor(completeOnboardingUseCase)
 final completeOnboardingUseCaseProvider = CompleteOnboardingUseCaseProvider._();
 

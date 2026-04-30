@@ -11,6 +11,7 @@ const String _communityMediaBucket = 'content-media';
 
 abstract interface class StorageService {
   Future<String> uploadUserAvatar({
+    required String tenantId,
     required Uint8List bytes,
     required String fileName,
   });
@@ -32,6 +33,7 @@ class SupabaseStorageService implements StorageService {
 
   @override
   Future<String> uploadUserAvatar({
+    required String tenantId,
     required Uint8List bytes,
     required String fileName,
   }) async {
@@ -43,7 +45,7 @@ class SupabaseStorageService implements StorageService {
     final ext = _resolveFileExtension(fileName);
     final mimeType = _resolveMimeType(ext);
     final nowMs = DateTime.now().microsecondsSinceEpoch;
-    final path = 'users/$userId/avatar_$nowMs.$ext';
+    final path = 'tenants/$tenantId/users/$userId/avatar_$nowMs.$ext';
 
     await supabase.storage
         .from(_avatarsBucket)

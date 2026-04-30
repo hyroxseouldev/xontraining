@@ -67,7 +67,7 @@ class SupabaseProgramSessionReviewDataSource
         .whereType<String>()
         .toSet()
         .toList(growable: false);
-    final profilesById = await _getProfilesByIds(userIds: reviewerIds);
+    final profilesById = await _getReviewerProfilesByIds(userIds: reviewerIds);
 
     for (final row in mappedRows) {
       final reviewedBy = row['reviewed_by'];
@@ -146,7 +146,10 @@ class SupabaseProgramSessionReviewDataSource
         .whereType<String>()
         .toSet()
         .toList(growable: false);
-    final profilesById = await _getProfilesByIds(userIds: memberIds);
+    final profilesById = await _getMemberProfilesByIds(
+      tenantId: tenantId,
+      userIds: memberIds,
+    );
 
     for (final row in rows) {
       final userId = row['user_id'];
@@ -184,7 +187,7 @@ class SupabaseProgramSessionReviewDataSource
         .eq('tenant_id', tenantId);
   }
 
-  Future<Map<String, Map<String, dynamic>>> _getProfilesByIds({
+  Future<Map<String, Map<String, dynamic>>> _getReviewerProfilesByIds({
     required List<String> userIds,
   }) async {
     if (userIds.isEmpty) {
@@ -201,6 +204,28 @@ class SupabaseProgramSessionReviewDataSource
     return {
       for (final row in rows)
         if (row['id'] is String) row['id'] as String: row,
+    };
+  }
+
+  Future<Map<String, Map<String, dynamic>>> _getMemberProfilesByIds({
+    required String tenantId,
+    required List<String> userIds,
+  }) async {
+    if (userIds.isEmpty) {
+      return const {};
+    }
+
+    final rows = List<Map<String, dynamic>>.from(
+      await supabase
+          .from('tenant_user_profiles')
+          .select('user_id,display_name,avatar_url')
+          .eq('tenant_id', tenantId)
+          .inFilter('user_id', userIds),
+    );
+
+    return {
+      for (final row in rows)
+        if (row['user_id'] is String) row['user_id'] as String: row,
     };
   }
 }

@@ -15,10 +15,15 @@ abstract interface class AuthDataSource {
   Future<void> signInWithGoogle();
   Future<void> signInWithApple();
   Future<void> signOut();
-  Future<bool> isOnboardingCompleted();
-  Future<void> completeOnboarding({required String gender});
-  Future<Map<String, dynamic>> getMyProfile();
+  Future<void> ensureMyTenantProfile({required String tenantId});
+  Future<bool> isOnboardingCompleted({required String tenantId});
+  Future<void> completeOnboarding({
+    required String tenantId,
+    required String gender,
+  });
+  Future<Map<String, dynamic>> getMyProfile({required String tenantId});
   Future<void> updateMyProfile({
+    required String tenantId,
     String? fullName,
     String? gender,
     String? avatarUrl,
@@ -89,50 +94,22 @@ class SupabaseAuthDataSource implements AuthDataSource {
   }
 
   @override
-  Future<bool> isOnboardingCompleted() async {
-    final userId = supabase.auth.currentUser?.id;
-    if (userId == null) {
-      return false;
-    }
-
-    final profile = await supabase
-        .from('profiles')
-        .select('onboarding_completed,is_deleted')
-        .eq('id', userId)
-        .maybeSingle();
-
-    final isDeleted = profile?['is_deleted'];
-    if (isDeleted is bool && isDeleted) {
-      throw AuthException('Account has been deactivated.');
-    }
-
-    final onboardingCompleted = profile?['onboarding_completed'];
-    if (onboardingCompleted is bool) {
-      return onboardingCompleted;
-    }
-
-    return false;
-  }
-
-  @override
-  Future<void> completeOnboarding({required String gender}) async {
-    final userId = supabase.auth.currentUser?.id;
-    if (userId == null) {
-      throw AuthException('No authenticated user found.');
-    }
-
-    await supabase
-        .from('profiles')
-        .update({'gender': gender.trim(), 'onboarding_completed': true})
-        .eq('id', userId);
-  }
-
-  @override
-  Future<Map<String, dynamic>> getMyProfile() async {
+  Future<void> ensureMyTenantProfile({required String tenantId}) async {
     final userId = supabase.auth.currentUser?.id;
     final userMetadata = supabase.auth.currentUser?.userMetadata;
     if (userId == null) {
       throw AuthException('No authenticated user found.');
+    }
+
+    final existingTenantProfile = await supabase
+        .from('tenant_user_profiles')
+        .select('tenant_id')
+        .eq('tenant_id', tenantId)
+        .eq('user_id', userId)
+        .maybeSingle();
+
+    if (existingTenantProfile != null) {
+      return;
     }
 
     final profile = await supabase
@@ -146,6 +123,89 @@ class SupabaseAuthDataSource implements AuthDataSource {
       throw AuthException('Account has been deactivated.');
     }
 
+    await supabase.from('tenant_user_profiles').insert({
+      'tenant_id': tenantId,
+      'user_id': userId,
+      'display_name':
+          _normalizeText(profile?['full_name']) ??
+          _normalizeText(userMetadata?['full_name']) ??
+          _normalizeText(userMetadata?['name']),
+      'avatar_url':
+          _normalizeText(profile?['avatar_url']) ??
+          _normalizeText(userMetadata?['avatar_url']) ??
+          _normalizeText(userMetadata?['picture']),
+      'gender': _normalizeText(profile?['gender']),
+      'onboarding_completed':
+          profile?['onboarding_completed'] as bool? ?? false,
+    });
+  }
+
+  @override
+  Future<bool> isOnboardingCompleted({required String tenantId}) async {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) {
+      return false;
+    }
+
+    final profile = await supabase
+        .from('tenant_user_profiles')
+        .select('onboarding_completed,tenant_status')
+        .eq('tenant_id', tenantId)
+        .eq('user_id', userId)
+        .maybeSingle();
+
+    final tenantStatus = _normalizeText(profile?['tenant_status']);
+    if (tenantStatus == 'deactivated') {
+      throw AuthException('Account has been deactivated.');
+    }
+
+    final onboardingCompleted = profile?['onboarding_completed'];
+    if (onboardingCompleted is bool) {
+      return onboardingCompleted;
+    }
+
+    return false;
+  }
+
+  @override
+  Future<void> completeOnboarding({
+    required String tenantId,
+    required String gender,
+  }) async {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) {
+      throw AuthException('No authenticated user found.');
+    }
+
+    await supabase
+        .from('tenant_user_profiles')
+        .update({'gender': gender.trim(), 'onboarding_completed': true})
+        .eq('tenant_id', tenantId)
+        .eq('user_id', userId);
+  }
+
+  @override
+  Future<Map<String, dynamic>> getMyProfile({required String tenantId}) async {
+    final userId = supabase.auth.currentUser?.id;
+    final userMetadata = supabase.auth.currentUser?.userMetadata;
+    if (userId == null) {
+      throw AuthException('No authenticated user found.');
+    }
+
+    final profile = await supabase
+        .from('tenant_user_profiles')
+        .select(
+          'display_name,avatar_url,gender,onboarding_completed,tenant_status',
+        )
+        .eq('tenant_id', tenantId)
+        .eq('user_id', userId)
+        .maybeSingle();
+
+    final tenantStatus = _normalizeText(profile?['tenant_status']);
+    if (tenantStatus == 'deactivated') {
+      throw AuthException('Account has been deactivated.');
+    }
+
     return <String, dynamic>{
       ...?profile,
       'fallback_full_name': userMetadata?['full_name'],
@@ -156,6 +216,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
   @override
   Future<void> updateMyProfile({
+    required String tenantId,
     String? fullName,
     String? gender,
     String? avatarUrl,
@@ -167,7 +228,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
     final updatePayload = <String, dynamic>{};
     if (fullName != null) {
-      updatePayload['full_name'] = fullName.trim();
+      updatePayload['display_name'] = fullName.trim();
     }
     if (gender != null) {
       updatePayload['gender'] = gender.trim();
@@ -180,7 +241,11 @@ class SupabaseAuthDataSource implements AuthDataSource {
       return;
     }
 
-    await supabase.from('profiles').update(updatePayload).eq('id', userId);
+    await supabase
+        .from('tenant_user_profiles')
+        .update(updatePayload)
+        .eq('tenant_id', tenantId)
+        .eq('user_id', userId);
   }
 
   @override
@@ -218,6 +283,15 @@ class SupabaseAuthDataSource implements AuthDataSource {
         message.isEmpty ? 'Failed to deactivate account.' : message,
       );
     }
+  }
+
+  String? _normalizeText(Object? value) {
+    if (value is! String) {
+      return null;
+    }
+
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
   }
 }
 

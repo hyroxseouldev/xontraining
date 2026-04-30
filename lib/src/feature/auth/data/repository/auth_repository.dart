@@ -13,10 +13,17 @@ abstract interface class AuthRepository {
   Future<void> signInWithGoogle();
   Future<void> signInWithApple();
   Future<void> signOut();
-  Future<bool> isOnboardingCompleted();
-  Future<void> completeOnboarding({required CompleteOnboardingParams params});
-  Future<ProfileEntity> getMyProfile();
-  Future<void> updateMyProfile({required UpdateProfileParams params});
+  Future<void> ensureMyTenantProfile({required String tenantId});
+  Future<bool> isOnboardingCompleted({required String tenantId});
+  Future<void> completeOnboarding({
+    required String tenantId,
+    required CompleteOnboardingParams params,
+  });
+  Future<ProfileEntity> getMyProfile({required String tenantId});
+  Future<void> updateMyProfile({
+    required String tenantId,
+    required UpdateProfileParams params,
+  });
   Future<String?> getMyTenantRole({required String tenantId});
   Future<void> deleteMyAccount({required String tenantId});
 }
@@ -115,9 +122,29 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<bool> isOnboardingCompleted() async {
+  Future<void> ensureMyTenantProfile({required String tenantId}) async {
     try {
-      return await dataSource.isOnboardingCompleted();
+      await dataSource.ensureMyTenantProfile(tenantId: tenantId);
+    } on AuthException catch (error, stackTrace) {
+      debugPrint('[AuthRepository] ensureMyTenantProfile auth failure: $error');
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.auth(message: error.message, cause: error);
+    } catch (error, stackTrace) {
+      debugPrint(
+        '[AuthRepository] ensureMyTenantProfile unexpected failure: $error',
+      );
+      debugPrint('[AuthRepository] StackTrace: $stackTrace');
+      throw AppException.unknown(
+        message: 'Failed to prepare tenant profile.',
+        cause: error,
+      );
+    }
+  }
+
+  @override
+  Future<bool> isOnboardingCompleted({required String tenantId}) async {
+    try {
+      return await dataSource.isOnboardingCompleted(tenantId: tenantId);
     } on AuthException catch (error, stackTrace) {
       debugPrint('[AuthRepository] isOnboardingCompleted auth failure: $error');
       debugPrint('[AuthRepository] StackTrace: $stackTrace');
@@ -136,10 +163,14 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> completeOnboarding({
+    required String tenantId,
     required CompleteOnboardingParams params,
   }) async {
     try {
-      await dataSource.completeOnboarding(gender: params.gender.databaseValue);
+      await dataSource.completeOnboarding(
+        tenantId: tenantId,
+        gender: params.gender.databaseValue,
+      );
     } on AuthException catch (error, stackTrace) {
       debugPrint('[AuthRepository] completeOnboarding auth failure: $error');
       debugPrint('[AuthRepository] StackTrace: $stackTrace');
@@ -157,11 +188,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ProfileEntity> getMyProfile() async {
+  Future<ProfileEntity> getMyProfile({required String tenantId}) async {
     try {
-      final profile = await dataSource.getMyProfile();
+      final profile = await dataSource.getMyProfile(tenantId: tenantId);
       return ProfileEntity(
-        fullName: profile['full_name'] as String?,
+        fullName: profile['display_name'] as String?,
         avatarUrl: profile['avatar_url'] as String?,
         gender: ProfileGender.fromDatabaseValue(profile['gender'] as String?),
         onboardingCompleted: profile['onboarding_completed'] as bool? ?? false,
@@ -183,9 +214,13 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> updateMyProfile({required UpdateProfileParams params}) async {
+  Future<void> updateMyProfile({
+    required String tenantId,
+    required UpdateProfileParams params,
+  }) async {
     try {
       await dataSource.updateMyProfile(
+        tenantId: tenantId,
         fullName: params.fullName,
         gender: params.gender.databaseValue,
         avatarUrl: params.avatarUrl,

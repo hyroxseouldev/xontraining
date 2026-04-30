@@ -162,6 +162,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
         postIds: postIds,
       );
       final profileRows = await dataSource.getProfilesByIds(
+        tenantId: tenantId,
         userIds: authorIds.toList(growable: false),
       );
       final roleRows = await dataSource.getMembershipRolesByUserIds(
@@ -195,8 +196,8 @@ class CommunityRepositoryImpl implements CommunityRepository {
       final namesByUserId = <String, String>{};
       final avatarsByUserId = <String, String>{};
       for (final row in profileRows) {
-        final id = row['id'];
-        final fullName = row['full_name'];
+        final id = row['user_id'];
+        final fullName = row['display_name'];
         final avatarUrl = row['avatar_url'];
         if (id is String && fullName is String) {
           namesByUserId[id] = fullName;
@@ -298,6 +299,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
         postIds: [post.id],
       );
       final profileRows = await dataSource.getProfilesByIds(
+        tenantId: tenantId,
         userIds: [post.authorId],
       );
       final roleRows = await dataSource.getMembershipRolesByUserIds(
@@ -317,8 +319,8 @@ class CommunityRepositoryImpl implements CommunityRepository {
 
       final commentCount = commentRows.length;
       final fullName =
-          profileRows.isNotEmpty && profileRows.first['full_name'] is String
-          ? profileRows.first['full_name'] as String
+          profileRows.isNotEmpty && profileRows.first['display_name'] is String
+          ? profileRows.first['display_name'] as String
           : '';
       final avatarUrl =
           profileRows.isNotEmpty && profileRows.first['avatar_url'] is String
@@ -391,6 +393,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
       }
 
       final profileRows = await dataSource.getProfilesByIds(
+        tenantId: tenantId,
         userIds: userIds.toList(growable: false),
       );
       final roleRows = await dataSource.getMembershipRolesByUserIds(
@@ -400,8 +403,8 @@ class CommunityRepositoryImpl implements CommunityRepository {
       final namesByUserId = <String, String>{};
       final avatarsByUserId = <String, String>{};
       for (final row in profileRows) {
-        final id = row['id'];
-        final fullName = row['full_name'];
+        final id = row['user_id'];
+        final fullName = row['display_name'];
         final avatarUrl = row['avatar_url'];
         if (id is String && fullName is String) {
           namesByUserId[id] = fullName;

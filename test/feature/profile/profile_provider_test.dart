@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/src/core/storage/storage_service.dart';
+import 'package:xontraining/src/core/tenant/tenant_provider.dart';
 import 'package:xontraining/src/feature/auth/data/repository/auth_repository.dart';
 import 'package:xontraining/src/feature/auth/infra/usecase/auth_usecases.dart';
 import 'package:xontraining/src/feature/profile/infra/entity/profile_entity.dart';
@@ -21,6 +22,10 @@ void main() {
 
       final container = ProviderContainer(
         overrides: [
+          tenantIdProvider.overrideWithValue('tenant-test'),
+          ensureMyTenantProfileUseCaseProvider.overrideWithValue(
+            EnsureMyTenantProfileUseCase(repository: authRepository),
+          ),
           getMyProfileUseCaseProvider.overrideWithValue(
             GetMyProfileUseCase(repository: authRepository),
           ),
@@ -65,6 +70,10 @@ void main() {
 
       final container = ProviderContainer(
         overrides: [
+          tenantIdProvider.overrideWithValue('tenant-test'),
+          ensureMyTenantProfileUseCaseProvider.overrideWithValue(
+            EnsureMyTenantProfileUseCase(repository: authRepository),
+          ),
           getMyProfileUseCaseProvider.overrideWithValue(
             GetMyProfileUseCase(repository: authRepository),
           ),
@@ -113,6 +122,10 @@ void main() {
 
       final container = ProviderContainer(
         overrides: [
+          tenantIdProvider.overrideWithValue('tenant-test'),
+          ensureMyTenantProfileUseCaseProvider.overrideWithValue(
+            EnsureMyTenantProfileUseCase(repository: authRepository),
+          ),
           getMyProfileUseCaseProvider.overrideWithValue(
             GetMyProfileUseCase(repository: authRepository),
           ),
@@ -150,10 +163,17 @@ class _FakeAuthRepository implements AuthRepository {
   UpdateProfileParams? lastUpdatedProfileParams;
 
   @override
-  Future<ProfileEntity> getMyProfile() async => profile;
+  Future<void> ensureMyTenantProfile({required String tenantId}) async {}
 
   @override
-  Future<void> updateMyProfile({required UpdateProfileParams params}) async {
+  Future<ProfileEntity> getMyProfile({required String tenantId}) async =>
+      profile;
+
+  @override
+  Future<void> updateMyProfile({
+    required String tenantId,
+    required UpdateProfileParams params,
+  }) async {
     updateProfileCalls += 1;
     lastUpdatedProfileParams = params;
     profile = ProfileEntity(
@@ -167,7 +187,10 @@ class _FakeAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> completeOnboarding({required CompleteOnboardingParams params}) {
+  Future<void> completeOnboarding({
+    required String tenantId,
+    required CompleteOnboardingParams params,
+  }) {
     throw UnimplementedError();
   }
 
@@ -182,7 +205,7 @@ class _FakeAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<bool> isOnboardingCompleted() {
+  Future<bool> isOnboardingCompleted({required String tenantId}) {
     throw UnimplementedError();
   }
 
@@ -213,15 +236,18 @@ class _FakeStorageService implements StorageService {
 
   int uploadAvatarCalls = 0;
   String? lastUploadedFileName;
+  String? lastUploadedTenantId;
   final List<String> removedAvatarUrls = <String>[];
 
   @override
   Future<String> uploadUserAvatar({
+    required String tenantId,
     required Uint8List bytes,
     required String fileName,
   }) async {
     uploadAvatarCalls += 1;
     lastUploadedFileName = fileName;
+    lastUploadedTenantId = tenantId;
     if (throwOnUpload) {
       throw StateError('upload failed');
     }

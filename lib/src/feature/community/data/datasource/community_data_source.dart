@@ -27,6 +27,7 @@ abstract interface class CommunityDataSource {
   });
 
   Future<List<Map<String, dynamic>>> getProfilesByIds({
+    required String tenantId,
     required List<String> userIds,
   });
 
@@ -220,6 +221,7 @@ class SupabaseCommunityDataSource implements CommunityDataSource {
 
   @override
   Future<List<Map<String, dynamic>>> getProfilesByIds({
+    required String tenantId,
     required List<String> userIds,
   }) async {
     if (userIds.isEmpty) {
@@ -227,9 +229,10 @@ class SupabaseCommunityDataSource implements CommunityDataSource {
     }
 
     final rows = await supabase
-        .from('profiles')
-        .select('id,full_name,avatar_url')
-        .inFilter('id', userIds);
+        .from('tenant_user_profiles')
+        .select('user_id,display_name,avatar_url')
+        .eq('tenant_id', tenantId)
+        .inFilter('user_id', userIds);
 
     return List<Map<String, dynamic>>.from(rows);
   }

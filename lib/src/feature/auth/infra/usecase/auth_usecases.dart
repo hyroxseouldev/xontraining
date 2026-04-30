@@ -39,8 +39,18 @@ class CheckOnboardingStatusUseCase {
 
   final AuthRepository repository;
 
-  Future<bool> call() {
-    return repository.isOnboardingCompleted();
+  Future<bool> call({required String tenantId}) {
+    return repository.isOnboardingCompleted(tenantId: tenantId);
+  }
+}
+
+class EnsureMyTenantProfileUseCase {
+  EnsureMyTenantProfileUseCase({required this.repository});
+
+  final AuthRepository repository;
+
+  Future<void> call({required String tenantId}) {
+    return repository.ensureMyTenantProfile(tenantId: tenantId);
   }
 }
 
@@ -49,8 +59,11 @@ class CompleteOnboardingUseCase {
 
   final AuthRepository repository;
 
-  Future<void> call({required CompleteOnboardingParams params}) {
-    return repository.completeOnboarding(params: params);
+  Future<void> call({
+    required String tenantId,
+    required CompleteOnboardingParams params,
+  }) {
+    return repository.completeOnboarding(tenantId: tenantId, params: params);
   }
 }
 
@@ -59,8 +72,8 @@ class GetMyProfileUseCase {
 
   final AuthRepository repository;
 
-  Future<ProfileEntity> call() {
-    return repository.getMyProfile();
+  Future<ProfileEntity> call({required String tenantId}) {
+    return repository.getMyProfile(tenantId: tenantId);
   }
 }
 
@@ -69,8 +82,11 @@ class UpdateMyProfileUseCase {
 
   final AuthRepository repository;
 
-  Future<void> call({required UpdateProfileParams params}) {
-    return repository.updateMyProfile(params: params);
+  Future<void> call({
+    required String tenantId,
+    required UpdateProfileParams params,
+  }) {
+    return repository.updateMyProfile(tenantId: tenantId, params: params);
   }
 }
 
@@ -112,6 +128,13 @@ SignOutUseCase signOutUseCase(Ref ref) {
 @riverpod
 CheckOnboardingStatusUseCase checkOnboardingStatusUseCase(Ref ref) {
   return CheckOnboardingStatusUseCase(
+    repository: ref.read(authRepositoryProvider),
+  );
+}
+
+@riverpod
+EnsureMyTenantProfileUseCase ensureMyTenantProfileUseCase(Ref ref) {
+  return EnsureMyTenantProfileUseCase(
     repository: ref.read(authRepositoryProvider),
   );
 }

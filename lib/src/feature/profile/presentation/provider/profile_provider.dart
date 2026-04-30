@@ -11,7 +11,9 @@ part 'profile_provider.g.dart';
 
 @riverpod
 Future<ProfileEntity> profile(Ref ref) async {
-  return ref.read(getMyProfileUseCaseProvider).call();
+  final tenantId = ref.read(tenantIdProvider);
+  await ref.read(ensureMyTenantProfileUseCaseProvider).call(tenantId: tenantId);
+  return ref.read(getMyProfileUseCaseProvider).call(tenantId: tenantId);
 }
 
 @riverpod
@@ -40,16 +42,26 @@ class ProfileController extends _$ProfileController {
     String? avatarFileName,
   }) async {
     state = const AsyncLoading();
+    final tenantId = ref.read(tenantIdProvider);
 
     try {
       final trimmedName = fullName.trim();
-      final currentProfile = await ref.read(getMyProfileUseCaseProvider).call();
+      await ref
+          .read(ensureMyTenantProfileUseCaseProvider)
+          .call(tenantId: tenantId);
+      final currentProfile = await ref
+          .read(getMyProfileUseCaseProvider)
+          .call(tenantId: tenantId);
       var nextAvatarUrl = currentProfile.normalizedAvatarUrl;
 
       if (avatarBytes != null && avatarFileName != null) {
         final uploadedAvatarUrl = await ref
             .read(storageServiceProvider)
-            .uploadUserAvatar(bytes: avatarBytes, fileName: avatarFileName);
+            .uploadUserAvatar(
+              tenantId: tenantId,
+              bytes: avatarBytes,
+              fileName: avatarFileName,
+            );
 
         if (nextAvatarUrl.isNotEmpty && nextAvatarUrl != uploadedAvatarUrl) {
           try {
@@ -65,6 +77,7 @@ class ProfileController extends _$ProfileController {
       await ref
           .read(updateMyProfileUseCaseProvider)
           .call(
+            tenantId: tenantId,
             params: UpdateProfileParams(
               fullName: trimmedName,
               gender: gender,

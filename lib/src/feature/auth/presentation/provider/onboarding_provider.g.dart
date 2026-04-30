@@ -41,7 +41,7 @@ final class OnboardingCompletedProvider
 }
 
 String _$onboardingCompletedHash() =>
-    r'd438121c319d1088d3201dcb7d0280c3dd26797d';
+    r'9ea3703d74f965461751a511d235ce41f3ab4fcb';
 
 @ProviderFor(OnboardingController)
 final onboardingControllerProvider = OnboardingControllerProvider._();
@@ -76,7 +76,7 @@ final class OnboardingControllerProvider
 }
 
 String _$onboardingControllerHash() =>
-    r'80d67ba40bc7b1a31b216ae133520b60a03620e4';
+    r'ae525d24f0a75479e5899f1a79c9eb95bb3fa84b';
 
 abstract class _$OnboardingController extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();

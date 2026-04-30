@@ -188,7 +188,7 @@ class ProgramSessionReviewRepositoryImpl
               sessionDate.day,
             ),
             memberName: memberProfile is Map<String, dynamic>
-                ? (memberProfile['full_name'] as String?) ?? ''
+                ? (memberProfile['display_name'] as String?) ?? ''
                 : '',
             memberAvatarUrl: memberProfile is Map<String, dynamic>
                 ? (memberProfile['avatar_url'] as String?) ?? ''

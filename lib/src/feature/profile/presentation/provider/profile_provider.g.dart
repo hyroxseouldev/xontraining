@@ -46,7 +46,7 @@ final class ProfileProvider
   }
 }
 
-String _$profileHash() => r'4f7d7446d963a65e537ed7eed2abd62ba184c080';
+String _$profileHash() => r'dd37f7c12a84a1f10ed1e079b7db23aab53ba139';
 
 @ProviderFor(profileTenantRole)
 final profileTenantRoleProvider = ProfileTenantRoleProvider._();
@@ -146,7 +146,7 @@ final class ProfileControllerProvider
   }
 }
 
-String _$profileControllerHash() => r'72babe1523283fb40cde2144bcd3fdfbc716d88c';
+String _$profileControllerHash() => r'205c7031c90e1bab38665d17b203eda5074fc6a1';
 
 abstract class _$ProfileController extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();
