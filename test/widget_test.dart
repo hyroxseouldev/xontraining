@@ -3,14 +3,17 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
+import 'package:xontraining/src/core/brand/brand.dart';
+import 'package:xontraining/src/core/brand/brand_provider.dart';
 import 'package:xontraining/src/feature/auth/presentation/view/login_view.dart';
 import 'package:xontraining/src/feature/onboarding/presentation/view/onboarding_view.dart';
 
 void main() {
   testWidgets('Login screen is shown', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
+      ProviderScope(
+        overrides: [brandProvider.overrideWithValue(Brand.xon)],
+        child: const MaterialApp(
           localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -29,8 +32,9 @@ void main() {
 
   testWidgets('Onboarding screen is shown', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
+      ProviderScope(
+        overrides: [brandProvider.overrideWithValue(Brand.xon)],
+        child: const MaterialApp(
           localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,

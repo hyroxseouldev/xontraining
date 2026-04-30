@@ -9,10 +9,14 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'XON Training';
+  String appTitle(Object brandName) {
+    return '$brandName';
+  }
 
   @override
-  String get loginHeadline => 'Welcome to XON Training';
+  String loginHeadline(Object brandName) {
+    return 'Welcome to $brandName';
+  }
 
   @override
   String get loginGoogleButton => 'Sign in with Google';

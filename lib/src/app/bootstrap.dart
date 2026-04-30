@@ -5,9 +5,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:xontraining/src/app/app.dart';
 import 'package:xontraining/src/app/flavor.dart';
+import 'package:xontraining/src/core/brand/brand.dart';
+import 'package:xontraining/src/core/brand/brand_provider.dart';
 import 'package:xontraining/src/core/config/env/env.dart';
 
-Future<void> bootstrap({required AppFlavor flavor}) async {
+Future<void> bootstrap({
+  required AppFlavor flavor,
+  required Brand brand,
+}) async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(url: Env.supabaseUrl, anonKey: Env.supabaseAnonKey);
@@ -31,5 +36,10 @@ Future<void> bootstrap({required AppFlavor flavor}) async {
   );
 
   debugPrint('[App] Bootstrapped with flavor: $flavor');
-  runApp(const ProviderScope(child: XonTrainingApp()));
+  runApp(
+    ProviderScope(
+      overrides: [brandProvider.overrideWithValue(brand)],
+      child: const XonTrainingApp(),
+    ),
+  );
 }

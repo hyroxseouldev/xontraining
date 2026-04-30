@@ -9,10 +9,14 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => 'XON 트레이닝';
+  String appTitle(Object brandName) {
+    return '$brandName';
+  }
 
   @override
-  String get loginHeadline => 'XON 트레이닝에 오신 것을 환영합니다';
+  String loginHeadline(Object brandName) {
+    return '$brandName에 오신 것을 환영합니다';
+  }
 
   @override
   String get loginGoogleButton => 'Google로 로그인';

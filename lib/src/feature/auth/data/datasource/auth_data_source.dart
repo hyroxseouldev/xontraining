@@ -96,25 +96,13 @@ class SupabaseAuthDataSource implements AuthDataSource {
   @override
   Future<void> ensureMyTenantProfile({required String tenantId}) async {
     final userId = supabase.auth.currentUser?.id;
-    final userMetadata = supabase.auth.currentUser?.userMetadata;
     if (userId == null) {
       throw AuthException('No authenticated user found.');
     }
 
-    final existingTenantProfile = await supabase
-        .from('tenant_user_profiles')
-        .select('tenant_id')
-        .eq('tenant_id', tenantId)
-        .eq('user_id', userId)
-        .maybeSingle();
-
-    if (existingTenantProfile != null) {
-      return;
-    }
-
     final profile = await supabase
         .from('profiles')
-        .select('full_name,avatar_url,gender,onboarding_completed,is_deleted')
+        .select('is_deleted')
         .eq('id', userId)
         .maybeSingle();
 
@@ -123,21 +111,17 @@ class SupabaseAuthDataSource implements AuthDataSource {
       throw AuthException('Account has been deactivated.');
     }
 
-    await supabase.from('tenant_user_profiles').insert({
-      'tenant_id': tenantId,
-      'user_id': userId,
-      'display_name':
-          _normalizeText(profile?['full_name']) ??
-          _normalizeText(userMetadata?['full_name']) ??
-          _normalizeText(userMetadata?['name']),
-      'avatar_url':
-          _normalizeText(profile?['avatar_url']) ??
-          _normalizeText(userMetadata?['avatar_url']) ??
-          _normalizeText(userMetadata?['picture']),
-      'gender': _normalizeText(profile?['gender']),
-      'onboarding_completed':
-          profile?['onboarding_completed'] as bool? ?? false,
-    });
+    await supabase
+        .from('tenant_user_profiles')
+        .upsert(
+          {
+            'tenant_id': tenantId,
+            'user_id': userId,
+            'onboarding_completed': false,
+          },
+          onConflict: 'tenant_id,user_id',
+          ignoreDuplicates: true,
+        );
   }
 
   @override

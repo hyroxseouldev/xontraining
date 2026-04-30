@@ -1,7 +1,17 @@
 {
   "@@locale": "ko",
-  "appTitle": "XON 트레이닝",
-  "loginHeadline": "XON 트레이닝에 오신 것을 환영합니다",
+  "appTitle": "{brandName}",
+  "@appTitle": {
+    "placeholders": {
+      "brandName": {}
+    }
+  },
+  "loginHeadline": "{brandName}에 오신 것을 환영합니다",
+  "@loginHeadline": {
+    "placeholders": {
+      "brandName": {}
+    }
+  },
   "loginGoogleButton": "Google로 로그인",
   "loginAppleButton": "Apple로 로그인",
   "loginLoading": "로그인 중...",

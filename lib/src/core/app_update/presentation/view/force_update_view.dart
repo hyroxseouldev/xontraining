@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
+import 'package:xontraining/src/core/brand/brand_provider.dart';
 
-class ForceUpdateView extends StatelessWidget {
+class ForceUpdateView extends ConsumerWidget {
   const ForceUpdateView({
     required this.currentVersion,
     required this.minimumVersion,
@@ -15,8 +17,9 @@ class ForceUpdateView extends StatelessWidget {
   final String storeUrl;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final brand = ref.watch(brandConfigProvider);
     final colorScheme = Theme.of(context).colorScheme;
 
     return PopScope(
@@ -44,7 +47,7 @@ class ForceUpdateView extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(18),
                         child: Image.asset(
-                          'assets/images/app-icon.png',
+                          brand.appIconAssetPath,
                           fit: BoxFit.contain,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(

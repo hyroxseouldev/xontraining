@@ -101,14 +101,14 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'XON Training'**
-  String get appTitle;
+  /// **'{brandName}'**
+  String appTitle(Object brandName);
 
   /// No description provided for @loginHeadline.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to XON Training'**
-  String get loginHeadline;
+  /// **'Welcome to {brandName}'**
+  String loginHeadline(Object brandName);
 
   /// No description provided for @loginGoogleButton.
   ///

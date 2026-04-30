@@ -1,7 +1,17 @@
 {
   "@@locale": "en",
-  "appTitle": "XON Training",
-  "loginHeadline": "Welcome to XON Training",
+  "appTitle": "{brandName}",
+  "@appTitle": {
+    "placeholders": {
+      "brandName": {}
+    }
+  },
+  "loginHeadline": "Welcome to {brandName}",
+  "@loginHeadline": {
+    "placeholders": {
+      "brandName": {}
+    }
+  },
   "loginGoogleButton": "Sign in with Google",
   "loginAppleButton": "Sign in with Apple",
   "loginLoading": "Signing in...",

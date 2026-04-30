@@ -1,0 +1,1 @@
+enum Brand { xon, amor }

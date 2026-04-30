@@ -1,6 +1,5 @@
-import 'package:xontraining/src/app/bootstrap.dart';
-import 'package:xontraining/src/app/flavor.dart';
+import 'package:xontraining/main_xon.dart' as xon;
 
 Future<void> main() async {
-  await bootstrap(flavor: AppFlavor.dev);
+  await xon.main();
 }

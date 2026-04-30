@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
+import 'package:xontraining/src/core/brand/brand_provider.dart';
 import 'package:xontraining/src/core/exception/app_exception.dart';
 import 'package:xontraining/src/feature/auth/presentation/provider/auth_controller.dart';
 import 'package:xontraining/src/shared/layout_breakpoints.dart';
@@ -17,6 +18,7 @@ class LoginView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final authState = ref.watch(authControllerProvider);
+    final brand = ref.watch(brandConfigProvider);
     const loginButtonHeight = 50.0;
     final googleFontSize = loginButtonHeight * 0.43;
     final activeProvider = useState<_LoginProvider?>(null);
@@ -54,7 +56,7 @@ class LoginView extends HookConsumerWidget {
             children: [
               const Spacer(),
               Image.asset(
-                'assets/images/xon_logo.png',
+                brand.logoAssetPath,
                 height: logoHeight,
                 errorBuilder: (context, error, stackTrace) =>
                     SizedBox(height: logoHeight),

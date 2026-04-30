@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:xontraining/l10n/app_localizations.dart';
+import 'package:xontraining/src/core/brand/brand_provider.dart';
 import 'package:xontraining/src/feature/profile/presentation/provider/profile_provider.dart';
 
 class AppVersionView extends ConsumerWidget {
@@ -9,6 +10,7 @@ class AppVersionView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final brand = ref.watch(brandConfigProvider);
     final versionLabel = ref.watch(appVersionLabelProvider);
 
     return Scaffold(
@@ -46,7 +48,7 @@ class AppVersionView extends ConsumerWidget {
                     border: Border.all(color: Colors.grey, width: 1),
                   ),
                   child: Image.asset(
-                    'assets/images/xon_logo.png',
+                    brand.logoAssetPath,
                     height: 120,
                     errorBuilder: (context, error, stackTrace) =>
                         const SizedBox(height: 180),
