@@ -38,21 +38,9 @@ class BrandConfig {
     darkTheme: AppTheme.dark,
   );
 
-  static final amor = BrandConfig(
-    brand: Brand.amor,
-    tenantId: '8e4f2364-ddd7-4e65-8238-6951d67b4c42',
-    displayNameEn: 'AMOR Training',
-    displayNameKo: 'AMOR Training',
-    logoAssetPath: 'assets/xon/logo.png',
-    appIconAssetPath: 'assets/xon/app-icon.png',
-    lightTheme: AppTheme.light,
-    darkTheme: AppTheme.dark,
-  );
-
   static BrandConfig fromBrand(Brand brand) {
     return switch (brand) {
       Brand.xon => xon,
-      Brand.amor => amor,
     };
   }
 }

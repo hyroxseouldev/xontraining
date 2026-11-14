@@ -11,12 +11,6 @@
       "program": "lib/main_xon.dart"
     },
     {
-      "name": "AMOR",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main_amor.dart"
-    },
-    {
       "name": "XON (profile mode)",
       "request": "launch",
       "type": "dart",
