@@ -89,7 +89,6 @@ flutter:
   assets:
     - assets/images/google-logo.png
     - assets/xon/
-    - assets/amor/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
